@@ -1,0 +1,35 @@
+{
+  "doctype": "DocType",
+  "name": "Pending Document Extraction Item",
+  "module": "Invoice Helper Lt",
+  "istable": 1,
+  "editable_grid": 1,
+  "custom": 0,
+  "fields": [
+    {
+      "fieldname": "barcode",
+      "label": "Barcode",
+      "fieldtype": "Data",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "quantity",
+      "label": "Qty",
+      "fieldtype": "Float",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "price",
+      "label": "Unit Price",
+      "fieldtype": "Currency",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "total",
+      "label": "Line Total",
+      "fieldtype": "Currency",
+      "in_list_view": 1
+    }
+  ],
+  "permissions": []
+}
