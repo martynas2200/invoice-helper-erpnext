@@ -10,6 +10,15 @@ dynamic = ["version"]
 dependencies = [
     # "frappe~=15.0.0" # Installed and managed by bench.
     "pypdf>=4.2,<5",
+    "PyPDF2>=3.0.0",
+    # Invoice extraction dependencies
+    "pdf2image>=1.16.0",
+    "pytesseract>=0.3.10",
+    "pillow>=9.0.0",
+    "numpy>=1.21.0",
+    "tabula-py>=2.5.0",
+    # Textract dependencies
+    "boto3>=1.26.0",
 ]
 
 [build-system]

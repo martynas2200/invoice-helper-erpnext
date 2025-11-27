@@ -1,3 +1,5 @@
+import frappe
+
 app_name = "invoice_helper_lt"
 app_title = "Invoice Helper Lt"
 app_publisher = "Martynas Miliauskas"
@@ -46,6 +48,7 @@ app_license = "mit"
 doctype_js = {
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	"Sales Invoice": "public/js/sales_invoice.js",
+	"File": "public/js/file_split.js",
 }
 
 # add custom actions on list view
@@ -140,13 +143,11 @@ doctype_list_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Pending Document": {
+		"after_insert": "invoice_helper_lt.hooks.enqueue_extraction_task"
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -257,4 +258,26 @@ doctype_list_js = {
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
+
+
+# Document Event Handlers
+# -------------------------
+
+def enqueue_extraction_task(doc, method):
+	"""
+	Enqueue extraction task when a new Pending Document is inserted.
+
+	This function is called as an after_insert hook for Pending Document.
+	It enqueues a background task to extract data from the document.
+
+	Args:
+		doc: The Pending Document instance
+		method: The method name (not used here)
+	"""
+	frappe.enqueue(
+		"invoice_helper_lt.tasks.extract_document",
+		doc_name=doc.name,
+		queue="default",
+		timeout=300  # 5 minutes timeout
+	)
 

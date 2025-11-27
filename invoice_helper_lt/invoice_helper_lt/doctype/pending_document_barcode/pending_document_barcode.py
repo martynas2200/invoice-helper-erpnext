@@ -2,5 +2,5 @@
 from frappe.model.document import Document
 
 
-class PendingDocumentExtractionItem(Document):
+class PendingDocumentBarcode(Document):
 	pass

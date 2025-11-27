@@ -1,5 +1,9 @@
+// TODO: NEEDS REWRITING <- follow DRY -> purchase_invoice.js
+// NOTE: Not a priority right now, we get so few sale (credit) invoices
+
 frappe.ui.form.on("Sales Invoice", {
   async refresh(frm) {
+	return; // Temporarily disabled
     if (frm.is_new()) {
       frm.add_custom_button("Prefill from Pending Document", () => prefill_from_pending_dialog_si(frm)).addClass("btn-primary");
       return;
@@ -15,7 +19,7 @@ frappe.ui.form.on("Sales Invoice", {
             fieldtype: "Link",
             options: "Pending Document",
             reqd: 1,
-            description: __("Choose a Pending Document (Type = Sale recommended)"),
+            description: __("Choose a Pending Document (Type = Sale)"),
           },
         ],
         primary_action_label: __("Import"),
@@ -50,7 +54,7 @@ function prefill_from_pending_dialog_si(frm) {
         fieldtype: "Link",
         options: "Pending Document",
         reqd: 1,
-        description: __("Type = Sale recommended"),
+        description: __("Type = Sale"),
       },
     ],
     primary_action_label: __("Prefill"),
@@ -68,49 +72,16 @@ async function prefill_from_pending_si(frm, pendingName) {
   const pd = await frappe.db.get_doc("Pending Document", pendingName);
 
   if (!frm.doc.posting_date && pd.ex_bill_date) {
-    await frm.set_value("posting_date", pd.ex_bill_date);
+    await frm.set_value("posting_date", pd.bill_date);
   }
-  if (!frm.doc.due_date && pd.ex_due_date) {
-    await frm.set_value("due_date", pd.ex_due_date);
+  if (!frm.doc.due_date && pd.due_date) {
+    await frm.set_value("due_date", pd.due_date);
   }
-  if (!frm.doc.bill_no && (pd.ex_bill_no || pd.bill_no) && frm.get_field("bill_no")) {
-    await frm.set_value("bill_no", pd.ex_bill_no || pd.bill_no);
+  if (!frm.doc.bill_no && (pd.bill_no || pd.bill_no) && frm.get_field("bill_no")) {
+    await frm.set_value("bill_no", pd.bill_no || pd.bill_no);
   }
   if ((pd.party_type || "").toLowerCase() === "customer" && pd.party && !frm.doc.customer) {
     await frm.set_value("customer", pd.party);
   }
 
-  const rows = Array.isArray(pd.ex_items) ? pd.ex_items : [];
-  const barcodes = rows.map(r => r.barcode).filter(Boolean);
-  let mapped = {};
-  if (barcodes.length) {
-    const res = await frappe.db.get_list("Item Barcode", {
-      filters: { barcode: ["in", barcodes] },
-      fields: ["barcode", "parent"],
-      limit: 1000,
-    });
-    for (const r of res) mapped[r.barcode] = r.parent;
-  }
-
-  let matched = 0, unmatched = 0;
-  for (const r of rows) {
-    const item_code = r.barcode ? mapped[r.barcode] : null;
-    const child = frm.add_child("items", {});
-    if (item_code) {
-      child.item_code = item_code;
-      matched++;
-    } else {
-      child.description = r.barcode ? __("Barcode: {0}", [r.barcode]) : __("No barcode");
-      unmatched++;
-    }
-    if (r.quantity) child.qty = r.quantity;
-    if (r.price) child.rate = r.price;
-    if (r.total) child.amount = r.total;
-  }
-  frm.refresh_field("items");
-
-  frappe.show_alert({
-    message: __("Prefilled items. Matched: {0}, Unmatched: {1}", [matched, unmatched]),
-    indicator: matched && !unmatched ? "green" : unmatched ? "orange" : "blue",
-  });
 }
