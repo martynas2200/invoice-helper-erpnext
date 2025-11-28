@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2025-11-28T00:00:00.000000",
+ "docstatus": 0,
+ "doctype": "DocType",
+ "document_type": "",
+ "engine": "InnoDB",
+ "field_order": [
+  "id_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "id_value",
+   "fieldtype": "Data",
+   "label": "ID Value",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "VAT code or business ID to ignore (e.g., 'LT112322334' or '498349874')"
+  }
+ ],
+ "hide_toolbar": 0,
+ "idx": 0,
+ "issingle": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-28T00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Invoice Helper",
+ "name": "OCR Ignored ID",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 0,
+ "read_only": 0,
+ "read_only_onload": 0,
+ "show_name_in_global_search": 0,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "sync_on_migrate": 1,
+ "title_field": "",
+ "track_changes": 0
+}

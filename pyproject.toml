@@ -1,5 +1,5 @@
 [project]
-name = "invoice_helper_lt"
+name = "invoice_helper"
 authors = [
     { name = "Martynas Miliauskas", email = "martin@ekranas.info"}
 ]
