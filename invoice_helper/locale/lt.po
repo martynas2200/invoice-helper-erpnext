@@ -147,6 +147,12 @@ msgstr "Klaida"
 msgid "Pending Document Extraction Item"
 msgstr "Laukiamo dokumento išgavimo eilutė"
 
+msgid "Textract Settings"
+msgstr "Textract nustatymai"
+
+msgid "OCR Settings"
+msgstr "OCR nustatymai"
+
 #: /Users/martin/frappe-bench/apps/invoice_helper_lt/invoice_helper_lt/invoice_helper_lt/doctype/pending_document/pending_document_list.js:56
 msgid "Add File from File List"
 msgstr "Pridėti failą iš failų sąrašo"
@@ -534,3 +540,43 @@ msgstr "Textract integracija nėra įgalinta. Prašome sukonfigūruoti ją Textr
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json:fields:0:description
 msgid "VAT code or business ID to ignore (e.g., 'LT112322334' or '498349874')"
 msgstr "Ignoruojamas PVM kodas arba įmonės ID (pvz., 'LT112322334' arba '498349874')"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:18
+msgid "Create Record"
+msgstr "Kurti įrašą"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/tasks.py:186
+msgid "Extraction failed with error:"
+msgstr "Išgavimas nepavyko dėl klaidos:"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:states:4:title
+msgid "Used"
+msgstr "Naudota"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:89
+msgid "Close"
+msgstr "Uždaryti"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:118
+msgid "Download"
+msgstr "Atsisiųsti
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:80
+msgid "Expand"
+msgstr "Išplėsti"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:86
+msgid "Open in new tab"
+msgstr "Atidaryti naujame skirtuke"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:117
+msgid "Preview not available"
+msgstr "Peržiūra negalima"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:25
+msgid "Show Drawer"
+msgstr "Rodyti stalčių"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:83
+msgid "Shrink"
+msgstr "Sutraukti"

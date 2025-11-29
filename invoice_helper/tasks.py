@@ -174,12 +174,18 @@ def extract_document(doc_name):
 		frappe.logger().info(f"Extraction task completed for Pending Document: {doc_name}")
 
 	except Exception as e:
-		frappe.logger().error(f"Error extracting Pending Document {doc_name}: {e!s}")
+		import traceback
+
+		error_traceback = traceback.format_exc()
+		frappe.logger().error(f"Error extracting Pending Document {doc_name}: {e!s}\n{error_traceback}")
 		# Update document status to indicate error
 		try:
 			pending_doc = frappe.get_doc("Pending Document", doc_name)
 			pending_doc.status = "Error"
-			pending_doc.error_message = str(e)
 			pending_doc.save(ignore_permissions=True)
+			# attach a comment with the error message and full stack trace
+			pending_doc.add_comment(
+				"Comment", f"{_('Extraction failed with error:')} {e!s}<br><pre>{error_traceback!s}</pre>"
+			)
 		except Exception as update_error:
 			frappe.logger().error(f"Failed to update error status: {update_error!s}")

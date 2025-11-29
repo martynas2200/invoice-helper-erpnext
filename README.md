@@ -1,6 +1,28 @@
-### Invoice Helper
+# Invoice Helper
 
-Manage uploads easier with a queue, and uses some APIs to help prefill the user the data.
+**NOTE: The app is in early development. Aimed for using for lithuanian invoices for now.**
+
+Invoice Helper is a document extraction helper built on Frappe that semi-automates invoice data extraction from PDFs. It leverages local OCR (Tesseract) and Amazon Textract to extract key invoice fields.
+
+## Core Functionality
+- Pending Document List: Queue-based workflow for tracking and processing uploaded invoices;
+- File upload endpoint (`/api/method/invoice_helper_lt.api.upload_pending_document`): which can be used to upload documents via API calls;
+- File Drawer: UI component to view uploaded document when filling in invoice form
+- Document Processing Pipeline: Extracts invoice data using local OCR (Tesseract) and Amazon Textract;
+- Party Matching: Automatically finds and links Suppliers/Customers based on Lithuanian tax codes and business IDs;
+- Background Task Processing: Handles asynchronous extraction of pending documents;
+- Textract Integration: User manually specifies which columns contain barcode, quantity, and price.
+<!-- - Tabula Support: Local table extraction available, though not fine-tuned -->
+
+
+## TODOs / Future Enhancements
+- [ ] More robust VAT amount extraction
+- [ ] Doctypes `Supplier`, `Customer` needs to have `business_code` field for party matching to work, so installation needs to create these fields if not present automatically.
+- [ ] Introduce a re setting, so a user can change the expected tax ID format per country
+- [ ] Date extraction robustness + compile a test corpus
+- [ ] Consider bringing in the line extraction OCR, and only suggest the user to use it if the totals completely match.
+- [ ] Dialog of prefill could be improved to show available options better (as in how many candidates or so)
+
 
 ### Installation
 

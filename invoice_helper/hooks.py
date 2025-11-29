@@ -27,8 +27,12 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/invoice_helper_lt/css/invoice_helper_lt.css"
-# app_include_js = "/assets/invoice_helper_lt/js/invoice_helper_lt.js"
+app_include_css = "/assets/invoice_helper/css/drawer.css"
+app_include_js = [
+	"/assets/invoice_helper/js/pending_file_drawer.js",
+	"/assets/invoice_helper/js/prefill_dialog.js",
+	"/assets/invoice_helper/js/split_dialog.js",
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/invoice_helper_lt/css/invoice_helper_lt.css"
@@ -48,7 +52,7 @@ app_license = "mit"
 doctype_js = {
 	"Purchase Invoice": "public/js/purchase_invoice.js",
 	"Sales Invoice": "public/js/sales_invoice.js",
-	"File": "public/js/file_split.js",
+	"File": "public/js/file.js",
 }
 
 # add custom actions on list view

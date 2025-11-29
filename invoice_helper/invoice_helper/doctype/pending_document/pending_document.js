@@ -5,19 +5,28 @@ frappe.ui.form.on("Pending Document", {
         // Ensure party_type is set based on type when form loads
         frm.add_custom_button(__("Preview File"), function () {
             frm.trigger("open_file_preview_modal");
-        })
-            .toggleClass("btn-default")
-            .toggleClass("btn-primary");
+        });
         frm.add_custom_button(__("Open File"), function () {
             frm.trigger("open_file_in_new_tab");
-        })
-            .toggleClass("btn-default")
-            .toggleClass("btn-secondary");
-
+        });
         if (!frm.doc.__islocal) {
             frm.add_custom_button(__("Split PDF"), function () {
-                frm.trigger("show_split_dialog");
+                invoice_helper.show_split_dialog(frm);
             });
+
+            if (
+                (frm.doc.type === "Purchase" || frm.doc.type === "Sale") &&
+                frm.doc.status !== "Used" &&
+                frm.doc.status !== "Error" &&
+                frm.doc.status !== "Pending" &&
+                frm.doc.status !== "Processing"
+            ) {
+                frm.add_custom_button(__("Create Record"), function () {
+                    frm.trigger("open_new_invoice");
+                })
+                    .removeClass("btn-default")
+                    .addClass("btn-secondary-dark");
+            }
         }
         // Auto-refresh if user waits on the page
         if (frm.doc.status === "Processing" || frm.doc.status === "Pending") {
@@ -224,113 +233,19 @@ frappe.ui.form.on("Pending Document", {
         }
     },
 
-    show_split_dialog(frm) {
-        if (!frm.doc.file) {
-            frappe.msgprint(__("No file found."));
-            return;
-        }
-
-        let dialog = new frappe.ui.Dialog({
-            title: __("Split PDF File"),
-            fields: [
-                {
-                    label: __("File"),
-                    fieldname: "file",
-                    fieldtype: "Link",
-                    options: "File",
-                    default: frm.doc.file,
-                    read_only: 1,
-                },
-                {
-                    label: __("Page Ranges"),
-                    fieldname: "page_ranges",
-                    fieldtype: "Data",
-                    description: __("Enter page ranges separated by commas. Example: 1-2,3,4-5"),
-                    reqd: 1,
-                },
-                {
-                    label: __("Output Folder"),
-                    fieldname: "output_folder",
-                    fieldtype: "Link",
-                    options: "File",
-                    description: __("Select folder where split PDFs will be saved (optional)"),
-                    get_query: function () {
-                        return {
-                            filters: {
-                                is_folder: 1,
-                            },
-                        };
-                    },
-                },
-                {
-                    label: __("Create Pending Documents"),
-                    fieldname: "create_pending_documents",
-                    fieldtype: "Check",
-                    default: 1,
-                    description: __(
-                        "If checked, creates Pending Document records for each split PDF."
-                    ),
-                },
-            ],
-            primary_action_label: __("Split PDF"),
-            primary_action(values) {
-                frappe.call({
-                    method: "invoice_helper.splitting.pdf.split_pdf_file",
-                    args: {
-                        file_name: values.file,
-                        page_ranges: values.page_ranges,
-                        output_folder: values.output_folder || null,
-                    },
-                    callback: function (r) {
-                        if (r.message && r.message.length > 0) {
-                            frappe.show_alert({
-                                message: __("PDF split successfully into {0} documents", [
-                                    r.message.length,
-                                ]),
-                                indicator: "green",
-                            });
-                            frm.set_value("status", "Split");
-                            frm.save();
-                            dialog.hide();
-                        }
-
-                        // Create Pending Document records
-                        if (values.create_pending_documents && r.message && r.message.length > 0) {
-                            r.message.forEach((file_name) => {
-                                frappe.call({
-                                    method: "frappe.client.insert",
-                                    args: {
-                                        doc: {
-                                            doctype: "Pending Document",
-                                            file: file_name,
-                                            status: "Pending",
-                                        },
-                                    },
-                                    callback: function (res) {
-                                        if (res.message) {
-                                            frappe.show_alert({
-                                                message: __("Pending Document created for {0}", [
-                                                    file_name,
-                                                ]),
-                                                indicator: "blue",
-                                            });
-                                        }
-                                    },
-                                });
-                            });
-                        }
-                    },
-                    error: function (r) {
-                        frappe.msgprint({
-                            title: __("Error"),
-                            message: __("An error occurred"),
-                            indicator: "red",
-                        });
-                    },
-                });
-            },
+    open_new_invoice(frm) {
+        const invoice_type = frm.doc.type === "Purchase" ? "Purchase Invoice" : "Sales Invoice";
+        const party_field = frm.doc.type === "Purchase" ? "supplier" : "customer";
+        // let route = `/app/${doctype_route}/new`;
+        // Open the new invoice form
+        frappe._pending_document = frm.doc.name;
+        frappe.new_doc(invoice_type, {
+            [party_field]: frm.doc.party,
+            bill_date: frm.doc.bill_date,
+            posting_time: "07:00:00",
+            edit_posting_date: 1,
+            bill_no: frm.doc.bill_no,
+            due_date: frm.doc.due_date,
         });
-
-        dialog.show();
     },
 });

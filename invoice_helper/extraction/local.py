@@ -5,13 +5,13 @@ Prioritized fields:
 [*] Bill number
 [ ] VAT amount
 
-This module contains local/custom extraction methods that can be used
+This module contains local extraction methods that can be used
 as fallbacks or alternatives to external APIs.
 """
 
 import os
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 import frappe
 import pytesseract
@@ -135,7 +135,7 @@ def extract_invoice_number(text: str) -> str | None:
 
 	matches = []
 
-	for pattern in enumerate(patterns):
+	for pattern in patterns:
 		found = re.findall(pattern, text, re.IGNORECASE)  # Case-insensitive
 		if found:
 			if isinstance(found[0], tuple):
@@ -217,7 +217,7 @@ def extract_totals(texts: list, coordinates: list | None) -> dict:
 					vat_labels.append((i, coordinates[i]))
 					print(f"-> Found VAT label: {text} at index {i} with coords {coordinates[i]}")
 			# For each found label, look for nearest text below it
-			for label_idx, label_coord in enumerate(vat_labels):
+			for label_idx, label_coord in vat_labels:
 				label_x0, label_y0, label_x1, label_y1 = label_coord
 				nearest_below = None
 				nearest_distance = float("inf")
@@ -377,9 +377,9 @@ def extract_invoice_date(header_joined: str, due_date=None, freshness_days: int 
 				found_candidates.append(dt_obj)
 
 	# Apply freshness filter
-	# if found_candidates:
-	#     cutoff = date.today() - timedelta(days=freshness_days)
-	#     found_candidates = [c for c in found_candidates if c >= cutoff]
+	if found_candidates:
+		cutoff = date.today() - timedelta(days=freshness_days)
+		found_candidates = [c for c in found_candidates if c >= cutoff]
 	logger.debug(f" Invoice date candidates found: {[c.strftime('%Y-%m-%d') for c in found_candidates]}")
 	return found_candidates[0].strftime("%Y-%m-%d") if found_candidates else None
 
