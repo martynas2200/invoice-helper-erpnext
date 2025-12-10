@@ -96,7 +96,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Status",
-   "options": "Pending\nProcessing\nSplit\nExtracted\nUsed\nError",
+   "options": "Pending\nProcessing\nSplit\nExtracted\nUsed\nMoved\nError",
    "reqd": 1
   },
   {
@@ -286,8 +286,12 @@
    "title": "Extracted"
   },
   {
-   "color": "Green",
+   "color": "Grey",
    "title": "Used"
+  },
+  {
+   "color": "Grey",
+   "title": "Moved"
   },
   {
    "color": "Red",

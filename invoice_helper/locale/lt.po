@@ -137,6 +137,9 @@ msgstr "Apdorojama"
 msgid "Split"
 msgstr "Padalinta"
 
+msgid "Moved"
+msgstr "Perkelta"
+
 msgid "Extracted"
 msgstr "Išgauta"
 

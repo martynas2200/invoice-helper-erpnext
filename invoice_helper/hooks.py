@@ -32,6 +32,7 @@ app_include_js = [
 	"/assets/invoice_helper/js/pending_file_drawer.js",
 	"/assets/invoice_helper/js/prefill_dialog.js",
 	"/assets/invoice_helper/js/split_dialog.js",
+	"/assets/invoice_helper/js/move_dialog.js",
 ]
 
 # include js, css files in header of web template

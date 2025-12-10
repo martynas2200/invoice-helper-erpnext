@@ -2,9 +2,8 @@ frappe.provide("invoice_helper");
 
 invoice_helper.after_save_hook = async function (frm) {
     await new Promise((resolve) => setTimeout(resolve, 500));
-    await attach_pending_document_file(frm, frm._pending_file);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    await mark_pending_document_as_used(frm._pending_document);
+    await invoice_helper.attach_pending_document_file(frm, frm._pending_file);
+    frappe.db.set_value("Pending Document", frm._pending_document, "status", "Used");
     // Clear the flag so we don't attach again on subsequent saves
     frm._pending_file = null;
 };
@@ -467,35 +466,51 @@ function extractMappedRows(table, columnMapping) {
     return rows;
 }
 
+invoice_helper.attach_pending_document_file_to_form = async (frm, pendingFile) => {
+    const doctype = frm.doc.doctype;
+    const docname = frm.doc.name;
+    const r = await invoice_helper.attach_pending_document_file(pendingFile, doctype, docname);
+    if (r.message) {
+        frm.attachments.attachment_uploaded(r.message);
+        console.log("File attached successfully:", r.message);
+        frappe.show_alert({
+            message: __("File attached"),
+            indicator: "green",
+        });
+    }
+};
+
 // We could use predefined frappe methods to attach files
 // However, it is always "Home/Attachments" folder which is not desired
 // Therefore, we make a custom implementation here
-async function attach_pending_document_file(frm, pendingFile) {
+invoice_helper.attach_pending_document_file = async (pendingFile, doctype, docname) => {
     try {
         const fileDoc = await frappe.db.get_doc("File", pendingFile);
 
         if (fileDoc) {
             // POST /api/method/upload_file
-            const attachment = {
-                is_private: fileDoc.is_private,
-                folder: fileDoc.folder,
-                library_file_name: fileDoc.name,
-                doctype: frm.doc.doctype,
-                docname: frm.doc.name,
-            };
-            frappe.call({
-                method: "frappe.handler.upload_file",
-                args: attachment,
-                callback: (r) => {
-                    if (r.message) {
-                        frm.attachments.attachment_uploaded(fileDoc);
-                        console.log("File attached successfully:", r.message);
-                        frappe.show_alert({
-                            message: __("File attached"),
-                            indicator: "green",
-                        });
-                    }
-                },
+            return new Promise((resolve, reject) => {
+                frappe.call({
+                    method: "frappe.handler.upload_file",
+                    args: {
+                        is_private: fileDoc.is_private,
+                        folder: fileDoc.folder,
+                        library_file_name: fileDoc.name,
+                        doctype: doctype,
+                        docname: docname,
+                    },
+                    callback: (r) => {
+                        if (r.message) {
+                            console.log("File attached successfully:", r.message);
+                            resolve(r);
+                        } else {
+                            reject(new Error("No message in response"));
+                        }
+                    },
+                    error: (r) => {
+                        reject(new Error(r.message || "Unknown error"));
+                    },
+                });
             });
         } else {
             frappe.msgprint({
@@ -503,6 +518,7 @@ async function attach_pending_document_file(frm, pendingFile) {
                 message: __("Could not find File document: {0}", [pendingFile]),
                 indicator: "red",
             });
+            throw new Error("File not found: " + pendingFile);
         }
     } catch (err) {
         console.error("Error attaching file:", err);
@@ -510,21 +526,61 @@ async function attach_pending_document_file(frm, pendingFile) {
             message: __("Could not attach file from Pending Document: {0}", [err.message]),
             indicator: "orange",
         });
+        throw err;
     }
-}
+};
 
-async function mark_pending_document_as_used(pendingName) {
-    try {
-        await frappe.call({
-            method: "frappe.client.set_value",
-            args: {
-                doctype: "Pending Document",
-                name: pendingName,
-                fieldname: { status: "Used" },
+invoice_helper.show_move_file_dialog = function (pendingFile) {
+    if (!pendingFile) return;
+
+    const d = new frappe.ui.Dialog({
+        title: __("Attach File to Invoice"),
+        fields: [
+            {
+                fieldname: "invoice_type",
+                label: __("Invoice Type"),
+                fieldtype: "Select",
+                options: [
+                    { label: __("Purchase Invoice"), value: "Purchase Invoice" },
+                    { label: __("Sales Invoice"), value: "Sales Invoice" },
+                ],
+                default: "Purchase Invoice",
+                reqd: 1,
+                onchange: () => {
+                    const invoiceType = d.get_value("invoice_type");
+                    d.fields_dict.invoice.df.options = invoiceType;
+                    d.fields_dict.invoice.refresh();
+                    d.set_value("invoice", "");
+                },
             },
-        });
-        console.debug("Pending Document marked as Used:", pendingName);
-    } catch (err) {
-        console.error("Error marking pending document as used:", err);
-    }
-}
+            {
+                fieldname: "invoice",
+                label: __("Invoice"),
+                fieldtype: "Link",
+                options: "Purchase Invoice",
+                get_query: () => ({
+                    filters: { docstatus: 0 },
+                }),
+                reqd: 1,
+            },
+        ],
+        primary_action_label: __("Attach"),
+        primary_action: async (values) => {
+            if (!values?.invoice || !values?.invoice_type) return;
+            d.hide();
+            const r = await invoice_helper.attach_pending_document_file(
+                pendingFile,
+                values.invoice_type,
+                values.invoice
+            );
+            if (r.message) {
+                frappe.show_alert({
+                    message: __("File attached successfully"),
+                    indicator: "green",
+                });
+            }
+        },
+    });
+
+    d.show();
+};

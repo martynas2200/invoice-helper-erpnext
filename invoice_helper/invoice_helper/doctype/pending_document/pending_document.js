@@ -3,12 +3,27 @@ frappe.ui.form.on("Pending Document", {
         frm.trigger("update_file_preview");
         frm.trigger("toggle_party_field");
         // Ensure party_type is set based on type when form loads
-        frm.add_custom_button(__("Preview File"), function () {
-            frm.trigger("open_file_preview_modal");
-        });
-        frm.add_custom_button(__("Open File"), function () {
-            frm.trigger("open_file_in_new_tab");
-        });
+        frm.add_custom_button(
+            __("Preview File"),
+            function () {
+                frm.trigger("open_file_preview_modal");
+            },
+            __("File")
+        );
+        frm.add_custom_button(
+            __("Open File"),
+            function () {
+                frm.trigger("open_file_in_new_tab");
+            },
+            __("File")
+        );
+        frm.add_custom_button(
+            __("Move"),
+            function () {
+                frm.trigger("move_file");
+            },
+            __("File")
+        );
         if (!frm.doc.__islocal) {
             frm.add_custom_button(__("Split PDF"), function () {
                 invoice_helper.show_split_dialog(frm);
@@ -16,10 +31,7 @@ frappe.ui.form.on("Pending Document", {
 
             if (
                 (frm.doc.type === "Purchase" || frm.doc.type === "Sale") &&
-                frm.doc.status !== "Used" &&
-                frm.doc.status !== "Error" &&
-                frm.doc.status !== "Pending" &&
-                frm.doc.status !== "Processing"
+                frm.doc.status == "Extracted"
             ) {
                 frm.add_custom_button(__("Create Record"), function () {
                     frm.trigger("open_new_invoice");
@@ -207,6 +219,14 @@ frappe.ui.form.on("Pending Document", {
                 }
             },
         });
+    },
+
+    move_file(frm) {
+        if (!frm.doc.file) {
+            frappe.msgprint(__("Please select a file first"));
+            return;
+        }
+        invoice_helper.show_move_file_dialog(frm.doc.name, frm.doc.file);
     },
 
     setup_auto_refresh(frm) {
