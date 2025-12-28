@@ -1,45 +1,43 @@
 from datetime import datetime
 
 import frappe
+from frappe.core.api.file import create_new_folder
+from frappe.share import add_docshare
 
 
 def get_or_create_folder(folder_path: str) -> str:
-	"""Get or create a folder by path.
+	"""Get or create a folder by path using Frappe's File model.
 
-	Args:
-	    folder_path: Path like "Home/2025/November" or "Home/2025/11"
-
-	Returns:
-	    The folder name (path)
+	The returned value is the *name* of the final File folder document,
+	which in practice is the full folder path (e.g. "Home/2025/11").
 	"""
-	parts = folder_path.split("/")
-	current_path = ""
+	parts = [p for p in folder_path.split("/") if p]
+	if not parts:
+		frappe.throw("Invalid folder path")
 
-	for part in parts:
-		if not part:
+	# Ensure root folder exists (e.g. "Home").
+	current_name = parts[0]
+	if not frappe.db.exists("File", {"name": current_name, "is_folder": 1}):
+		frappe.get_doc({"doctype": "File", "file_name": current_name, "is_folder": 1}).insert(
+			ignore_if_duplicate=True, ignore_permissions=True
+		)
+
+	# Create intermediate folders under the current parent as needed.
+	for part in parts[1:]:
+		existing = frappe.get_all(
+			"File",
+			filters={"file_name": part, "folder": current_name, "is_folder": 1},
+			fields=["name"],
+			limit=1,
+		)
+		if existing:
+			current_name = existing[0].name
 			continue
 
-		if current_path:
-			current_path += "/" + part
-		else:
-			current_path = part
+		folder_doc = create_new_folder(part, current_name)
+		current_name = folder_doc.name
 
-		# Check if folder exists
-		existing = frappe.get_all("File", filters={"file_name": current_path, "is_folder": 1}, limit=1)
-
-		if not existing:
-			# Create folder
-			folder_doc = frappe.get_doc(
-				{
-					"doctype": "File",
-					"file_name": current_path,
-					"is_folder": 1,
-					"folder": current_path.rsplit("/", 1)[0] if "/" in current_path else "Home",
-				}
-			)
-			folder_doc.insert(ignore_permissions=True)
-
-	return current_path
+	return current_name
 
 
 def get_year_month_folder() -> str:
@@ -75,7 +73,6 @@ def upload_pending_document() -> dict:
 
 	content = uploaded.read() if hasattr(uploaded, "read") else uploaded.stream.read()
 
-	content = uploaded.read() if hasattr(uploaded, "read") else uploaded.stream.read()
 	if not content:
 		frappe.throw("Uploaded file is empty")
 
@@ -102,8 +99,16 @@ def upload_pending_document() -> dict:
 		}
 	).insert(ignore_permissions=True)
 
+	# Attach the file to the Pending Document so its permissions
+	# follow the document's permissions (required for downloads).
+	# NOTE: /home/frappe/frappe-bench/apps/frappe/frappe/utils/response.py download_private_file blocks access otherwise. Might need to remove the second check if we want all logged-in users to access.
+	file_doc.attached_to_doctype = "Pending Document"
+	file_doc.attached_to_name = pending.name
+	file_doc.attached_to_field = "file"
+	file_doc.save(ignore_permissions=True)
+
 	# Attach a comment if the file size is above 5 MB
-	if content_length > 5 * 1024 * 1024:
+	if content_length and content_length > 5 * 1024 * 1024:
 		pending.add_comment("Info", "Large file uploaded (>5 MB). Processing might take longer than usual.")
 
 	return {

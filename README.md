@@ -34,6 +34,17 @@ bench get-app $URL_OF_THIS_REPO --branch develop
 bench install-app invoice_helper
 ```
 
+This app relies on a few system-level tools for PDF/OCR processing. Make sure these are installed and
+available in your `PATH` on the machine or container running Frappe:
+
+- Poppler utilities (for `pdf2image`, e.g. `pdftoppm`)
+- Tesseract OCR (for local OCR extraction)
+
+For example:
+
+- macOS (Homebrew): `brew install poppler tesseract`
+- Debian/Ubuntu: `apt-get update && apt-get install -y poppler-utils tesseract-ocr`
+
 ### Contributing
 
 This app uses `pre-commit` for code formatting and linting. Please [install pre-commit](https://pre-commit.com/#installation) and enable it for this repository:
