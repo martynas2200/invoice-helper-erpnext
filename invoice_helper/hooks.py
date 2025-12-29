@@ -280,5 +280,5 @@ def enqueue_extraction_task(doc, method):
 		"invoice_helper.tasks.extract_document",
 		doc_name=doc.name,
 		queue="default",
-		timeout=300,  # 5 minutes timeout
+		timeout=1800,
 	)

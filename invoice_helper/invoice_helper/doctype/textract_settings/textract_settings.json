@@ -6,13 +6,15 @@
  "doctype": "DocType",
  "document_type": "",
  "engine": "InnoDB",
- "field_order": [
-  "aws_access_key",
-  "aws_secret_key",
-  "region",
-  "enabled"
- ],
- "fields": [
+    "field_order": [
+     "aws_access_key",
+     "aws_secret_key",
+     "region",
+     "enabled",
+     "s3_bucket",
+     "s3_prefix"
+    ],
+    "fields": [
   {
    "fieldname": "aws_access_key",
    "fieldtype": "Data",
@@ -37,6 +39,20 @@
    "fieldtype": "Check",
    "label": "Enable Textract Integration",
    "default": 0
+     },
+     {
+        "fieldname": "s3_bucket",
+        "fieldtype": "Data",
+        "label": "S3 Bucket",
+        "reqd": 1,
+        "description": "Name of the S3 bucket used for Textract input documents."
+     },
+     {
+        "fieldname": "s3_prefix",
+        "fieldtype": "Data",
+        "label": "S3 Prefix",
+        "reqd": 0,
+        "description": "Optional folder/prefix inside the S3 bucket for uploaded documents."
   }
  ],
  "hide_toolbar": 0,

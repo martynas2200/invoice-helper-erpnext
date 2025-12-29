@@ -583,3 +583,7 @@ msgstr "Rodyti stalčių"
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/pending_file_drawer.js:83
 msgid "Shrink"
 msgstr "Sutraukti"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js
+msgid "Could not attach file from Pending Document: {0}"
+msgstr "Nepavyko prisegti failo iš laukiančio dokumento: {0}"

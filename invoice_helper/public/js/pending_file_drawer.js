@@ -80,12 +80,12 @@ invoice_helper.PendingFileDrawer = class PendingFileDrawer {
                         <button class="btn btn-xs btn-default drawer-expand-btn" title="${__(
                             "Expand"
                         )}">
-                            <svg class="icon icon-sm"><use href="#icon-move-horizontal"></use></svg>
+                            <svg class="icon icon-sm"><use href="#icon-arrow-left"></use></svg>
                         </button>
                         <button class="btn btn-xs btn-default drawer-shrink-btn" title="${__(
                             "Shrink"
                         )}">
-                            <svg class="icon icon-sm"><use href="#icon-right"></use></svg>
+                            <svg class="icon icon-sm"><use href="#icon-arrow-right"></use></svg>
                         </button>
                         <button class="btn btn-xs btn-default drawer-open-btn" title="${__(
                             "Open in new tab"

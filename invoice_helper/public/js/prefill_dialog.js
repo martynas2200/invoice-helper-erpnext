@@ -1,11 +1,27 @@
 frappe.provide("invoice_helper");
 
 invoice_helper.after_save_hook = async function (frm) {
+    // Only proceed if there is a pending file to attach
+    if (!frm || !frm._pending_file) {
+        return;
+    }
+
+    // Small delay to ensure the document is fully saved and named
     await new Promise((resolve) => setTimeout(resolve, 500));
-    await invoice_helper.attach_pending_document_file(frm, frm._pending_file);
-    frappe.db.set_value("Pending Document", frm._pending_document, "status", "Used");
-    // Clear the flag so we don't attach again on subsequent saves
+
+    // Capture and clear the flag early to avoid repeated attachments
+    const pendingFile = frm._pending_file;
     frm._pending_file = null;
+
+    try {
+        await invoice_helper.attach_pending_document_file_to_form(frm, pendingFile);
+
+        if (frm._pending_document) {
+            await frappe.db.set_value("Pending Document", frm._pending_document, "status", "Used");
+        }
+    } catch (err) {
+        console.error("Error in invoice_helper.after_save_hook:", err);
+    }
 };
 
 invoice_helper.prefill_from_pending_dialog = function (
@@ -52,7 +68,7 @@ invoice_helper.prefill_from_pending_dialog = function (
                 ),
             },
         ],
-        primary_action_label: "Prefill",
+        primary_action_label: __("Prefill"),
         primary_action: async (values) => {
             if (!values?.pending) return;
             d.hide();
@@ -467,8 +483,11 @@ function extractMappedRows(table, columnMapping) {
 }
 
 invoice_helper.attach_pending_document_file_to_form = async (frm, pendingFile) => {
-    const doctype = frm.doc.doctype;
-    const docname = frm.doc.name;
+    if (!frm || !pendingFile) return;
+
+    const doctype = frm.doctype || frm.doc.doctype;
+    const docname = frm.docname || frm.doc.name;
+
     const r = await invoice_helper.attach_pending_document_file(pendingFile, doctype, docname);
     if (r.message) {
         frm.attachments.attachment_uploaded(r.message);

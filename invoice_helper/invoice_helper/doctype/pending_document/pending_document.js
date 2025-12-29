@@ -230,14 +230,24 @@ frappe.ui.form.on("Pending Document", {
     },
 
     setup_auto_refresh(frm) {
+        // Clear any existing interval on this form
         if (frm._auto_refresh_interval) {
             clearInterval(frm._auto_refresh_interval);
         }
 
-        frm._auto_refresh_interval = setInterval(() => {
+        // Also clear any global interval in case it was left behind
+        if (window.pending_document_auto_refresh_interval) {
+            clearInterval(window.pending_document_auto_refresh_interval);
+            window.pending_document_auto_refresh_interval = null;
+        }
+
+        const interval_id = setInterval(() => {
             frm.reload_doc();
             frm.trigger("status");
         }, 3000);
+
+        frm._auto_refresh_interval = interval_id;
+        window.pending_document_auto_refresh_interval = interval_id;
     },
 
     status(frm) {
@@ -269,3 +279,15 @@ frappe.ui.form.on("Pending Document", {
         });
     },
 });
+
+// Ensure auto-refresh is stopped when navigating away from the Pending Document form
+if (!window.__pending_document_router_cleanup__) {
+    frappe.router.on("change", () => {
+        if (window.pending_document_auto_refresh_interval) {
+            clearInterval(window.pending_document_auto_refresh_interval);
+            window.pending_document_auto_refresh_interval = null;
+        }
+    });
+
+    window.__pending_document_router_cleanup__ = true;
+}

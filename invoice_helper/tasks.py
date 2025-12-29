@@ -17,12 +17,12 @@ def find_party_by_tax_or_business_id(tax_code, business_code, party_type):
 	2. If not found, tries to match by business_code
 
 	Args:
-		tax_code: VAT/Tax code of the party
-		business_code: Business code of the party
-		party_type: Either "Supplier" or "Customer"
+	    tax_code: VAT/Tax code of the party
+	    business_code: Business code of the party
+	    party_type: Either "Supplier" or "Customer"
 
 	Returns:
-		str: Name of the matching document, or None if not found
+	    str: Name of the matching document, or None if not found
 	"""
 	if not party_type or party_type not in ["Supplier", "Customer"]:
 		return None
@@ -64,7 +64,7 @@ def extract_document(doc_name):
 	and updating the document with extracted data.
 
 	Args:
-		doc_name: Name of the Pending Document to extract
+	    doc_name: Name of the Pending Document to extract
 	"""
 	try:
 		# Fetch the pending document
@@ -72,6 +72,9 @@ def extract_document(doc_name):
 
 		pending_doc.update({"status": "Processing"})
 		pending_doc.save(ignore_permissions=True)
+		# Commit early so we don't hold locks while doing long-running extraction
+		frappe.db.commit()
+		frappe.db.commit()
 
 		# Get file path from the linked file
 		if not pending_doc.file:
@@ -109,7 +112,9 @@ def extract_document(doc_name):
 			except Exception as textract_error:
 				frappe.logger().warning(f"Textract extraction failed: {textract_error!s}")
 				# add comment to pending document
-				pending_doc.add_comment(f"{_('Amazon Textract extraction failed.')} <br>{textract_error!s}")
+				pending_doc.add_comment(
+					"Comment", f"{_('Amazon Textract extraction failed.')} <br>{textract_error!s}"
+				)
 				# Continue processing even if Textract fails
 		if isinstance(invoice_data.get("bill_no"), list):
 			invoice_data["bill_no"] = ",".join(invoice_data["bill_no"])
@@ -167,6 +172,7 @@ def extract_document(doc_name):
 		extracted_data["status"] = "Extracted"
 		pending_doc.update(extracted_data)
 		pending_doc.save(ignore_permissions=True)
+		frappe.db.commit()
 
 		frappe.msgprint("Document extraction done!", indicator="green")
 
@@ -183,6 +189,7 @@ def extract_document(doc_name):
 			pending_doc = frappe.get_doc("Pending Document", doc_name)
 			pending_doc.status = "Error"
 			pending_doc.save(ignore_permissions=True)
+			frappe.db.commit()
 			# attach a comment with the error message and full stack trace
 			pending_doc.add_comment(
 				"Comment", f"{_('Extraction failed with error:')} {e!s}<br><pre>{error_traceback!s}</pre>"
