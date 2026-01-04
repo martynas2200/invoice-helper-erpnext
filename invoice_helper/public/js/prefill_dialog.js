@@ -194,6 +194,7 @@ async function prefill_from_pending(
             if (r.quantity) child.qty = r.quantity;
             if (r.price) child.rate = r.price;
             if (r.total) child.amount = r.total; // ERPNext will recompute on save
+            child.original_price = r.price; // Store original extracted price
         }
     }
     frm.refresh_field("items");
@@ -546,6 +547,39 @@ invoice_helper.attach_pending_document_file = async (pendingFile, doctype, docna
             indicator: "orange",
         });
         throw err;
+    }
+};
+invoice_helper.restore_prefilled_rates = function (frm) {
+    if (!frm || !frm.doc.items) {
+        frappe.show_alert({
+            message: __("No items to restore"),
+            indicator: "orange",
+        });
+        return;
+    }
+
+    let restored = 0;
+    frm.doc.items.forEach((item) => {
+        if (item.original_price !== undefined && item.original_price !== null) {
+            if (item.rate !== item.original_price) {
+                item.rate = item.original_price;
+                restored++;
+            }
+        }
+    });
+
+    frm.refresh_field("items");
+
+    if (restored > 0) {
+        frappe.show_alert({
+            message: __("Restored {0} item price(s) to original extraction value", [restored]),
+            indicator: "green",
+        });
+    } else {
+        frappe.show_alert({
+            message: __("No price changes detected"),
+            indicator: "blue",
+        });
     }
 };
 

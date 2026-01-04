@@ -3,15 +3,11 @@
 
 frappe.ui.form.on("Purchase Invoice", {
     async refresh(frm) {
-        // frm.get_docinfo().attachments = [];
-        console.log(frm.attachments);
         if (frappe._pending_document) {
             // delete the global variable to avoid re-triggering
             const pendingDoc = frappe._pending_document;
             frappe._pending_document = null;
             await invoice_helper.prefill_from_pending_dialog(frm, "Purchase", pendingDoc);
-            // remove css rules for btn-secondary-dark
-            return;
         }
         const button = frm.add_custom_button(__("Prefill from Pending Document"), () =>
             invoice_helper.prefill_from_pending_dialog(frm, "Purchase")
@@ -21,6 +17,10 @@ frappe.ui.form.on("Purchase Invoice", {
         } else {
             button.removeClass("btn-secondary-dark").addClass("btn-default");
         }
+
+        frm.add_custom_button(__("Restore prefilled rates"), () => {
+            invoice_helper.restore_prefilled_rates(frm);
+        });
 
         // Show pending file drawer if a file is pending
         if (frm._pending_file && invoice_helper?.show_pending_file_drawer) {

@@ -1,0 +1,13 @@
+{
+  "doctype": "Custom Field",
+  "name": "Sales Invoice Item-original_price",
+  "dt": "Sales Invoice Item",
+  "fieldname": "original_price",
+  "fieldtype": "Currency",
+  "label": "Original Price (Extracted)",
+  "insert_after": "rate",
+  "hidden": 1,
+  "read_only": 1,
+  "description": "Original extracted price from the document. Used to restore prices if modified.",
+  "precision": 6
+}
