@@ -8,6 +8,9 @@ frappe.ui.form.on("Sales Invoice", {
             // remove css rules for btn-secondary-dark
             return;
         }
+        if (frm.doc.docstatus == 1 || frm.doc.docstatus == 2) {
+            return;
+        }
         if (frm.is_new()) {
             frm.add_custom_button("Prefill from Pending Document", () =>
                 invoice_helper.prefill_from_pending_dialog(frm, "Sale")
