@@ -102,32 +102,21 @@ async function prefill_from_pending(
 
         await frm.set_value("set_posting_time", 1);
         await frm.set_value("posting_time", "07:00:00");
-        if (!frm.doc.set_posting_time && pd.bill_date) {
+        if (!frm.doc.bill_date && pd.bill_date && frm.doctype === "Purchase Invoice") {
             // check if the date is not older than 30 days
             const billDate = frappe.datetime.str_to_obj(pd.bill_date);
             const today = new Date();
             const diffTime = Math.abs(today - billDate);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            // TODO: too much nesting, refactor
-            if (diffDays > 30) {
-                if (frm.doctype === "Purchase Invoice") {
-                    await frm.set_value("bill_date", pd.bill_date);
-                }
+            if (diffDays < 30) {
+                await frm.set_value("bill_date", pd.bill_date);
                 await frm.set_value("posting_date", pd.bill_date);
             }
         }
 
         if (!frm.doc.due_date && pd.due_date) {
             await frm.set_value("due_date", pd.due_date);
-        } else if (!frm.doc.due_date) {
-            // add 1 month to posting date
-            const postingDate = frm.doc.posting_date
-                ? frappe.datetime.str_to_obj(frm.doc.posting_date)
-                : new Date();
-            postingDate.setMonth(postingDate.getMonth() + 1);
-            await frm.set_value("due_date", frappe.datetime.obj_to_str(postingDate));
         }
-
         if ((pd.party_type || "").toLowerCase() === "supplier" && pd.party && !frm.doc.supplier) {
             await frm.set_value("supplier", pd.party);
         } else if (

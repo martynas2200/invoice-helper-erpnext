@@ -8,7 +8,7 @@ from invoice_helper.extraction.tabula import extract_tables_from_pdf
 from invoice_helper.extraction.textract import get_textract_extractor, is_textract_enabled
 
 
-def find_party_by_tax_or_business_id(tax_code, business_code, party_type):
+def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supplier"):
 	"""
 	Find a Supplier or Customer based on tax code and business ID.
 
@@ -133,16 +133,18 @@ def extract_document(doc_name):
 
 		# Try to find and set the party (Supplier/Customer) based on tax code and business ID
 		tax_code = invoice_data.get("supplier_vat")
-		business_id = invoice_data.get("supplier_id")
+		business_code = invoice_data.get("supplier_id")
 		party_type = pending_doc.party_type or "Supplier"
+		if party_type not in ["Supplier", "Customer"]:
+			party_type = "Supplier"
 
-		party = find_party_by_tax_or_business_id(tax_code, business_id, party_type)
+		party = find_party_by_tax_or_business_code(tax_code, business_code, party_type)
 		if party:
 			extracted_data["party"] = party
 			frappe.logger().info(f"Matched party: {party_type} - {party}")
 		else:
 			frappe.logger().warning(
-				f"Could not match {party_type} for tax_code={tax_code}, business_id={business_id}"
+				f"Could not match {party_type} for tax_code={tax_code}, business_code={business_code}"
 			)
 		# Format barcodes from line items into Pending Document Barcode table
 		if invoice_data.get("re_barcodes"):
