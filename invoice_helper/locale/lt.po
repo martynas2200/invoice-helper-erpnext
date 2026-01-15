@@ -268,6 +268,10 @@ msgstr "Automatiškai užpildoma pagal dokumento tipą (neprivaloma vidiniams do
 msgid "Barcodes Only"
 msgstr "Tik brūkšniniai kodai"
 
+#: /Users/martin/frappe-bench/apps/invoice_helper_lt/invoice_helper_lt/public/js/purchase_invoice.js:134
+msgid "Used {0}. Items - Matched: {1}, Unmatched: {2}"
+msgstr "Naudota {0}. Prekės - surasta: {1}, nesurasta: {2}"
+
 #: /Users/martin/frappe-bench/apps/invoice_helper_lt/invoice_helper_lt/invoice_helper_lt/doctype/pending_document/pending_document.json:fields:32:description
 msgid "Barcodes found in the document"
 msgstr "Brūkšniniai kodai, rasti dokumente"
@@ -596,3 +600,56 @@ msgstr "Kainų pokyčių nepastebėta"
 
 msgid "Restored {0} item price(s) to original extraction value"
 msgstr "Atkurta {0} prekės(-ių) kaina į pradinę išgavimo reikšmę"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:37
+msgid "Attach"
+msgstr ""
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:7
+msgid "Attach File to Invoice"
+msgstr "Prisegti failą prie sąskaitos"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:48
+msgid "File attached successfully"
+msgstr "Failas sėkmingai prisegtas"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:545
+msgid "File not found"
+msgstr "Failas nerastas"
+
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:21
+msgid "Move"
+msgstr "Perkelti"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:fields:4:description
+msgid "Name of the S3 bucket used for Textract input documents."
+msgstr "Pavadinimas S3 kibirėlio, naudojamo Textract įvesties dokumentams."
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:563
+msgid "No items to restore"
+msgstr "Nėra prekių, kurias būtų galima atkurti"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:fields:5:description
+msgid "Optional folder/prefix inside the S3 bucket for uploaded documents."
+msgstr "Pasirinktinis aplankas/prefixas S3 kibirėlyje įkeltiesiems dokumentams."
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/fixtures/custom_field_purchase_invoice_item_original_price.json:label
+msgid "Original Price (Extracted)"
+msgstr "Originali kaina (išgauta)"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/fixtures/custom_field_purchase_invoice_item_original_price.json:description
+msgid "Original extracted price from the document. Used to restore prices if modified."
+msgstr "Pradinė išgauta kaina iš dokumento. Naudojama kainoms atkurti, jei jos buvo pakeistos."
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:fields:4:label
+msgid "S3 Bucket"
+msgstr "S3 kibirėlis"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:fields:5:label
+msgid "S3 Prefix"
+msgstr "S3 prefiksas"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/extraction/textract.py:63
+msgid "Textract S3 bucket is not configured. Please set 's3_bucket' in Textract Settings."
+msgstr "Textract S3 kibirėlis nėra sukonfigūruotas. Prašome nustatyti 's3_bucket' Textract nustatymuose."

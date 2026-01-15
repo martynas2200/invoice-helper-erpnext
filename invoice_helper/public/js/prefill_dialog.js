@@ -30,6 +30,11 @@ invoice_helper.prefill_from_pending_dialog = function (
     pendingName = null
 ) {
     if (!frm) return;
+
+    if (frm._pending_document) {
+        pendingName = frm._pending_document;
+    }
+
     const d = new frappe.ui.Dialog({
         title: __("Prefill from Pending Document"),
         fields: [
@@ -208,11 +213,26 @@ async function prefill_from_pending(
         indicator: matched && !unmatched ? "green" : unmatched ? "orange" : "blue",
     });
 }
+
 function extractBarcodeFromText(text) {
     // Look for 7, 8, 12, or 13 consecutive digits
-    // Can be embedded in text like "Milk 330ml 5900512300481 Poland"
-    const barcodeMatch = text.match(/\b(\d{7,8}|\d{12,13})\b/);
-    return barcodeMatch ? barcodeMatch[1] : null;
+    // Can be embedded in text like "text": "Milk 330ml 5900512300481 Poland"
+    // Also handle line breaks within barcodes like "477005816 0327"
+
+    let barcodeMatch = text.match(/\b(\d{7,8}|\d{12,13})\b/);
+    if (barcodeMatch) {
+        return barcodeMatch[1];
+    }
+
+    const spacedMatch = text.match(/(\d{1,12})\s+(\d{1,12})/);
+    if (spacedMatch) {
+        const combined = spacedMatch[1] + spacedMatch[2];
+        if (combined.match(/^(\d{7,8}|\d{12,13})$/)) {
+            return combined;
+        }
+    }
+
+    return null;
 }
 
 function detectColumnType(values, headerText = "") {

@@ -12,18 +12,19 @@ frappe.ui.form.on("Purchase Invoice", {
         if (frm.doc.docstatus == 1 || frm.doc.docstatus == 2) {
             return;
         }
-        const button = frm.add_custom_button(__("Prefill from Pending Document"), () =>
-            invoice_helper.prefill_from_pending_dialog(frm, "Purchase")
+        const button = frm.add_custom_button(
+            __("Prefill from Pending Document"),
+            () => invoice_helper.prefill_from_pending_dialog(frm, "Purchase"),
+            __("Invoice Helper")
         );
-        if (frm.is_new()) {
-            button.removeClass("btn-default").addClass("btn-secondary-dark");
-        } else {
-            button.removeClass("btn-secondary-dark").addClass("btn-default");
-        }
 
-        frm.add_custom_button(__("Restore prefilled rates"), () => {
-            invoice_helper.restore_prefilled_rates(frm);
-        });
+        frm.add_custom_button(
+            __("Restore prefilled rates"),
+            () => {
+                invoice_helper.restore_prefilled_rates(frm);
+            },
+            __("Invoice Helper")
+        );
 
         // Show pending file drawer if a file is pending
         if (frm._pending_file && invoice_helper?.show_pending_file_drawer) {
