@@ -28,9 +28,6 @@ invoice_helper.show_move_file_dialog = function (pendingDocument, pendingFile) {
                 label: __("Invoice"),
                 fieldtype: "Link",
                 options: "Purchase Invoice",
-                get_query: () => ({
-                    filters: { docstatus: 0 },
-                }),
                 reqd: 1,
             },
         ],
