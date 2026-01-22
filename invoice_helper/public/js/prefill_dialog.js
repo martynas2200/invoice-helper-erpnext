@@ -31,7 +31,7 @@ invoice_helper.prefill_from_pending_dialog = function (
 ) {
     if (!frm) return;
 
-    if (frm._pending_document) {
+    if (!pendingName && frm._pending_document) {
         pendingName = frm._pending_document;
     }
 

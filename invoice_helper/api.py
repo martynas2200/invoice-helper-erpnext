@@ -159,6 +159,12 @@ def create_pending_from_file(
 		}
 	).insert()
 
+	# Attach the file to the Pending Document so its permissions follow the document's permissions.
+	file_doc.attached_to_doctype = "Pending Document"
+	file_doc.attached_to_name = pending.name
+	file_doc.attached_to_field = "file"
+	file_doc.save(ignore_permissions=True)
+
 	return {"name": pending.name}
 
 

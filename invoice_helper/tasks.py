@@ -7,6 +7,9 @@ from invoice_helper.extraction.local import process_invoice
 from invoice_helper.extraction.tabula import extract_tables_from_pdf
 from invoice_helper.extraction.textract import get_textract_extractor, is_textract_enabled
 
+logger = frappe.logger("invoice_helper.tasks")
+logger.setLevel("DEBUG")
+
 
 def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supplier"):
 	"""
@@ -17,12 +20,12 @@ def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supp
 	2. If not found, tries to match by business_code
 
 	Args:
-	    tax_code: VAT/Tax code of the party
-	    business_code: Business code of the party
-	    party_type: Either "Supplier" or "Customer"
+		tax_code: VAT/Tax code of the party
+		business_code: Business code of the party
+		party_type: Either "Supplier" or "Customer"
 
 	Returns:
-	    str: Name of the matching document, or None if not found
+		str: Name of the matching document, or None if not found
 	"""
 	if not party_type or party_type not in ["Supplier", "Customer"]:
 		return None
@@ -32,10 +35,10 @@ def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supp
 		try:
 			parties = frappe.get_list(party_type, filters={"tax_id": tax_code}, limit_page_length=1)
 			if parties:
-				frappe.logger().info(f"Found {party_type} by tax_code {tax_code}: {parties[0]['name']}")
+				logger.info(f"Found {party_type} by tax_code {tax_code}: {parties[0]['name']}")
 				return parties[0]["name"]
 		except Exception as e:
-			frappe.logger().warning(f"Error searching {party_type} by tax_code: {e!s}")
+			logger.warning(f"Error searching {party_type} by tax_code: {e!s}")
 
 	# Try to find by business_code if tax_code didn't match
 	if business_code:
@@ -44,14 +47,12 @@ def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supp
 				party_type, filters={"business_code": business_code}, limit_page_length=1
 			)
 			if parties:
-				frappe.logger().info(
-					f"Found {party_type} by business_code {business_code}: {parties[0]['name']}"
-				)
+				logger.info(f"Found {party_type} by business_code {business_code}: {parties[0]['name']}")
 				return parties[0]["name"]
 		except Exception as e:
-			frappe.logger().warning(f"Error searching {party_type} by business_code: {e!s}")
+			logger.warning(f"Error searching {party_type} by business_code: {e!s}")
 
-	frappe.logger().info(f"No {party_type} found for tax_code={tax_code}, business_code={business_code}")
+	logger.info(f"No {party_type} found for tax_code={tax_code}, business_code={business_code}")
 	return None
 
 
@@ -64,7 +65,7 @@ def extract_document(doc_name):
 	and updating the document with extracted data.
 
 	Args:
-	    doc_name: Name of the Pending Document to extract
+		doc_name: Name of the Pending Document to extract
 	"""
 	try:
 		# Fetch the pending document
@@ -78,7 +79,7 @@ def extract_document(doc_name):
 
 		# Get file path from the linked file
 		if not pending_doc.file:
-			frappe.logger().error(f"No file attached to Pending Document: {doc_name}")
+			logger.error(f"No file attached to Pending Document: {doc_name}")
 			pending_doc.status = "Error"
 			pending_doc.error_message = "No file attached"
 			pending_doc.save(ignore_permissions=True)
@@ -89,7 +90,7 @@ def extract_document(doc_name):
 		file_path = file_doc.get_full_path()
 
 		# Process the invoice PDF
-		frappe.logger().info(f"Starting invoice extraction for: {file_path}")
+		logger.info(f"Starting invoice extraction for: {file_path}")
 		invoice_data = process_invoice(file_path)
 
 		if invoice_data is None:
@@ -106,11 +107,11 @@ def extract_document(doc_name):
 				extractor = get_textract_extractor()
 				tables_result = extractor.extract_tables(file_path)
 				tables_data = tables_result.get("tables", [])
-				frappe.logger().info(f"Successfully extracted {len(tables_data)} table(s) from document")
+				logger.info(f"Successfully extracted {len(tables_data)} table(s) from document")
 				if tables_data:
 					invoice_data["tables"] = tables_data
 			except Exception as textract_error:
-				frappe.logger().warning(f"Textract extraction failed: {textract_error!s}")
+				logger.warning(f"Textract extraction failed: {textract_error!s}")
 				# add comment to pending document
 				pending_doc.add_comment(
 					"Comment", f"{_('Amazon Textract extraction failed.')} <br>{textract_error!s}"
@@ -141,9 +142,9 @@ def extract_document(doc_name):
 		party = find_party_by_tax_or_business_code(tax_code, business_code, party_type)
 		if party:
 			extracted_data["party"] = party
-			frappe.logger().info(f"Matched party: {party_type} - {party}")
+			logger.logger().info(f"Matched party: {party_type} - {party}")
 		else:
-			frappe.logger().warning(
+			logger.logger().warning(
 				f"Could not match {party_type} for tax_code={tax_code}, business_code={business_code}"
 			)
 		# Format barcodes from line items into Pending Document Barcode table
@@ -179,13 +180,13 @@ def extract_document(doc_name):
 		frappe.msgprint("Document extraction done!", indicator="green")
 
 		# Log successful extraction
-		frappe.logger().info(f"Extraction task completed for Pending Document: {doc_name}")
+		logger.info(f"Extraction task completed for Pending Document: {doc_name}")
 
 	except Exception as e:
 		import traceback
 
 		error_traceback = traceback.format_exc()
-		frappe.logger().error(f"Error extracting Pending Document {doc_name}: {e!s}\n{error_traceback}")
+		logger.error(f"Error extracting Pending Document {doc_name}: {e!s}\n{error_traceback}")
 		# Update document status to indicate error
 		try:
 			pending_doc = frappe.get_doc("Pending Document", doc_name)
@@ -197,4 +198,4 @@ def extract_document(doc_name):
 				"Comment", f"{_('Extraction failed with error:')} {e!s}<br><pre>{error_traceback!s}</pre>"
 			)
 		except Exception as update_error:
-			frappe.logger().error(f"Failed to update error status: {update_error!s}")
+			logger.error(f"Failed to update error status: {update_error!s}")
