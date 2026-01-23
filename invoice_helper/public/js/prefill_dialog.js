@@ -334,9 +334,14 @@ async function selectTableAndColumnsFromTextractData(pendingDoc, docType, variab
             tables.forEach((table, idx) => {
                 const button =
                     $(`<button class="btn btn-default" style="margin: 5px; display: block; width: 100%; padding: 10px;">
+                        <span style="font-weight: bold;">
 					${__("Table")} ${idx + 1} (${table.rows.length} ${__("rows")}, ${table.rows[0]?.length || 0} ${__(
                         "columns"
                     )}) - ${__("Confidence")}: ${(table.confidence || 0).toFixed(1)}%
+                    </span>
+                        <div style="margin-top: 5px; max-height: 100px; overflow-y: auto;">
+                            ${render_table_preview(table).prop("outerHTML")}
+                        </div>
 				</button>`);
                 button.click(() => {
                     selectedTable = table;
@@ -418,43 +423,25 @@ function showColumnMappingDialog(table, resolve) {
         },
     });
 
-    // Add preview of column contents below the info
     const info = d.fields_dict.mapping_info.$wrapper;
-    const preview =
-        $(`<table class="table table-bordered" style="font-size: 11px; max-height: 200px; overflow-y: auto;">
-		<tbody></tbody>
-	</table>`);
-
-    // Show header and first 3 data rows
-    for (let rowIdx = 0; rowIdx < Math.min(4, table.rows.length); rowIdx++) {
-        const row = table.rows[rowIdx];
-        const tr = $("<tr>");
-        for (let colIdx = 0; colIdx < row.length; colIdx++) {
-            const cell = row[colIdx];
-            const text = (cell.text || "").substring(0, 20);
-            $(`<td>${text}</td>`).appendTo(tr);
-        }
-        preview.find("tbody").append(tr);
-    }
-
-    info.append(preview);
+    info.append(render_table_preview(table));
     d.show();
 }
 
 function extractMappedRows(table, columnMapping) {
     const rows = [];
-    let hasHeader = true; // Assume first row is header
+    let hasHeader = false;
 
     // double check if first row looks like a header
     const firstRowText = (table.rows[0] || [])
         .map((cell) => (cell.text || "").toLowerCase())
         .join(" ");
     if (
-        !/^(nr|item|barcode|qty|quantity|price|amount|rate|total|kaina|kiekis|suma|barkodas|kodas)/i.test(
+        /(nr|item|barcode|qty|quantity|price|amount|rate|total|kaina|kiekis|suma|barkodas|kodas)/i.test(
             firstRowText
         )
     ) {
-        hasHeader = false;
+        hasHeader = true;
     }
 
     const startIdx = hasHeader ? 1 : 0;
@@ -558,6 +545,26 @@ invoice_helper.attach_pending_document_file = async (pendingFile, doctype, docna
         throw err;
     }
 };
+// Render a preview table (header + up to 3 data rows)
+function render_table_preview(table) {
+    const preview = $(
+        `<table class="table table-bordered" style="font-size: 11px; max-height: 200px; overflow-y: auto;">
+                <tbody></tbody>
+            </table>`
+    );
+    if (!table || !table.rows || !table.rows.length) return preview;
+    for (let rowIdx = 0; rowIdx < Math.min(4, table.rows.length); rowIdx++) {
+        const row = table.rows[rowIdx];
+        const tr = $("<tr>");
+        for (let colIdx = 0; colIdx < row.length; colIdx++) {
+            const cell = row[colIdx];
+            const text = (cell.text || "").substring(0, 20);
+            $("<td>" + text + "</td>").appendTo(tr);
+        }
+        preview.find("tbody").append(tr);
+    }
+    return preview;
+}
 invoice_helper.restore_prefilled_rates = function (frm) {
     if (!frm || !frm.doc.items) {
         frappe.show_alert({

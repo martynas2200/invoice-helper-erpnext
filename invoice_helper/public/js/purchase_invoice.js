@@ -2,6 +2,11 @@
 // frm._pending_document and frm._pending_file are set when pre-filling from pending document to have a hook after save
 
 frappe.ui.form.on("Purchase Invoice", {
+    onload(frm) {
+        // Clear pending file when a new form is loaded
+        frm._pending_file = null;
+        frm._pending_document = null;
+    },
     async refresh(frm) {
         if (frappe._pending_document) {
             // delete the global variable to avoid re-triggering

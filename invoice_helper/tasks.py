@@ -142,9 +142,9 @@ def extract_document(doc_name):
 		party = find_party_by_tax_or_business_code(tax_code, business_code, party_type)
 		if party:
 			extracted_data["party"] = party
-			logger.logger().info(f"Matched party: {party_type} - {party}")
+			logger.info(f"Matched party: {party_type} - {party}")
 		else:
-			logger.logger().warning(
+			logger.warning(
 				f"Could not match {party_type} for tax_code={tax_code}, business_code={business_code}"
 			)
 		# Format barcodes from line items into Pending Document Barcode table
@@ -173,8 +173,9 @@ def extract_document(doc_name):
 
 		# Update the pending document with extracted data
 		extracted_data["status"] = "Extracted"
-		pending_doc.update(extracted_data)
-		pending_doc.save(ignore_permissions=True)
+		final = frappe.get_doc("Pending Document", doc_name)
+		final.update(extracted_data)
+		final.save(ignore_permissions=True)
 		frappe.db.commit()
 
 		frappe.msgprint("Document extraction done!", indicator="green")
