@@ -213,22 +213,33 @@ async function prefill_from_pending(
         indicator: matched && !unmatched ? "green" : unmatched ? "orange" : "blue",
     });
 }
-
+// TODO: Consider passing everything to backend and brute forcing all barcodes until a match found, or show a pop up to ask user if they want to create items for unmatched barcodes, and in that case by user inspecting the barcode, we might found out that actually the item is in the system.
 function extractBarcodeFromText(text) {
     // Look for 7, 8, 12, or 13 consecutive digits
     // Can be embedded in text like "text": "Milk 330ml 5900512300481 Poland"
     // Also handle line breaks within barcodes like "477005816 0327"
+    // "43130154 5905658925109 Pak. nr. 2025-93", need to return the first match;
 
-    let barcodeMatch = text.match(/\b(\d{7,8}|\d{12,13})\b/);
+    // Direct matches
+    let barcodeMatch = text.match(/\b(\d{12,13})\b/);
     if (barcodeMatch) {
         return barcodeMatch[1];
     }
 
-    const spacedMatch = text.match(/(\d{1,12})\s+(\d{1,12})/);
-    if (spacedMatch) {
-        const combined = spacedMatch[1] + spacedMatch[2];
-        if (combined.match(/^(\d{7,8}|\d{12,13})$/)) {
-            return combined;
+    barcodeMatch = text.match(/\b(\d{7,8})\b/);
+    if (barcodeMatch) {
+        return barcodeMatch[1];
+    }
+
+    // Spaced barcodes
+    const spacedRegex = /\b(\d+(?:\s+\d+)+)\b/g;
+    const matches = text.match(spacedRegex);
+    if (matches) {
+        for (const match of matches) {
+            const cleaned = match.replace(/\s+/g, "");
+            if (/^\d{7,8}$/.test(cleaned) || /^\d{12,13}$/.test(cleaned)) {
+                return cleaned;
+            }
         }
     }
 

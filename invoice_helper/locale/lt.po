@@ -10,13 +10,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-# General
-msgid "Activity"
-msgstr "Veikla"
-
-msgid "Comments"
-msgstr "Komentarai"
-
 msgid "Details"
 msgstr "Išsamiau"
 
@@ -55,17 +48,11 @@ msgstr "Tipas"
 msgid "Extraction"
 msgstr "Apdorojimas"
 
-msgid "Bill No"
-msgstr "Išgautas sąskaitos numeris"
-
-msgid "Bill Date"
-msgstr "Išgauta sąskaitos data"
-
 msgid "Supplier Business Code"
 msgstr "Tiekėjo įmonės kodas"
 
 msgid "Supplier VAT Code"
-msgstr "Tiekėjo PVM kodas"
+msgstr "Tiekėjo PVM mokėtojo kodas"
 
 msgid "Subtotal"
 msgstr "Tarpinė suma"
@@ -166,7 +153,7 @@ msgstr "Taikytas laukiantis dokumentas."
 
 #: /Users/martin/frappe-bench/apps/invoice_helper_lt/invoice_helper_lt/invoice_helper_lt/doctype/pending_document_barcode/pending_document_barcode.json:fields:0:label
 msgid "Barcode"
-msgstr "brūkšninis kodas"
+msgstr "Brūkšninis kodas"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper_lt/invoice_helper_lt/public/js/sales_invoice.js:18
 msgid "Choose a Pending Document (Type = Sale)"

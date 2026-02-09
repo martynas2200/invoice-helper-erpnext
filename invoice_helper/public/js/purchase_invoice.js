@@ -17,7 +17,7 @@ frappe.ui.form.on("Purchase Invoice", {
         if (frm.doc.docstatus == 1 || frm.doc.docstatus == 2) {
             return;
         }
-        const button = frm.add_custom_button(
+        frm.add_custom_button(
             __("Prefill from Pending Document"),
             () => invoice_helper.prefill_from_pending_dialog(frm, "Purchase"),
             __("Invoice Helper")
