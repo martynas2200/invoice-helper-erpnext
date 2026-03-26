@@ -170,48 +170,70 @@ async function prefill_from_pending(
 
     let matched = 0,
         unmatched = 0;
-    for (const r of rows) {
+    const prefillRows = [];
+    for (const [rowIndex, r] of rows.entries()) {
         const item_code = r.barcode && mapped[r.barcode] ? mapped[r.barcode].item_code : null;
-        const child = frm.add_child("items", {});
         if (item_code) {
-            child.item_code = item_code;
-            child.item_name = mapped[r.barcode].item_name;
-            child.uom = mapped[r.barcode].uom || mapped[r.barcode].stock_uom;
+            prefillRows.push({
+                row_index: rowIndex,
+                barcode: r.barcode || null,
+                quantity: r.quantity ?? null,
+                price: r.price ?? null,
+                total: r.total ?? null,
+                title: r.title ?? null,
+                extracted_row: r,
+                resolution: "matched",
+                matched_item: {
+                    item_code: item_code,
+                    item_name: mapped[r.barcode].item_name,
+                    uom: mapped[r.barcode].uom,
+                    stock_uom: mapped[r.barcode].stock_uom,
+                },
+            });
             matched++;
         } else {
-            // Leave item_code empty as requested; keep a hint in description
-            child.description = r.barcode ? __("Barcode: {0}", [r.barcode]) : __("No barcode");
             unmatched++;
-            // TODO: A dialog asking if user wants to create missing items could be added here?
-        }
-        if (prefillType !== "barcodes") {
-            if (r.quantity) child.qty = r.quantity;
-            if (r.price) child.rate = r.price;
-            if (r.total) child.amount = r.total; // ERPNext will recompute on save
-            child.original_price = r.price; // Store original extracted price
+            prefillRows.push({
+                row_index: rowIndex,
+                barcode: r.barcode || null,
+                quantity: r.quantity ?? null,
+                price: r.price ?? null,
+                total: r.total ?? null,
+                title: r.title ?? null,
+                extracted_row: r,
+                resolution: null,
+                matched_item: null,
+            });
         }
     }
-    frm.refresh_field("items");
+    frm._prefill_rows = prefillRows;
+    frm._unmatched_dialog_called = false;
+    if (unmatched > 0) {
+        frappe.confirm(
+            matched == 0
+                ? __(
+                      "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
+                  )
+                : __(
+                      "Successfully prefilled {0} items, but {1} rows seem to be unmatched. Do you want to review these unmatched rows or create items with a quick entry dialog?",
+                      [matched, unmatched]
+                  ),
+            () => {
+                frm._unmatched_dialog_called = true;
+                invoice_helper.show_unmatched_items_dialog(frm);
+            },
+            () => {
+                invoice_helper.apply_prefill_rows_to_items(frm);
+            }
+        );
+    } else {
+        invoice_helper.apply_prefill_rows_to_items(frm);
+    }
 
     // Show the pending file drawer
     if (frm._pending_file && invoice_helper?.show_pending_file_drawer) {
         invoice_helper.show_pending_file_drawer(frm);
     }
-
-    const typeLabel =
-        prefillType === "local_tables"
-            ? __("Local extraction")
-            : prefillType === "textract_tables"
-            ? __("Amazon Textract")
-            : __("Regular expression: Barcodes");
-    frappe.show_alert({
-        message: __("Used {0}. Items - Matched: {1}, Unmatched: {2}", [
-            typeLabel,
-            matched,
-            unmatched,
-        ]),
-        indicator: matched && !unmatched ? "green" : unmatched ? "orange" : "blue",
-    });
 }
 // TODO: Consider passing everything to backend and brute forcing all barcodes until a match found, or show a pop up to ask user if they want to create items for unmatched barcodes, and in that case by user inspecting the barcode, we might found out that actually the item is in the system.
 function extractBarcodeFromText(text) {
@@ -439,6 +461,39 @@ function showColumnMappingDialog(table, resolve) {
     d.show();
 }
 
+const countTextChars = (value) => {
+    const text = String(value || "").trim();
+    if (!text) return 0;
+    const letters = text.match(/[A-Za-z\u00C0-\u024F\u1E00-\u1EFF]/g) || [];
+    return letters.length;
+};
+
+const getTitleColumnIndex = (table, columnMapping) => {
+    let bestColIdx = null;
+    let bestScore = 0;
+
+    for (let colIdx = 0; colIdx < (table.rows[0] || []).length; colIdx++) {
+        const mappedType = columnMapping[`col_${colIdx}_type`];
+        // TODO: not sure about excluding columns
+        if (mappedType === "quantity" || mappedType === "price") {
+            continue;
+        }
+
+        let textScore = 0;
+        for (let rowIdx = 0; rowIdx < table.rows.length; rowIdx++) {
+            const cellText = (table.rows[rowIdx]?.[colIdx]?.text || "").trim();
+            textScore += countTextChars(cellText);
+        }
+
+        if (textScore > bestScore) {
+            bestScore = textScore;
+            bestColIdx = colIdx;
+        }
+    }
+
+    return bestColIdx;
+};
+
 function extractMappedRows(table, columnMapping) {
     const rows = [];
     let hasHeader = false;
@@ -457,10 +512,14 @@ function extractMappedRows(table, columnMapping) {
 
     const startIdx = hasHeader ? 1 : 0;
 
+    const titleColumnIdx = getTitleColumnIndex(table, columnMapping);
+
     // Extract rows based on column mapping
     for (let rowIdx = startIdx; rowIdx < table.rows.length; rowIdx++) {
         const row = table.rows[rowIdx];
         const mapped = {};
+
+        mapped.all_columns = row.map((cell) => (cell?.text || "").trim());
 
         for (let colIdx = 0; colIdx < row.length; colIdx++) {
             const fieldName = columnMapping[`col_${colIdx}_type`];
@@ -481,8 +540,12 @@ function extractMappedRows(table, columnMapping) {
             }
         }
 
-        // Only add row if it has at least one mapped field
+        const titleText = titleColumnIdx !== null ? (row[titleColumnIdx]?.text || "").trim() : "";
+        // Only add row if it has at least one mapped field MINUS title.
         if (Object.keys(mapped).length > 0) {
+            mapped.title = titleText
+                ? titleText
+                : (mapped.title = row.map((cell) => cell.text.trim() || "").join(" "));
             rows.push(mapped);
         }
     }
@@ -608,6 +671,660 @@ invoice_helper.restore_prefilled_rates = function (frm) {
             indicator: "blue",
         });
     }
+};
+
+invoice_helper.apply_prefill_rows_to_items = function (frm) {
+    const prefillRows = Array.isArray(frm?._prefill_rows) ? frm._prefill_rows : [];
+
+    const appendRow = (rowData) => {
+        if (!rowData?.item_code && frm._unmatched_dialog_called) return;
+
+        const child = frm.add_child("items", {});
+        if (rowData.item_code) {
+            child.item_code = rowData.item_code;
+        }
+        if (rowData.item_name) child.item_name = rowData.item_name;
+        if (rowData.uom) child.uom = rowData.uom;
+        if (rowData.quantity !== null && rowData.quantity !== undefined)
+            child.qty = rowData.quantity;
+        if (rowData.price !== null && rowData.price !== undefined) {
+            child.rate = rowData.price;
+            child.original_price = rowData.price;
+        }
+        if (rowData.total !== null && rowData.total !== undefined) child.amount = rowData.total;
+    };
+
+    prefillRows.forEach((row) => {
+        if (row?.matched_item?.item_code && row.resolution !== "ignored") {
+            appendRow({
+                item_code: row.matched_item.item_code,
+                item_name: row.matched_item.item_name,
+                uom: row.matched_item.uom || row.matched_item.stock_uom,
+                quantity: row.quantity ?? null,
+                price: row.price ?? null,
+                total: row.total ?? null,
+            });
+        } else if (!row?.resolution) {
+            appendRow({
+                item_code: null,
+                item_name: null,
+                quantity:
+                    row.quantity ?? row.extracted_row?.quantity ?? row.extracted_row?.qty ?? null,
+                price: row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? null,
+                total: row.total ?? row.extracted_row?.total ?? row.extracted_row?.amount ?? null,
+            });
+        }
+    });
+
+    frm.refresh_field("items");
+
+    frm._prefill_rows = [];
+    frm._prefill_allow_half_empty_rows = false;
+};
+
+invoice_helper.show_unmatched_items_dialog = function (frm) {
+    const prefillRows = Array.isArray(frm?._prefill_rows) ? frm._prefill_rows : [];
+    frm._prefill_rows = prefillRows;
+
+    const unmatchedRows = prefillRows.filter((row) => !row?.matched_item?.item_code);
+    const pendingRows = unmatchedRows.filter((row) => !row.resolution);
+
+    if (!pendingRows.length) {
+        frappe.show_alert({
+            message: __("No unmatched rows to review"),
+            indicator: "blue",
+        });
+        return;
+    }
+
+    const escapeHtml = (value) =>
+        String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+
+    const normalizeBarcode = (value) => {
+        const raw = String(value || "").trim();
+        if (!raw) return null;
+
+        return raw.replace(/\D/g, "");
+    };
+
+    const parseNumeric = (value) => {
+        const text = String(value ?? "").trim();
+        if (!text) return null;
+        const normalized = text.replace(/\s/g, "").replace(/,/g, ".");
+        const parsed = parseFloat(normalized);
+        return Number.isNaN(parsed) ? null : parsed;
+    };
+
+    const extractTitle = (row) => {
+        const source = [
+            row?.title,
+            row?.extracted_row?.title,
+            row?.extracted_row?.item,
+            row?.extracted_row?.name,
+            row?.barcode,
+        ]
+            .map((value) => String(value || "").trim())
+            .filter(Boolean);
+        return source[0] || "";
+    };
+
+    const getFuzzyRecommendations = async (queryTitle) => {
+        try {
+            const res = await frappe.call({
+                method: "invoice_helper.api.recommend_items_for_title",
+                args: { title: queryTitle, max_results: 8 },
+            });
+            return Array.isArray(res?.message) ? res.message : [];
+        } catch (err) {
+            console.error("Could not load fuzzy recommendations:", err);
+            return [];
+        }
+    };
+
+    const getPartialBarcodeRecommendations = async (barcode) => {
+        try {
+            const res = await frappe.call({
+                method: "invoice_helper.api.recommend_items_for_partial_barcode",
+                args: { barcode: barcode, max_results: 10 },
+            });
+            return Array.isArray(res?.message) ? res.message : [];
+        } catch (err) {
+            console.error("Could not load partial barcode recommendations:", err);
+            return [];
+        }
+    };
+
+    const updateMatchedRowData = (row, match, barcode, quantity, price) => {
+        row.matched_item = {
+            item_code: match.item_code,
+            item_name: match.item_name,
+            uom: match.uom,
+            stock_uom: match.stock_uom,
+        };
+        row.barcode = barcode;
+        row.quantity = quantity;
+        row.price = price;
+        row.extracted_row = {
+            ...(row.extracted_row || {}),
+            barcode,
+            quantity,
+            price,
+        };
+    };
+
+    const processUnmatchedRowAt = async (index) => {
+        if (index >= pendingRows.length) {
+            invoice_helper.apply_prefill_rows_to_items(frm);
+            frappe.show_alert({
+                message: __("Finished reviewing unmatched rows"),
+                indicator: "green",
+            });
+            return;
+        }
+
+        const row = pendingRows[index];
+        const rowNumber = row.row_index ?? index;
+        const extractedJson = JSON.stringify(row.extracted_row || {}, null, 2);
+        const allColumns = Array.isArray(row?.extracted_row?.all_columns)
+            ? row.extracted_row.all_columns
+            : [];
+
+        const originalBarcode = normalizeBarcode(row.barcode || row.extracted_row?.barcode || "");
+        let validatedMatch = null;
+        let validatedBarcode = null;
+
+        const amendDialog = new frappe.ui.Dialog({
+            title: __("Unmatched Row {0} of {1}", [index + 1, pendingRows.length]),
+            fields: [
+                {
+                    fieldname: "row_preview",
+                    fieldtype: "HTML",
+                    label: __("Extracted Row"),
+                },
+                {
+                    fieldname: "barcode",
+                    label: __("Barcode (Optional)"),
+                    fieldtype: "Data",
+                    default: row.barcode || row.extracted_row?.barcode || "",
+                },
+                {
+                    fieldname: "recommended_html",
+                    fieldtype: "HTML",
+                    label: __("Recommended Items"),
+                },
+                {
+                    fieldname: "manual_item_code",
+                    label: __("Manual Item (Optional)"),
+                    fieldtype: "Link",
+                    options: "Item",
+                    description: __("You may also try to search using item name or code."),
+                },
+                {
+                    fieldname: "quantity",
+                    label: __("Quantity"),
+                    fieldtype: "Data",
+                    default:
+                        row.quantity ??
+                        row.extracted_row?.quantity ??
+                        row.extracted_row?.qty ??
+                        "",
+                },
+                {
+                    fieldname: "price",
+                    label: __("Price"),
+                    fieldtype: "Data",
+                    default:
+                        row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? "",
+                },
+                {
+                    fieldname: "barcode_status",
+                    fieldtype: "HTML",
+                    label: __("Validation"),
+                },
+            ],
+            primary_action_label: __("Skip"),
+            primary_action: () => {
+                row.resolution = "ignored";
+                amendDialog.hide();
+                void processUnmatchedRowAt(index + 1);
+            },
+            secondary_action_label: __("Create New Item"),
+            secondary_action: () => {
+                const barcode = normalizeBarcode(amendDialog.get_value("barcode"));
+                if (!barcode) {
+                    frappe.msgprint({
+                        title: __("Invalid Barcode"),
+                        message: __("Please provide a valid barcode before creating a new item."),
+                        indicator: "orange",
+                    });
+                    return;
+                }
+
+                const itemName =
+                    row.title || row.extracted_row?.title || row.barcode || __("New Item");
+                amendDialog.hide();
+                const quickEntryDoc = frappe.model.get_new_doc("Item");
+                quickEntryDoc.item_name = itemName;
+                frappe.ui.form.make_quick_entry(
+                    "Item",
+                    async (newItem) => {
+                        try {
+                            const createdItemName = newItem?.name || newItem?.doc?.name;
+                            if (!createdItemName) {
+                                throw new Error(
+                                    "Created Item name missing from quick entry callback"
+                                );
+                            }
+
+                            const itemDoc = await frappe.db.get_doc("Item", createdItemName);
+                            const hasBarcode = (itemDoc.barcodes || []).some(
+                                (barcodeRow) => (barcodeRow.barcode || "").trim() === barcode
+                            );
+
+                            if (!hasBarcode) {
+                                const barcodeRow = frappe.model.add_child(
+                                    itemDoc,
+                                    "Item Barcode",
+                                    "barcodes"
+                                );
+                                barcodeRow.barcode = barcode;
+                                barcodeRow.uom = itemDoc.stock_uom || "Nos";
+
+                                const docToSave = {
+                                    ...itemDoc,
+                                    doctype: itemDoc.doctype || "Item",
+                                    name: itemDoc.name || createdItemName,
+                                };
+
+                                await frappe.call({
+                                    method: "frappe.client.save",
+                                    args: { doc: docToSave },
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Could not append barcode on created Item:", err);
+                            frappe.show_alert({
+                                message: __(
+                                    "Item was created, but barcode row was not added automatically."
+                                ),
+                                indicator: "orange",
+                            });
+                        }
+
+                        row.resolution = "create_item";
+                        row.created_item = newItem?.name || newItem?.doc?.name || null;
+                        row.matched_item = {
+                            item_code: row.created_item,
+                            item_name: newItem?.item_name || itemName,
+                            uom: newItem?.stock_uom || "Nos",
+                            stock_uom: newItem?.stock_uom || "Nos",
+                        };
+                        frappe.show_alert({
+                            message: __("Created Item: {0}. Continuing unmatched review.", [
+                                newItem?.name || newItem?.doc?.name || itemName,
+                            ]),
+                            indicator: "green",
+                        });
+                        void processUnmatchedRowAt(index + 1);
+                    },
+                    null,
+                    quickEntryDoc,
+                    true
+                );
+            },
+        });
+
+        const setStatusHtml = (message, color = "#6b7280") => {
+            amendDialog.fields_dict.barcode_status.$wrapper.html(
+                `<div style="color: ${color}; margin-top: 4px;">${escapeHtml(message)}</div>`
+            );
+        };
+
+        const getActionButtons = () => {
+            const primary = amendDialog.get_primary_btn ? amendDialog.get_primary_btn() : null;
+            const secondary = amendDialog.get_secondary_btn
+                ? amendDialog.get_secondary_btn()
+                : null;
+            return {
+                primary,
+                secondary,
+            };
+        };
+
+        const setActionsVisible = (visible) => {
+            const { primary, secondary } = getActionButtons();
+            const displayValue = visible ? "" : "none";
+
+            if (primary && primary.length) {
+                primary.css("display", displayValue);
+            }
+            if (secondary && secondary.length) {
+                secondary.css("display", displayValue);
+            }
+        };
+
+        const setPrimaryAsSkip = () => {
+            amendDialog.set_primary_action(__("Skip"), () => {
+                row.resolution = "ignored";
+                amendDialog.hide();
+                void processUnmatchedRowAt(index + 1);
+            });
+        };
+
+        const toMatchShape = (item) => {
+            if (!item?.item_code) return null;
+            return {
+                item_code: item.item_code,
+                item_name: item.item_name || item.item_code,
+                uom: item.uom || item.stock_uom || "Nos",
+                stock_uom: item.stock_uom || item.uom || "Nos",
+            };
+        };
+
+        const applySelection = ({
+            match,
+            barcode = null,
+            statusMessage = null,
+            statusColor = "#15803d",
+        }) => {
+            const normalizedMatch = toMatchShape(match);
+            if (!normalizedMatch) {
+                validatedMatch = null;
+                validatedBarcode = null;
+                setPrimaryAsSkip();
+                return;
+            }
+
+            validatedMatch = normalizedMatch;
+            validatedBarcode =
+                barcode || normalizeBarcode(amendDialog.get_value("barcode")) || null;
+            amendDialog.set_value("manual_item_code", normalizedMatch.item_code);
+            setPrimaryAsContinue();
+
+            if (statusMessage) {
+                setStatusHtml(statusMessage, statusColor);
+            }
+        };
+
+        const setPrimaryAsContinue = () => {
+            amendDialog.set_primary_action(__("Continue"), () => {
+                if (!validatedMatch) {
+                    setPrimaryAsSkip();
+                    setStatusHtml(
+                        __(
+                            "No selected item yet. Pick recommendation, set Manual Item, or verify barcode."
+                        ),
+                        "#b45309"
+                    );
+                    return;
+                }
+
+                const quantity = parseNumeric(amendDialog.get_value("quantity"));
+                const price = parseNumeric(amendDialog.get_value("price"));
+
+                updateMatchedRowData(
+                    row,
+                    validatedMatch,
+                    validatedBarcode || normalizeBarcode(amendDialog.get_value("barcode")) || null,
+                    quantity,
+                    price
+                );
+                row.resolution = "amended";
+
+                amendDialog.hide();
+                void processUnmatchedRowAt(index + 1);
+            });
+        };
+
+        const verifyChangedBarcode = async () => {
+            validatedMatch = null;
+            validatedBarcode = null;
+            amendDialog.set_value("manual_item_code", "");
+            setPrimaryAsSkip();
+
+            const normalized = normalizeBarcode(amendDialog.get_value("barcode"));
+
+            if (!normalized) {
+                setStatusHtml(__("Barcode must contain digits."), "#dc2626");
+                return;
+            }
+
+            if (normalized === originalBarcode) {
+                setStatusHtml(
+                    __("Barcode not changed yet. Change it to validate and enable Continue."),
+                    "#b45309"
+                );
+                return;
+            }
+
+            setStatusHtml(__("Checking barcode..."), "#2563eb");
+
+            try {
+                const res = await frappe.call({
+                    method: "invoice_helper.api.get_item_codes_for_barcodes",
+                    args: { barcodes: [normalized] },
+                });
+                const found = res?.message?.[normalized];
+
+                if (found?.item_code) {
+                    applySelection({
+                        match: found,
+                        barcode: normalized,
+                        statusMessage: __("Matched Item: {0} ({1}). You can Continue.", [
+                            found.item_code,
+                            found.item_name || "",
+                        ]),
+                    });
+                    recommendations = [];
+                    renderRecommendations();
+                } else {
+                    amendDialog.set_value("manual_item_code", "");
+                    recommendations = await getPartialBarcodeRecommendations(normalized);
+                    renderRecommendations();
+                    setStatusHtml(
+                        __("No Item found for this barcode. Use Skip or Create new item."),
+                        "#b45309"
+                    );
+                }
+            } catch (err) {
+                console.error("Barcode verification failed:", err);
+                amendDialog.set_value("manual_item_code", "");
+                recommendations = [];
+                renderRecommendations();
+                setStatusHtml(__("Barcode check failed. Please try again."), "#dc2626");
+            }
+        };
+
+        const wrapper = amendDialog.fields_dict.row_preview.$wrapper;
+        const allColumnsHtml = allColumns.length
+            ? `<div style="max-height: 250px; overflow: auto;">
+                    <table class="table table-bordered" style="margin: 0; font-size: 12px; line-height:1;">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">${escapeHtml(__("Column"))}</th>
+                                <th>${escapeHtml(__("Value"))}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${allColumns
+                                .map(
+                                    (value, idx) => `<tr>
+                                        <td>${escapeHtml(String(idx + 1))}</td>
+                                        <td>${escapeHtml(String(value || ""))}</td>
+                                    </tr>`
+                                )
+                                .join("")}
+                        </tbody>
+                    </table>
+                </div>`
+            : `<pre style="max-height: 280px; overflow: auto;">${escapeHtml(extractedJson)}</pre>`;
+
+        wrapper.html(
+            `<div style="margin-bottom: 10px;"><strong>${__("Source row")}: ${escapeHtml(
+                rowNumber + 1
+            )}</strong></div>${allColumnsHtml}`
+        );
+
+        let recommendations = await getFuzzyRecommendations(extractTitle(row));
+        const recommendedWrapper = amendDialog.fields_dict.recommended_html.$wrapper;
+
+        const syncRecommendationSelection = (itemCode) => {
+            const normalized = String(itemCode || "").trim();
+            const buttons = recommendedWrapper.find(".invoice-helper-fuzzy-option");
+            if (!buttons.length) return;
+
+            buttons.removeClass("btn-primary").addClass("btn-default");
+            if (!normalized) return;
+
+            buttons.each(function () {
+                const buttonCode = String($(this).data("item-code") || "").trim();
+                if (buttonCode === normalized) {
+                    $(this).removeClass("btn-default").addClass("btn-primary");
+                }
+            });
+        };
+
+        const renderRecommendations = () => {
+            if (!recommendations.length) {
+                recommendedWrapper.html(
+                    `<div style="color: #b45309;">${escapeHtml(
+                        __("No recommendations found. Use Manual Item field.")
+                    )}</div>`
+                );
+                return;
+            }
+
+            const rowsHtml = recommendations
+                .map((rec) => {
+                    const title = [rec.item_name, rec.stock_uom].filter(Boolean).join(" • ");
+                    const subtitle = rec.matched_barcode
+                        ? __("Score {0} • Item {1} • Barcode {2}", [
+                              rec.score || 0,
+                              rec.item_code,
+                              rec.matched_barcode,
+                          ])
+                        : __("Score {0} • Item {1}", [rec.score || 0, rec.item_code]);
+                    return `<button type="button" class="btn btn-default invoice-helper-fuzzy-option" data-item-code="${escapeHtml(
+                        rec.item_code
+                    )}" style="display:block; width:100%; text-align:left; margin-bottom:6px;">
+                        <div>${escapeHtml(title)}</div>
+                        <div style="font-size:11px; color:#9ca3af;">${escapeHtml(subtitle)}</div>
+                    </button>`;
+                })
+                .join("");
+
+            recommendedWrapper.html(rowsHtml);
+
+            recommendedWrapper.find(".invoice-helper-fuzzy-option").on("click", function () {
+                const itemCode = String($(this).data("item-code") || "").trim();
+                if (!itemCode) return;
+                const selected = recommendations.find((rec) => rec.item_code === itemCode);
+                applySelection({
+                    match: selected,
+                    barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
+                    statusMessage: __("Selected recommendation: {0}", [
+                        selected?.item_code || itemCode,
+                    ]),
+                });
+                syncRecommendationSelection(itemCode);
+            });
+        };
+
+        renderRecommendations();
+
+        const manualField = amendDialog.get_field("manual_item_code");
+        if (manualField?.$input) {
+            manualField.$input.on("change blur", async () => {
+                const manualItemCode = String(
+                    amendDialog.get_value("manual_item_code") || ""
+                ).trim();
+                if (!manualItemCode) {
+                    validatedMatch = null;
+                    validatedBarcode = null;
+                    setPrimaryAsSkip();
+                    return;
+                }
+
+                const fromRecommendations = recommendations.find(
+                    (rec) => rec.item_code === manualItemCode
+                );
+                if (fromRecommendations) {
+                    applySelection({
+                        match: fromRecommendations,
+                        barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
+                        statusMessage: __("Using: {0}", [manualItemCode]),
+                    });
+                    syncRecommendationSelection(manualItemCode);
+                    return;
+                }
+
+                try {
+                    const itemDoc = await frappe.db.get_doc("Item", manualItemCode);
+                    applySelection({
+                        match: {
+                            item_code: itemDoc.name,
+                            item_name: itemDoc.item_name,
+                            uom: itemDoc.stock_uom,
+                            stock_uom: itemDoc.stock_uom,
+                        },
+                        barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
+                        statusMessage: __("Selected: {0}", [itemDoc.item_name]),
+                    });
+                    syncRecommendationSelection(manualItemCode);
+                } catch (err) {
+                    console.error("Manual item lookup failed:", err);
+                    setStatusHtml(__("Manual Item not found. Choose a valid Item."), "#dc2626");
+                    setPrimaryAsSkip();
+                    syncRecommendationSelection(null);
+                }
+            });
+        }
+
+        amendDialog.show();
+        setStatusHtml(
+            __(
+                "Enter/Change barcode to validate, you may also pick a recommendation or enter item name. If matched, Skip becomes Continue."
+            )
+        );
+
+        const barcodeInput = amendDialog.get_field("barcode").$input;
+        if (barcodeInput) {
+            let debounceTimer = null;
+
+            barcodeInput.on("focus", () => {
+                setActionsVisible(false);
+                recommendedWrapper.html("");
+                setStatusHtml(__("Editing barcode..."), "#6b7280");
+            });
+
+            barcodeInput.on("input", () => {
+                setActionsVisible(false);
+                recommendedWrapper.html("");
+                if (debounceTimer) {
+                    clearTimeout(debounceTimer);
+                }
+                debounceTimer = setTimeout(() => {
+                    verifyChangedBarcode();
+                }, 300);
+            });
+
+            barcodeInput.on("blur", async () => {
+                if (debounceTimer) {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = null;
+                }
+                await verifyChangedBarcode();
+                setActionsVisible(true);
+            });
+        }
+    };
+
+    void processUnmatchedRowAt(0);
 };
 
 invoice_helper.show_move_file_dialog = function (pendingFile) {
