@@ -16,6 +16,8 @@ class OCRSettings(Document):
 			frappe.throw(frappe._("Header Rows Limit must be at least 1"))
 		if self.row_threshold and self.row_threshold < 1:
 			frappe.throw(frappe._("Row Threshold must be at least 1"))
+		if self.pending_document_cleanup_days is not None and self.pending_document_cleanup_days < 0:
+			frappe.throw(frappe._("Pending Document Cleanup Days cannot be negative"))
 
 	def after_save(self):
 		"""Clear cache after settings are saved."""
@@ -34,6 +36,9 @@ def get_ocr_settings():
 			"ocr_config": settings.ocr_config or "--oem 3 --psm 6",
 			"header_rows_limit": settings.header_rows_limit or 60,
 			"row_threshold": settings.row_threshold or 20,
+			"pending_document_cleanup_days": settings.pending_document_cleanup_days
+			if settings.pending_document_cleanup_days is not None
+			else 30,
 			"ignored_ids": {row.id_value for row in settings.ignored_ids} if settings.ignored_ids else set(),
 		}
 	except frappe.DoesNotExistError:
@@ -43,5 +48,6 @@ def get_ocr_settings():
 			"ocr_config": "--oem 3 --psm 6",
 			"header_rows_limit": 60,
 			"row_threshold": 20,
+			"pending_document_cleanup_days": 30,
 			"ignored_ids": set(),
 		}

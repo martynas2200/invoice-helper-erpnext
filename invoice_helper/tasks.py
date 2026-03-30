@@ -1,4 +1,5 @@
 import json
+from datetime import timedelta
 
 import frappe
 from frappe import _
@@ -9,6 +10,52 @@ from invoice_helper.extraction.textract import get_textract_extractor, is_textra
 
 logger = frappe.logger("invoice_helper.tasks")
 logger.setLevel("DEBUG")
+
+
+def cleanup_pending_documents():
+	"""
+	Delete stale Pending Documents that are already processed by the user.
+
+	A Pending Document is deleted when:
+	- its status is Used, Moved, Split or Error
+	- and its last modification timestamp is older than configured retention days
+	"""
+	from invoice_helper.invoice_helper.doctype.ocr_settings.ocr_settings import get_ocr_settings
+
+	settings = get_ocr_settings()
+	cleanup_days = settings.get("pending_document_cleanup_days", 30)
+
+	if cleanup_days is None or cleanup_days < 0:
+		cleanup_days = 30
+
+	if cleanup_days == 0:
+		logger.info("Skipping Pending Document cleanup because cleanup days is set to 0")
+		return
+
+	cutoff = frappe.utils.now_datetime() - timedelta(days=cleanup_days)
+	stale_docs = frappe.get_all(
+		"Pending Document",
+		filters={"status": ["in", ["Error", "Split", "Used", "Moved"]], "modified": ["<", cutoff]},
+		pluck="name",
+	)
+
+	if not stale_docs:
+		logger.info("No stale Pending Documents found for cleanup")
+		return
+
+	deleted_count = 0
+	for docname in stale_docs:
+		try:
+			frappe.delete_doc("Pending Document", docname, ignore_permissions=True)
+			deleted_count += 1
+		except Exception as error:
+			logger.warning(f"Failed to delete Pending Document {docname}: {error!s}")
+
+	frappe.db.commit()
+	logger.info(
+		"Pending Document cleanup finished. "
+		f"Deleted {deleted_count}/{len(stale_docs)} records older than {cleanup_days} day(s)."
+	)
 
 
 def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supplier"):

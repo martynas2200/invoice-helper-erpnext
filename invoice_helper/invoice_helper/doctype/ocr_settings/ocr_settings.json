@@ -11,6 +11,7 @@
   "ocr_config",
   "header_rows_limit",
   "row_threshold",
+    "pending_document_cleanup_days",
   "section_ignored_ids",
   "ignored_ids"
  ],
@@ -43,6 +44,13 @@
    "default": 20,
    "description": "Pixel threshold for grouping OCR elements into rows based on Y coordinates"
   },
+    {
+     "fieldname": "pending_document_cleanup_days",
+     "fieldtype": "Int",
+     "label": "Pending Document Cleanup Days",
+     "default": 30,
+     "description": "Automatically delete Pending Documents with status Used, Moved, Split or Error when last modified is older than this many days"
+    },
   {
    "fieldname": "section_ignored_ids",
    "fieldtype": "Section Break",

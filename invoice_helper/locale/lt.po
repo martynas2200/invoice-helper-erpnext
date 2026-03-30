@@ -187,7 +187,7 @@ msgstr "Taikytas laukiantis dokumentas."
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json:fields:0:label
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:fields:0:label
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:423
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:426
 msgid "Barcode"
 msgstr "Brūkšninis kodas"
 
@@ -304,12 +304,12 @@ msgstr "Sąskaitos numeris"
 msgid "Click to expand"
 msgstr "Spustelėkite, kad išplėstumėte"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1126
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:416
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1149
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:419
 msgid "Column"
 msgstr "Stulpelis"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:405
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:408
 msgid "Column Mapping"
 msgstr "Stulpelių sujungimas"
 
@@ -325,7 +325,7 @@ msgstr "Atsisiųsti failą"
 msgid "Enter page ranges separated by commas. Example: 1-2,3,4-5"
 msgstr "Įveskite puslapių diapazonus, atskirtus kableliais. Pavyzdys: 1-2,3,4-5"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:435
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:438
 msgid "Extract"
 msgstr "Išgauti"
 
@@ -339,7 +339,7 @@ msgstr "Failo tipas"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:71
 msgid "If available, Bill No, Posting Date, Due Date, Supplier from Pending Document"
-msgstr "Jei yra, sąskaitos nr., įrašymo data, mokėjimo data, tiekėjas iš laukiančio dokumento"
+msgstr "Jei įmanoma, sąskaitos nr., įrašymo data, mokėjimo data, tiekėjas"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/split_dialog.js:57
 msgid "If checked, creates Pending Document records for each split PDF."
@@ -356,11 +356,11 @@ msgstr "Vietinis išgavimas"
 msgid "Local table extraction"
 msgstr "Vietinis lentelės išgavimas"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:433
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:436
 msgid "Map Columns"
 msgstr "Sujungti stulpelius"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:352
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:355
 msgid "Multiple tables found. Choose the one containing items:"
 msgstr "Rasta kelios lentelės. Pasirinkite tą, kurioje yra prekės:"
 
@@ -368,7 +368,7 @@ msgstr "Rasta kelios lentelės. Pasirinkite tą, kurioje yra prekės:"
 msgid "No file found."
 msgstr "Failas nerastas."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:335
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:338
 msgid "No tables found in the document"
 msgstr "Dokumente nerasta lentelių"
 
@@ -396,7 +396,7 @@ msgstr "PDF - spustelėkite, kad peržiūrėtumėte"
 msgid "Page Ranges"
 msgstr "Puslapių diapazonai"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:445
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:448
 msgid "Please ensure each column type is selected only once."
 msgstr "Prašome užtikrinti, kad kiekvienas stulpelio tipas būtų pasirinktas tik vieną kartą."
 
@@ -422,20 +422,20 @@ msgstr "Peržiūra"
 msgid "Preview File"
 msgstr "Peržiūrėti failą"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:425
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:870
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:428
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:879
 msgid "Price"
 msgstr "Kaina"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:424
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:864
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:427
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:869
 msgid "Quantity"
 msgstr "Kiekis"
 
 msgid "Regular expression: Barcodes"
 msgstr "Formulinė išraiška: brūkšniniai kodai"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:347
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:350
 msgid "Select Table"
 msgstr "Pasirinkite lentelę"
 
@@ -453,23 +453,23 @@ msgstr "Padalinti PDF"
 msgid "Split PDF File"
 msgstr "Padalinti PDF failą"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:395
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:398
 msgid "Table has insufficient rows"
 msgstr "Lentelėje nepakanka eilučių"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:370
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:373
 msgid "Confidence"
 msgstr "Užtikrintumas"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:368
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:371
 msgid "Table"
 msgstr "Lentelė"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:368
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:371
 msgid "columns"
 msgstr "stulpeliai"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:368
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:371
 msgid "rows"
 msgstr "eilutės"
 
@@ -493,7 +493,7 @@ msgstr "AWS slaptasis raktas"
 msgid "AWS credentials are not configured. Please set them in Textract Settings."
 msgstr "AWS kredencialai nėra sukonfigūruoti. Prašome juos nustatyti Textract nustatymuose."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/tasks.py:117
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/tasks.py:163
 msgid "Amazon Textract extraction failed."
 msgstr "Amazon Textract išgavimas nepavyko."
 
@@ -501,7 +501,7 @@ msgstr "Amazon Textract išgavimas nepavyko."
 msgid "Enable Textract Integration"
 msgstr "Įgalinti Textract integraciją"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:563
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:567
 msgid "File attached"
 msgstr "Failas pridėtas"
 
@@ -517,12 +517,12 @@ msgstr "Antraščių eilučių riba turi būti bent 1"
 msgid "ID Value"
 msgstr "ID reikšmė"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:4:label
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:5:label
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:6:label
 msgid "Ignored IDs"
 msgstr "Ignoruojami ID"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:5:description
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:6:description
 msgid "List of VAT codes and business IDs to exclude from extraction"
 msgstr "Sąrašas PVM kodų ir įmonių ID, kurių išgavimas neįtraukiamas"
 
@@ -573,7 +573,7 @@ msgstr "Ignoruojamas PVM kodas arba įmonės ID (pvz., 'LT112322334' arba '49834
 msgid "Create Record"
 msgstr "Kurti įrašą"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/tasks.py:199
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/tasks.py:245
 msgid "Extraction failed with error:"
 msgstr "Išgavimas nepavyko dėl klaidos:"
 
@@ -617,7 +617,7 @@ msgstr "Nepavyko prisegti failo iš laukiančio dokumento: {0}"
 msgid "Restore prefilled rates"
 msgstr "Atkurti užpildytas kainas"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:666
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:670
 msgid "No price changes detected"
 msgstr "Kainų pokyčių nepastebėta"
 
@@ -625,21 +625,21 @@ msgid "Restored {0} item price(s) to original extraction value"
 msgstr "Atkurta {0} prekės(-ių) kaina į pradinę išgavimo reikšmę"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:34
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1337
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1364
 msgid "Attach"
 msgstr "Prisegti"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:7
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1307
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1334
 msgid "Attach File to Invoice"
 msgstr "Prisegti failą prie sąskaitos"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:45
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1348
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1375
 msgid "File attached successfully"
 msgstr "Failas sėkmingai prisegtas"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:603
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:607
 msgid "File not found"
 msgstr "Failas nerastas"
 
@@ -651,7 +651,7 @@ msgstr "Perkelti"
 msgid "Name of the S3 bucket used for Textract input documents."
 msgstr "Pavadinimas S3 kibirėlio, naudojamo Textract įvesties dokumentams."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:641
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:645
 msgid "No items to restore"
 msgstr "Nėra prekių, kurias būtų galima atkurti"
 
@@ -681,14 +681,14 @@ msgstr "S3 prefiksas"
 msgid "Textract S3 bucket is not configured. Please set 's3_bucket' in Textract Settings."
 msgstr "Textract S3 kibirėlis nėra sukonfigūruotas. Prašome nustatyti 's3_bucket' Textract nustatymuose."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1116
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1139
 msgid "Barcode check failed. Please try again."
 msgstr "Brūkšninio kodo patikrinimas nepavyko. Prašome pabandyti dar kartą."
 
 msgid "Barcode must be 7, 8, 12, or 13 digits."
 msgstr "Brūkšninis kodas turi būti 7, 8, 12 arba 13 skaitmenų."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1076
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1099
 msgid "Barcode not changed yet. Change it to validate and enable Continue."
 msgstr "Brūkšninis kodas dar nepakeistas. Pakeiskite jį, kad būtų galima patikrinti ir prekę ir tęsti."
 
@@ -699,71 +699,71 @@ msgstr "Sąskaitos data"
 msgid "Change barcode and we will validate it against existing items."
 msgstr "Pakeiskite brūkšninį kodą ir mes jį patikrinsime pagal esamas prekes."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1265
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1290
 msgid "Enter/Change barcode to validate, you may also pick a recommendation or enter item name. If matched, Skip becomes Continue."
 msgstr "Įveskite/pakeiskite brūkšninį kodą, taip pat galite pasirinkti rekomendaciją arba įvesti prekės pavadinimą. Suradus, „Praleisti“ taps „Tęsti“."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1082
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1105
 msgid "Checking barcode..."
 msgstr "Tikrinamas brūkšninis kodas..."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1034
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1055
 msgid "Continue"
 msgstr "Tęsti"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:886
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:896
 msgid "Create New Item"
 msgstr "Sukurti naują prekę"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1274
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1302
 msgid "Editing barcode..."
 msgstr "Laukiama, kol bus pabaigtas redaguoti brūkšninis kodas..."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:842
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:847
 msgid "Extracted Row"
 msgstr "Išgauta eilutė"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:819
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:824
 msgid "Finished reviewing unmatched rows"
 msgstr "Nesurastų eilučių peržiūra baigta"
 
 msgid "If checked, even if no item matches found for extracted rows, they will still be added"
 msgstr "Jei pažymėta, net jei išgautoms eilutėms nerasta atitinkančių prekių, jos vis tiek bus pridėtos"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:891
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:901
 msgid "Invalid Barcode"
 msgstr "Neteisingas brūkšninis kodas"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:28
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1328
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1355
 msgid "Invoice"
 msgstr "Sąskaita"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:11
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1311
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1338
 msgid "Invoice Type"
 msgstr "Sąskaitos tipas"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:939
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:952
 msgid "Item was created, but barcode row was not added automatically."
 msgstr "Prekė sukurta, tačiau brūkšninis kodas nebuvo pridėtas automatiškai."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:898
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:909
 msgid "New Item"
 msgstr "Nauja prekė"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1107
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1130
 msgid "No Item found for this barcode. Use Skip or Create new item."
 msgstr "Šiam brūkšniniam kodui prekė nerasta. Naudokite „Praleisti“ arba sukurkite naują prekę."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:729
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:734
 msgid "No unmatched rows to review"
 msgstr "Nėra nerastų eilučių peržiūrai"
 
 msgid "No verified barcode match. You can Skip or Create new item."
 msgstr "Nėra patvirtinto brūkšninio kodo atitikmens. Galite „Praleisti“ arba sukurti naują prekę."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:892
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:902
 msgid "Please provide a valid barcode before creating a new item."
 msgstr "Prieš kurdami naują prekę pateikite galiojantį brūkšninį kodą."
 
@@ -771,25 +771,25 @@ msgid "Prefill Unmatched Rows"
 msgstr "Užpildyti nerastas eilutes"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:14
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1314
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1341
 msgid "Purchase Invoice"
 msgstr "Pirkimo sąskaita"
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/move_dialog.js:15
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1315
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1342
 msgid "Sales Invoice"
 msgstr "Pardavimo sąskaita"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:880
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:997
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1012
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:890
 msgid "Skip"
 msgstr "Praleisti"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1144
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1168
 msgid "Source row"
 msgstr "Šaltinio eilutė"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:877
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:887
 msgid "Validation"
 msgstr "Patikra"
 
@@ -798,47 +798,64 @@ msgstr "Sėkmingai užpildyta {0} prekių, tačiau {1} eilutės(-ių) nepavyko s
 
 #: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1070
 
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1093
 msgid "Barcode must contain digits."
 msgstr "Brūkšninis kodas turi būti sudarytas iš skaičių."
 
 msgid "Manual Item"
 msgstr "Prekė rankiniu būdu"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1256
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1281
 msgid "Manual Item not found. Choose a valid Item."
 msgstr "Rankiniu būdu pasirinkta prekė nerasta. Pasirinkite prekę."
 
 msgid "The title was used to look for the item."
 msgstr "Pavadinimas buvo naudotas ieškant prekės."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:213
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:214
 msgid "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
 msgstr "Nerasta tikslių atitikmenų išgautoms prekėms. Ar norite peržiūrėti nesusietas eilutes ir pabandyti jas susieti rankiniu būdu, pasinaudojant „fuzzy“ paieškos pagalba?<br><br></b> Tai gali būti ypač naudinga, jei sąskaita neturi brūkšninių kodų."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1172
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1196
 msgid "No recommendations found. Use Manual Item field."
 msgstr "Nerasta rekomendacijų. Naudokite lauką „Prekė rankiniu būdu“."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1038
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:1059
 msgid "No selected item yet. Pick recommendation, set Manual Item, or verify barcode."
 msgstr "Jokių prekių dar nepasirinkta. Pasirinkite rekomendaciją, nustatykite rankinę prekę arba patikrinkite brūkšninį kodą."
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:853
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:858
 msgid "Recommended Items"
 msgstr "Rekomenduojamos prekės"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:860
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:865
 msgid "You may also try to search using item name or code."
 msgstr "Taip pat galite ieškoti pagal prekės pavadinimą ar kodą."
 
 msgid "Unmatched Row {0} of {1}"
 msgstr "Nesusieta eilutė {0} iš {1}"
 
-
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:846
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:851
 msgid "Barcode (Optional)"
 msgstr "Brūkšninis kodas (pasirinktinai)"
 
-#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:857
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/public/js/prefill_dialog.js:862
 msgid "Manual Item (Optional)"
 msgstr "Prekė rankiniu būdu (pasirinktinai)"
+
+
+msgid "Selected recommendation: {0}"
+msgstr "Pasirinkta rekomendacija: {0}"
+
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:4:description
+msgid "Automatically delete Pending Documents with status Used, Moved, Split or Error when last modified is older than this many days"
+msgstr "Automatiškai ištrinti Laukiančius dokumentus su būsena Naudota arba Perkelta, Padalinta arba Klaida, kai paskutinį kartą modifikuota seniau nei šis dienų skaičius"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:fields:4:label
+msgid "Pending Document Cleanup Days"
+msgstr "Laukiančių dokumento trynimo riba dienomis"
+
+#: /Users/martin/frappe-bench/apps/invoice_helper/invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.py:20
+msgid "Pending Document Cleanup Days cannot be negative"
+msgstr "Laukiančių dokumento trynimo riba dienomis negali būti neigiamos"

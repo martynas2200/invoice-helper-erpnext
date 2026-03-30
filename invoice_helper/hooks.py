@@ -152,6 +152,7 @@ doc_events = {"Pending Document": {"after_insert": "invoice_helper.hooks.enqueue
 
 # Scheduled Tasks
 # ---------------
+scheduler_events = {"daily_maintenance": ["invoice_helper.tasks.cleanup_pending_documents"]}
 
 # scheduler_events = {
 # 	"all": [
