@@ -676,50 +676,73 @@ invoice_helper.restore_prefilled_rates = function (frm) {
 invoice_helper.apply_prefill_rows_to_items = function (frm) {
     const prefillRows = Array.isArray(frm?._prefill_rows) ? frm._prefill_rows : [];
 
-    const appendRow = (rowData) => {
+    const appendRow = async (rowData) => {
         if (!rowData?.item_code && frm._unmatched_dialog_called) return;
 
         const child = frm.add_child("items", {});
+
         if (rowData.item_code) {
-            child.item_code = rowData.item_code;
+            // triggers handlers
+            await frappe.model.set_value(
+                child.doctype,
+                child.name,
+                "item_code",
+                rowData.item_code
+            );
+        } else if (rowData.item_name) {
+            child.item_name = rowData.item_name;
         }
-        if (rowData.item_name) child.item_name = rowData.item_name;
-        if (rowData.uom) child.uom = rowData.uom;
-        if (rowData.quantity !== null && rowData.quantity !== undefined)
-            child.qty = rowData.quantity;
+        if (rowData.uom) {
+            await frappe.model.set_value(child.doctype, child.name, "uom", rowData.uom);
+        }
+        if (rowData.quantity !== null && rowData.quantity !== undefined) {
+            await frappe.model.set_value(child.doctype, child.name, "qty", rowData.quantity);
+        }
         if (rowData.price !== null && rowData.price !== undefined) {
-            child.rate = rowData.price;
+            await frappe.model.set_value(child.doctype, child.name, "rate", rowData.price);
+            // Keep a copy of the extracted price so restore_prefilled_rates()
+            // can still restore it even if ERPNext recalculates `rate`.
             child.original_price = rowData.price;
         }
-        if (rowData.total !== null && rowData.total !== undefined) child.amount = rowData.total;
+        if (rowData.total !== null && rowData.total !== undefined) {
+            child.amount = rowData.total;
+        }
     };
 
-    prefillRows.forEach((row) => {
-        if (row?.matched_item?.item_code && row.resolution !== "ignored") {
-            appendRow({
-                item_code: row.matched_item.item_code,
-                item_name: row.matched_item.item_name,
-                uom: row.matched_item.uom || row.matched_item.stock_uom,
-                quantity: row.quantity ?? null,
-                price: row.price ?? null,
-                total: row.total ?? null,
-            });
-        } else if (!row?.resolution) {
-            appendRow({
-                item_code: null,
-                item_name: null,
-                quantity:
-                    row.quantity ?? row.extracted_row?.quantity ?? row.extracted_row?.qty ?? null,
-                price: row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? null,
-                total: row.total ?? row.extracted_row?.total ?? row.extracted_row?.amount ?? null,
-            });
+    const run = async () => {
+        for (const row of prefillRows) {
+            if (row?.matched_item?.item_code && row.resolution !== "ignored") {
+                await appendRow({
+                    item_code: row.matched_item.item_code,
+                    uom: row.matched_item.uom || row.matched_item.stock_uom,
+                    quantity: row.quantity ?? null,
+                    price: row.price ?? null,
+                    total: row.total ?? null,
+                });
+            } else if (!row?.resolution) {
+                await appendRow({
+                    item_code: null,
+                    item_name: null,
+                    quantity:
+                        row.quantity ??
+                        row.extracted_row?.quantity ??
+                        row.extracted_row?.qty ??
+                        null,
+                    price:
+                        row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? null,
+                    total:
+                        row.total ?? row.extracted_row?.total ?? row.extracted_row?.amount ?? null,
+                });
+            }
         }
-    });
 
-    frm.refresh_field("items");
+        frm.refresh_field("items");
 
-    frm._prefill_rows = [];
-    frm._prefill_allow_half_empty_rows = false;
+        frm._prefill_rows = [];
+        frm._prefill_allow_half_empty_rows = false;
+    };
+
+    void run();
 };
 
 invoice_helper.show_unmatched_items_dialog = function (frm) {
