@@ -1,3 +1,4 @@
+import json
 import re
 import unicodedata
 from datetime import datetime
@@ -181,8 +182,6 @@ def get_item_codes_for_barcodes(barcodes):
 	Returns:
 	    Dictionary mapping barcode -> item_code
 	"""
-	import json
-
 	if not barcodes:
 		return {}
 
@@ -212,6 +211,135 @@ def get_item_codes_for_barcodes(barcodes):
 		}
 
 	return mapping
+
+
+@frappe.whitelist()
+def get_item_details_for_prefill(doc, rows):
+	"""Batch item-details fetch for the prefill dialog.
+
+	Mirrors what ERPNext's client-side handler does (process_item_selection) but
+	runs `get_item_details` once per row on the server.
+
+	Args:
+	    doc: parent document dict (the unsaved frm.doc)
+	    rows: [{"row_index": int, "item_code": str, "qty": float|None,
+	            "uom": str|None, "rate": float|None}]
+
+	Returns:
+	    [{"row_index": int, "item_code": str, "details": dict|None,
+	      "error": str|None}]
+	"""
+
+	from erpnext.stock.get_item_details import get_item_details
+	from frappe.utils import flt
+
+	# Over HTTP, `frappe.call` serializes dict args as JSON strings, so both
+	# `doc` and `rows` may arrive as strings and need decoding first.
+	if isinstance(doc, str):
+		doc = json.loads(doc)
+	if isinstance(rows, str):
+		rows = json.loads(rows)
+
+	parent = frappe._dict(doc or {})
+
+	results = []
+	for row in rows or []:
+		row = frappe._dict(row or {})
+		item_code = (row.get("item_code") or "").strip()
+
+		if not item_code:
+			results.append(
+				{
+					"row_index": row.get("row_index"),
+					"item_code": None,
+					"details": None,
+					"error": None,
+				}
+			)
+			continue
+
+		try:
+			ctx = frappe._dict(
+				{
+					"item_code": item_code,
+					"barcode": None,
+					"serial_no": None,
+					"batch_no": None,
+					"qty": flt(row.get("qty")) or 1,
+					"uom": row.get("uom") or None,
+					"rate": flt(row.get("rate")) or 0,
+					"net_rate": flt(row.get("rate")) or 0,
+					"warehouse": row.get("warehouse") or parent.get("set_warehouse"),
+					"set_warehouse": parent.get("set_warehouse"),
+					"customer": parent.get("customer"),
+					"supplier": parent.get("supplier"),
+					"currency": parent.get("currency"),
+					"conversion_rate": parent.get("conversion_rate"),
+					"price_list": parent.get("buying_price_list") or parent.get("selling_price_list"),
+					"price_list_currency": parent.get("price_list_currency"),
+					"plc_conversion_rate": parent.get("plc_conversion_rate"),
+					"company": parent.get("company"),
+					"doctype": parent.get("doctype"),
+					"parenttype": parent.get("doctype"),
+					"name": parent.get("name") or "",
+					"child_doctype": f"{parent.get('doctype')} Item",
+					"child_docname": "",
+					"transaction_date": parent.get("transaction_date") or parent.get("posting_date"),
+					"is_subcontracted": parent.get("is_subcontracted"),
+					"is_internal_supplier": parent.get("is_internal_supplier"),
+					"is_internal_customer": parent.get("is_internal_customer"),
+					"update_stock": parent.get("update_stock") or 0,
+					"is_return": parent.get("is_return") or 0,
+					"is_pos": parent.get("is_pos") or 0,
+					"pos_profile": parent.get("pos_profile"),
+					"ignore_pricing_rule": parent.get("ignore_pricing_rule"),
+					"tax_category": parent.get("tax_category"),
+					"item_tax_template": None,
+					"project": parent.get("project"),
+					"cost_center": None,
+					"stock_uom": None,
+					"stock_qty": None,
+					"conversion_factor": None,
+					"weight_per_unit": None,
+					"weight_uom": None,
+					"manufacturer": None,
+					"use_serial_batch_fields": None,
+					"serial_and_batch_bundle": None,
+					"order_type": parent.get("order_type"),
+				}
+			)
+
+			details = get_item_details(ctx, doc=parent)
+
+			# Replicate what the client-side `apply_price_list` and rate handlers do
+			if not flt(details.get("rate")):
+				details.rate = flt(details.get("price_list_rate"))
+			if not flt(details.get("amount")) and flt(details.qty):
+				details.amount = flt(details.qty) * flt(details.rate)
+
+			results.append(
+				{
+					"row_index": row.get("row_index"),
+					"item_code": item_code,
+					"details": details,
+					"error": None,
+				}
+			)
+		except Exception as exc:
+			frappe.log_error(
+				title="invoice_helper: get_item_details_for_prefill",
+				message=frappe.get_traceback(),
+			)
+			results.append(
+				{
+					"row_index": row.get("row_index"),
+					"item_code": item_code,
+					"details": None,
+					"error": str(exc),
+				}
+			)
+
+	return results
 
 
 def _normalize_for_item_search(value: str | None) -> str:

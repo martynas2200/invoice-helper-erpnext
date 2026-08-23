@@ -179,7 +179,6 @@ async function prefill_from_pending(
                 barcode: r.barcode || null,
                 quantity: r.quantity ?? null,
                 price: r.price ?? null,
-                total: r.total ?? null,
                 title: r.title ?? null,
                 extracted_row: r,
                 resolution: "matched",
@@ -198,7 +197,6 @@ async function prefill_from_pending(
                 barcode: r.barcode || null,
                 quantity: r.quantity ?? null,
                 price: r.price ?? null,
-                total: r.total ?? null,
                 title: r.title ?? null,
                 extracted_row: r,
                 resolution: null,
@@ -496,27 +494,31 @@ const getTitleColumnIndex = (table, columnMapping) => {
 
 function extractMappedRows(table, columnMapping) {
     const rows = [];
-    let hasHeader = false;
 
-    // double check if first row looks like a header
-    const firstRowText = (table.rows[0] || [])
-        .map((cell) => (cell.text || "").toLowerCase())
-        .join(" ");
-    if (
-        /(nr|item|barcode|qty|quantity|price|amount|rate|total|kaina|kiekis|suma|barkodas|kodas)/i.test(
-            firstRowText
-        )
-    ) {
-        hasHeader = true;
-    }
+    const isBlankRow = (row) =>
+        !(row || []).some((cell) => String(cell?.text || "").trim() !== "");
 
-    const startIdx = hasHeader ? 1 : 0;
+    const looksLikeHeaderRow = (row) =>
+        (row || [])
+            .map((cell) => (cell.text || "").toLowerCase())
+            .join(" ")
+            .match(
+                /(nr|item|barcode|qty|quantity|price|amount|rate|total|kaina|kiekis|suma|barkodas|kodas)/i
+            );
+
+    const firstNonBlankIdx = table.rows.findIndex((row) => !isBlankRow(row));
+    const hasHeader = looksLikeHeaderRow(
+        firstNonBlankIdx >= 0 ? table.rows[firstNonBlankIdx] : null
+    );
+    const startIdx = hasHeader ? firstNonBlankIdx + 1 : 0;
 
     const titleColumnIdx = getTitleColumnIndex(table, columnMapping);
 
     // Extract rows based on column mapping
     for (let rowIdx = startIdx; rowIdx < table.rows.length; rowIdx++) {
         const row = table.rows[rowIdx];
+        if (isBlankRow(row)) continue;
+
         const mapped = {};
 
         mapped.all_columns = row.map((cell) => (cell?.text || "").trim());
@@ -524,7 +526,7 @@ function extractMappedRows(table, columnMapping) {
         for (let colIdx = 0; colIdx < row.length; colIdx++) {
             const fieldName = columnMapping[`col_${colIdx}_type`];
             if (fieldName) {
-                const cellText = (row[colIdx].text || "").trim();
+                const cellText = (row[colIdx]?.text || "").trim();
                 let value = cellText;
 
                 // For barcode fields, extract barcode from text if present
@@ -541,11 +543,18 @@ function extractMappedRows(table, columnMapping) {
         }
 
         const titleText = titleColumnIdx !== null ? (row[titleColumnIdx]?.text || "").trim() : "";
-        // Only add row if it has at least one mapped field MINUS title.
-        if (Object.keys(mapped).length > 0) {
-            mapped.title = titleText
-                ? titleText
-                : (mapped.title = row.map((cell) => cell.text.trim() || "").join(" "));
+        mapped.title =
+            titleText ||
+            row
+                .map((cell) => (cell?.text || "").trim())
+                .filter(Boolean)
+                .join(" ");
+
+        // Only add rows that actually carry a barcode, quantity, price or title.
+        const hasMappedValue = ["barcode", "quantity", "price"].some(
+            (field) => String(mapped[field] || "").trim() !== ""
+        );
+        if (hasMappedValue || mapped.title) {
             rows.push(mapped);
         }
     }
@@ -673,76 +682,133 @@ invoice_helper.restore_prefilled_rates = function (frm) {
     }
 };
 
-invoice_helper.apply_prefill_rows_to_items = function (frm) {
+invoice_helper.is_untouched_empty_item_row = function (row) {
+    if (!row) return false;
+    if (row.item_code) return false;
+    if (row.item_name) return false;
+    const qty = parseFloat(row.qty) || 0;
+    const rate = parseFloat(row.rate) || 0;
+    const amount = parseFloat(row.amount) || 0;
+    return qty === 0 && rate === 0 && amount === 0;
+};
+
+invoice_helper.remove_untouched_empty_items = function (frm) {
+    if (!frm || !Array.isArray(frm.doc?.items)) return 0;
+
+    const emptyRows = frm.doc.items.filter((row) =>
+        invoice_helper.is_untouched_empty_item_row(row)
+    );
+
+    emptyRows.forEach((row) => frappe.model.clear_doc(row.doctype, row.name));
+
+    if (emptyRows.length) {
+        frm.refresh_field("items");
+        frm.dirty?.();
+    }
+
+    return emptyRows.length;
+};
+
+invoice_helper.apply_prefill_rows_to_items = async function (frm) {
     const prefillRows = Array.isArray(frm?._prefill_rows) ? frm._prefill_rows : [];
 
-    const appendRow = async (rowData) => {
-        if (!rowData?.item_code && frm._unmatched_dialog_called) return;
+    // A new form comes with an auto-added empty item row, we remove it
+    if (prefillRows.length) {
+        invoice_helper.remove_untouched_empty_items(frm);
+    }
 
-        const child = frm.add_child("items", {});
+    // Collect only the matched rows that carry an item_code for the batch fetch.
+    const payload = [];
+    for (const [idx, row] of prefillRows.entries()) {
+        if (row?.matched_item?.item_code && row.resolution !== "ignored") {
+            payload.push({
+                row_index: row.row_index ?? idx,
+                item_code: row.matched_item.item_code,
+                uom: row.matched_item.uom || row.matched_item.stock_uom || null,
+                qty: row.quantity ?? null,
+                rate: row.price ?? null,
+            });
+        }
+    }
 
-        if (rowData.item_code) {
-            // triggers handlers
-            await frappe.model.set_value(
-                child.doctype,
-                child.name,
-                "item_code",
-                rowData.item_code
-            );
-        } else if (rowData.item_name) {
-            child.item_name = rowData.item_name;
-        }
-        if (rowData.uom) {
-            await frappe.model.set_value(child.doctype, child.name, "uom", rowData.uom);
-        }
-        if (rowData.quantity !== null && rowData.quantity !== undefined) {
-            await frappe.model.set_value(child.doctype, child.name, "qty", rowData.quantity);
-        }
-        if (rowData.price !== null && rowData.price !== undefined) {
-            await frappe.model.set_value(child.doctype, child.name, "rate", rowData.price);
-            // Keep a copy of the extracted price so restore_prefilled_rates()
-            // can still restore it even if ERPNext recalculates `rate`.
-            child.original_price = rowData.price;
-        }
-        if (rowData.total !== null && rowData.total !== undefined) {
-            child.amount = rowData.total;
-        }
-    };
-
-    const run = async () => {
-        for (const row of prefillRows) {
-            if (row?.matched_item?.item_code && row.resolution !== "ignored") {
-                await appendRow({
-                    item_code: row.matched_item.item_code,
-                    uom: row.matched_item.uom || row.matched_item.stock_uom,
-                    quantity: row.quantity ?? null,
-                    price: row.price ?? null,
-                    total: row.total ?? null,
-                });
-            } else if (!row?.resolution) {
-                await appendRow({
-                    item_code: null,
-                    item_name: null,
-                    quantity:
-                        row.quantity ??
-                        row.extracted_row?.quantity ??
-                        row.extracted_row?.qty ??
-                        null,
-                    price:
-                        row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? null,
-                    total:
-                        row.total ?? row.extracted_row?.total ?? row.extracted_row?.amount ?? null,
-                });
+    // Fetch all item details in a single API call instead of handlers calling 5 times for each item_code
+    const detailsByIndex = {};
+    let fetchFailed = 0;
+    if (payload.length) {
+        try {
+            const res = await frappe.call({
+                method: "invoice_helper.api.get_item_details_for_prefill",
+                args: { doc: frm.doc, rows: payload },
+            });
+            for (const r of res?.message || []) {
+                if (r?.details) {
+                    detailsByIndex[r.row_index] = r.details;
+                } else if (r?.error) {
+                    fetchFailed++;
+                    console.error(
+                        `Could not fetch details for row ${r.row_index} (${r.item_code}):`,
+                        r.error
+                    );
+                }
             }
+        } catch (err) {
+            fetchFailed = payload.length;
+            console.error("Error fetching item details in batch:", err);
         }
+    }
 
-        frm.refresh_field("items");
+    if (fetchFailed > 0) {
+        frappe.show_alert({
+            message: __(
+                "Could not fetch item details for {0} row(s). You may need to re-select them.",
+                [fetchFailed]
+            ),
+            indicator: "orange",
+        });
+    }
 
-        frm._prefill_rows = [];
-        frm._prefill_allow_half_empty_rows = false;
-    };
+    // Add rows in source order.
+    for (const [idx, row] of prefillRows.entries()) {
+        if (row?.matched_item?.item_code && row.resolution !== "ignored") {
+            const child = frm.add_child("items", {});
+            const details = detailsByIndex[row.row_index ?? idx] || {};
+            Object.assign(child, details);
 
-    void run();
+            if (row.quantity !== null && row.quantity !== undefined) {
+                child.qty = row.quantity;
+            }
+            if (row.price !== null && row.price !== undefined) {
+                child.rate = row.price;
+                // Keep a copy of the extracted price so restore_prefilled_rates()
+                // can still restore it even if ERPNext recalculates `rate`.
+                child.original_price = row.price;
+            }
+        } else if (!row?.resolution && !frm._unmatched_dialog_called) {
+            const title = row.title || row.extracted_row?.title || null;
+            const qty =
+                row.quantity ?? row.extracted_row?.quantity ?? row.extracted_row?.qty ?? null;
+            const rate = row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? null;
+
+            // Skip rows that carry nothing usable — prevents blank item rows.
+            if (!title && !qty && !rate) continue;
+
+            const child = frm.add_child("items", {});
+            if (title) child.item_name = title;
+            if (qty !== null && qty !== undefined) child.qty = qty;
+            if (rate !== null && rate !== undefined) child.rate = rate;
+        }
+    }
+
+    frm.refresh_field("items");
+
+    try {
+        await frm.trigger("calculate_taxes_and_totals");
+    } catch (err) {
+        console.error("Error recalculating totals after prefill:", err);
+    }
+
+    frm._prefill_rows = [];
+    frm._prefill_allow_half_empty_rows = false;
 };
 
 invoice_helper.show_unmatched_items_dialog = function (frm) {
