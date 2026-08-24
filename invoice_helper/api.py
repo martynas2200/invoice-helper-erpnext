@@ -242,6 +242,9 @@ def get_item_details_for_prefill(doc, rows):
 
 	parent = frappe._dict(doc or {})
 
+	# `get_item_details` runtime-validates its doc argument, thus we build unsaved one
+	parent_doc = frappe.get_doc(dict(parent)) if parent.get("doctype") else None
+
 	results = []
 	for row in rows or []:
 		row = frappe._dict(row or {})
@@ -309,7 +312,7 @@ def get_item_details_for_prefill(doc, rows):
 				}
 			)
 
-			details = get_item_details(ctx, doc=parent)
+			details = get_item_details(ctx, doc=parent_doc)
 
 			# Replicate what the client-side `apply_price_list` and rate handlers do
 			if not flt(details.get("rate")):
