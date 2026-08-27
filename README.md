@@ -12,7 +12,7 @@ Invoice Helper is a document extraction helper built on Frappe that semi-automat
 - Party Matching: Automatically finds and links Suppliers/Customers based on Lithuanian tax codes and business IDs;
 - Background Task Processing: Handles asynchronous extraction of pending documents;
 - Textract Integration: User manually specifies which columns contain barcode, quantity, and price.
-<!-- - Tabula Support: Local table extraction available, though not fine-tuned -->
+- Tabula Support: Local table extraction available for only slightly tilted pages, though not fine-tuned. Requires a Java Runtime Environment (JRE) to be installed on the host.
 
 
 ## TODOs / Future Enhancements
@@ -30,20 +30,21 @@ You can install this app using the [bench](https://github.com/frappe/bench) CLI:
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app $URL_OF_THIS_REPO --branch develop
+bench get-app https://github.com/martynas2200/invoice-helper-erpnext --branch develop
 bench install-app invoice_helper
 ```
 
-This app relies on a few system-level tools for PDF/OCR processing. Make sure these are installed and
-available in your `PATH` on the machine or container running Frappe:
+This app relies on a few system-level tools for PDF/OCR/table processing. Make sure these are installed and
+available in the `PATH` of the machine or container running Frappe:
 
 - Poppler utilities (for `pdf2image`, e.g. `pdftoppm`)
 - Tesseract OCR (for local OCR extraction)
+- Optional: Java Runtime Environment / JDK (for `tabula-py` table extraction)
 
 For example:
 
-- macOS (Homebrew): `brew install poppler tesseract`
-- Debian/Ubuntu: `apt-get update && apt-get install -y poppler-utils tesseract-ocr`
+- macOS (Homebrew): `brew install poppler tesseract openjdk`
+- Debian/Ubuntu: `apt-get update && apt-get install -y poppler-utils tesseract-ocr default-jre-headless`
 
 ### Contributing
 

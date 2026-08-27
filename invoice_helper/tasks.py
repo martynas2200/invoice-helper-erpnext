@@ -80,7 +80,9 @@ def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supp
 	# Try to find by tax_code first
 	if tax_code:
 		try:
-			parties = frappe.get_list(party_type, filters={"tax_id": tax_code}, limit_page_length=1)
+			parties = frappe.get_list(
+				party_type, filters={"tax_id": tax_code}, limit_page_length=1, ignore_permissions=True
+			)
 			if parties:
 				logger.info(f"Found {party_type} by tax_code {tax_code}: {parties[0]['name']}")
 				return parties[0]["name"]
@@ -91,7 +93,10 @@ def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supp
 	if business_code:
 		try:
 			parties = frappe.get_list(
-				party_type, filters={"business_code": business_code}, limit_page_length=1
+				party_type,
+				filters={"business_code": business_code},
+				limit_page_length=1,
+				ignore_permissions=True,
 			)
 			if parties:
 				logger.info(f"Found {party_type} by business_code {business_code}: {parties[0]['name']}")
