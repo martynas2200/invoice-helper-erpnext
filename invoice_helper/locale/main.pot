@@ -1,14 +1,12 @@
-
+# Translations template for Invoice Helper.
 msgid ""
 msgstr ""
-"Project-Id-Version: Invoice Helper\n"
-"Report-Msgid-Bugs-To: Github issues\n"
+"Project-Id-Version: Invoice Helper VERSION\n"
+"Report-Msgid-Bugs-To: martin@ekranas.info\n"
 "POT-Creation-Date: 2026-09-16 18:08+0018\n"
 "PO-Revision-Date: 2026-09-16 18:08+0018\n"
-"Last-Translator: Auto-generated <>\n"
-"Language: lt\n"
-"Language-Team: Lithuanian\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Last-Translator: martin@ekranas.info\n"
+"Language-Team: martin@ekranas.info\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,66 +15,76 @@ msgstr ""
 #. Label of the aws_access_key (Data) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "AWS Access Key"
-msgstr "AWS prieigos raktas"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.py:18
 msgid "AWS Access Key and Secret Key are required when enabling Textract integration"
-msgstr "AWS prieigos raktas ir slaptasis raktas yra būtini įgalinant Textract integraciją"
+msgstr ""
 
 #. Label of the region (Select) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "AWS Region"
-msgstr "AWS regionas"
+msgstr ""
 
 #. Label of the aws_secret_key (Password) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "AWS Secret Key"
-msgstr "AWS slaptasis raktas"
+msgstr ""
 
 #: invoice_helper/extraction/textract.py:42
 msgid "AWS credentials are not configured. Please set them in Textract Settings."
-msgstr "AWS kredencialai nėra sukonfigūruoti. Prašome juos nustatyti Textract nustatymuose."
+msgstr ""
+
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+msgid "Accounts Manager"
+msgstr ""
+
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+msgid "Accounts User"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:78
 msgid "Add File from File List"
-msgstr "Pridėti failą iš failų sąrašo"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:65
 msgid "Amazon Textract Tables"
-msgstr "Amazon Textract lentelės"
+msgstr ""
 
 #: invoice_helper/tasks.py:171
 msgid "Amazon Textract extraction failed."
-msgstr "Amazon Textract išgavimas nepavyko."
+msgstr ""
 
 #. Label of the amounts_section (Section Break) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Amounts"
-msgstr "Suma"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:117
 msgid "An error occurred"
-msgstr "Įvyko klaida"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:34
 msgid "Attach"
-msgstr "Prisegti"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:7
 msgid "Attach File to Invoice"
-msgstr "Prisegti failą prie sąskaitos"
+msgstr ""
 
 #. Description of the 'Party Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Auto-populated based on Document Type (optional for Internal documents)"
-msgstr "Automatiškai užpildoma pagal dokumento tipą (neprivaloma vidiniams dokumentams)"
+msgstr ""
 
 #. Description of the 'Pending Document Cleanup Days' (Int) field in DocType
 #. 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Automatically delete Pending Documents with status Used, Moved, Split or Error when last modified is older than this many days"
-msgstr "Automatiškai ištrinti Laukiančius dokumentus su būsena Naudota arba Perkelta, Padalinta arba Klaida, kai paskutinį kartą modifikuota seniau nei šis dienų skaičius"
+msgstr ""
 
 #. Label of the barcode (Data) field in DocType 'Pending Document Barcode'
 #. Label of the barcode (Data) field in DocType 'Pending Document Extraction
@@ -85,182 +93,181 @@ msgstr "Automatiškai ištrinti Laukiančius dokumentus su būsena Naudota arba 
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 #: invoice_helper/public/js/prefill_dialog.js:430
 msgid "Barcode"
-msgstr "Brūkšninis kodas"
+msgstr ""
 
 #. Label of the re_barcodes (Table) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Barcodes Found"
-msgstr "Rasti brūkšniniai kodai"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:67
 msgid "Barcodes Only"
-msgstr "Tik brūkšniniai kodai"
+msgstr ""
 
 #. Description of the 'Barcodes Found' (Table) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Barcodes found in the document"
-msgstr "Brūkšniniai kodai, rasti dokumente"
+msgstr ""
 
 #. Label of the bill_date (Date) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Bill Date"
-msgstr "Sąskaitos data"
+msgstr ""
 
 #. Label of the bill_section (Section Break) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Bill Information"
-msgstr "Sąskaitos informacija"
+msgstr ""
 
 #. Label of the bill_no (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Bill Number"
-msgstr "Sąskaitos numeris"
+msgstr ""
 
 #. Label of the classification_section (Section Break) field in DocType
 #. 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Classification"
-msgstr "Klasifikacija"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:107
 msgid "Click to expand"
-msgstr "Spustelėkite, kad išplėstumėte"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:95
 msgid "Close"
-msgstr "Uždaryti"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:423
 msgid "Column"
-msgstr "Stulpelis"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:412
 msgid "Column Mapping"
-msgstr "Stulpelių sujungimas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:377
 msgid "Confidence"
-msgstr "Užtikrintumas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:743
 msgid "Could not add item details"
-msgstr "Nepavyko pridėti prekės detalių"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:745
 msgid "Could not fetch item details for {0} row(s). You may need to re-select them."
-msgstr "Nepavyko gauti prekės detalių {0} eilutėms(-ėms). Gali tekti jas vėl pasirinkti."
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:44
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:98
 msgid "Create"
-msgstr "Sukurti"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:27
 msgid "Create Pending Document"
-msgstr "Sukurti laukiantį dokumentą"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:80
 msgid "Create Pending Document from File"
-msgstr "Sukurti laukiantį dokumentą iš failo"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:53
 msgid "Create Pending Documents"
-msgstr "Sukurti laukiantį dokumentą"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:36
 msgid "Create Record"
-msgstr "Kurti įrašą"
+msgstr ""
 
 #. Description of the 'Supplier Business Code' (Data) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Custom field in Supplier"
-msgstr "Naudojamas tiekėjo pasirinkimui"
+msgstr ""
 
 #. Option for the 'Party Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Customer"
-msgstr "Klientas"
+msgstr ""
 
 #. Label of the document_info_section (Section Break) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Document Information"
-msgstr "Dokumento informacija"
+msgstr ""
 
 #. Label of the document_name (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Document Name"
-msgstr "Dokumento pavadinimas"
+msgstr ""
 
 #. Label of the type (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Document Type"
-msgstr "Dokumento tipas"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:126
 msgid "Download"
-msgstr "Atsisiųsti"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:179
 msgid "Download File"
-msgstr "Atsisiųsti failą"
+msgstr ""
 
 #. Label of the due_date (Date) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Due Date"
-msgstr "Apmokėjimo data"
+msgstr ""
 
 #. Label of the enabled (Check) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "Enable Textract Integration"
-msgstr "Įgalinti Textract integraciją"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:35
 msgid "Enter page ranges separated by commas. Example: 1-2,3,4-5"
-msgstr "Įveskite puslapių diapazonus, atskirtus kableliais. Pavyzdys: 1-2,3,4-5"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 #: invoice_helper/public/js/split_dialog.js:116
 msgid "Error"
-msgstr "Klaida"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:80
 msgid "Expand"
-msgstr "Išplėsti"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:442
 msgid "Extract"
-msgstr "Išgauti"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Extracted"
-msgstr "Išgauta"
+msgstr ""
 
 #. Label of the items (Table) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Extracted Items"
-msgstr "Išgautos prekės"
+msgstr ""
 
 #. Label of the extraction_tab (Tab Break) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Extraction"
-msgstr "Apdorojimas"
+msgstr ""
 
 #. Label of the extraction_json (Code) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Extraction JSON"
-msgstr "Išgavimo JSON"
+msgstr ""
 
 #: invoice_helper/tasks.py:253
 msgid "Extraction failed with error:"
-msgstr "Išgavimas nepavyko dėl klaidos:"
+msgstr ""
 
-# Fields
 #. Label of the file (Link) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:11
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:18
@@ -268,513 +275,553 @@ msgstr "Išgavimas nepavyko dėl klaidos:"
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 #: invoice_helper/public/js/split_dialog.js:24
 msgid "File"
-msgstr "Failas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:586
 msgid "File attached"
-msgstr "Failas pridėtas"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:45
 msgid "File attached successfully"
-msgstr "Failas sėkmingai prisegtas"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:177
 msgid "File type"
-msgstr "Failo tipas"
+msgstr ""
 
 #. Label of the header_rows_limit (Int) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Header Rows Limit"
-msgstr "Antraščių eilučių riba"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.py:16
 msgid "Header Rows Limit must be at least 1"
-msgstr "Antraščių eilučių riba turi būti bent 1"
+msgstr ""
 
 #. Label of the id_value (Data) field in DocType 'OCR Ignored ID'
 #: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
 msgid "ID Value"
-msgstr "ID reikšmė"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:77
 msgid "If available, Bill No, Posting Date, Due Date, Supplier from Pending Document"
-msgstr "Jei įmanoma, sąskaitos nr., įrašymo data, mokėjimo data, tiekėjas"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:57
 msgid "If checked, creates Pending Document records for each split PDF."
-msgstr "Jei pažymėta, kiekvienam padalintam PDF sukuriami laukiančio dokumento įrašai."
+msgstr ""
 
 #. Label of the section_ignored_ids (Section Break) field in DocType 'OCR
 #. Settings'
 #. Label of the ignored_ids (Table) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Ignored IDs"
-msgstr "Ignoruojami ID"
+msgstr ""
 
 #. Option for the 'Document Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Internal"
-msgstr "Vidinis"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:28
 msgid "Invoice"
-msgstr "Sąskaita"
+msgstr ""
 
 #: invoice_helper/public/js/purchase_invoice.js:23
 #: invoice_helper/public/js/purchase_invoice.js:31
 #: invoice_helper/public/js/sales_invoice.js:20
 #: invoice_helper/public/js/sales_invoice.js:28
 msgid "Invoice Helper"
-msgstr "Sąskaitų pagalbininkas"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:11
 msgid "Invoice Type"
-msgstr "Sąskaitos tipas"
+msgstr ""
 
 #. Label of the items_section (Section Break) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Items & References"
-msgstr "Prekės ir nuorodos"
+msgstr ""
 
 #. Label of the total (Currency) field in DocType 'Pending Document Extraction
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Line Total"
-msgstr "Eilutės suma"
+msgstr ""
 
 #. Description of the 'Ignored IDs' (Table) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "List of VAT codes and business IDs to exclude from extraction"
-msgstr "Sąrašas PVM kodų ir įmonių ID, kurių išgavimas neįtraukiamas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:66
 msgid "Local table extraction"
-msgstr "Vietinis lentelės išgavimas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:440
 msgid "Map Columns"
-msgstr "Sujungti stulpelius"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:21
 msgid "Move"
-msgstr "Perkelti"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Moved"
-msgstr "Perkelta"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:359
 msgid "Multiple tables found. Choose the one containing items:"
-msgstr "Rasta kelios lentelės. Pasirinkite tą, kurioje yra prekės:"
+msgstr ""
 
 #. Description of the 'S3 Bucket' (Data) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "Name of the S3 bucket used for Textract input documents."
-msgstr "Pavadinimas S3 kibirėlio, naudojamo Textract įvesties dokumentams."
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:218
 msgid "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
-msgstr "Nerasta tikslių atitikmenų išgautoms prekėms. Ar norite peržiūrėti nesusietas eilutes ir pabandyti jas susieti rankiniu būdu, pasinaudojant „fuzzy“ paieškos pagalba?<br><br></b> Tai gali būti ypač naudinga, jei sąskaita neturi brūkšninių kodų."
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:13
 msgid "No file found."
-msgstr "Failas nerastas."
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:630
 msgid "No items to restore"
-msgstr "Nėra prekių, kurias būtų galima atkurti"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:655
 msgid "No price changes detected"
-msgstr "Kainų pokyčių nepastebėta"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:342
 msgid "No tables found in the document"
-msgstr "Dokumente nerasta lentelių"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:818
 msgid "No unmatched rows to review"
-msgstr "Nėra nerastų eilučių peržiūrai"
+msgstr ""
 
 #. Description of the 'Header Rows Limit' (Int) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Number of rows from top of document to consider as header region for extraction"
-msgstr "Eilučių skaičius iš dokumento viršaus, laikomas antraštės sritimi išgavimui"
+msgstr ""
 
 #. Label of the ocr_config (Data) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "OCR Config"
-msgstr "OCR konfigūracija"
+msgstr ""
 
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
 msgid "OCR Ignored ID"
-msgstr "OCR ignoruojamas ID"
+msgstr ""
 
 #. Label of the ocr_lang (Data) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "OCR Language"
-msgstr "OCR kalba"
+msgstr ""
 
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "OCR Settings"
-msgstr "OCR nustatymai"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:124
 msgid "Open"
-msgstr "Atidaryti"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:14
 msgid "Open File"
-msgstr "Atidaryti failą"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:90
 msgid "Open in new tab"
-msgstr "Atidaryti naujame skirtuke"
+msgstr ""
 
 #. Description of the 'Extraction JSON' (Code) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Optional JSON with extraction results"
-msgstr "Pasirinktinė JSON su išgavimo rezultatais"
+msgstr ""
 
 #. Description of the 'S3 Prefix' (Data) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "Optional folder/prefix inside the S3 bucket for uploaded documents."
-msgstr "Pasirinktinis aplankas/prefixas S3 kibirėlyje įkeltiesiems dokumentams."
+msgstr ""
 
 #. Option for the 'Document Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Other"
-msgstr "Kitas"
+msgstr ""
 
 #. Label of the output_section (Section Break) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Output"
-msgstr "Išvestis"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:39
 msgid "Output Folder"
-msgstr "Išvesties aplankas"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:114
 msgid "PDF - Click to view"
-msgstr "PDF - spustelėkite, kad peržiūrėtumėte"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:75
 msgid "PDF split successfully into {0} documents"
-msgstr "PDF sėkmingai padalintas į {0} dokumentus"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:32
 msgid "Page Ranges"
-msgstr "Puslapių diapazonai"
+msgstr ""
 
 #. Label of the party (Dynamic Link) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Party"
-msgstr "Partneris"
+msgstr ""
 
 #. Label of the party_type (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Party Type"
-msgstr "Partnerio tipas"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Pending"
-msgstr "Laukiama"
+msgstr ""
 
-# DocType / app
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 #: invoice_helper/public/js/prefill_dialog.js:49
 msgid "Pending Document"
-msgstr "Laukiantis dokumentas"
+msgstr ""
 
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json
 msgid "Pending Document Barcode"
-msgstr "Laukiantis dokumento brūkšninis kodas"
+msgstr ""
 
 #. Label of the pending_document_cleanup_days (Int) field in DocType 'OCR
 #. Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Pending Document Cleanup Days"
-msgstr "Laukiančių dokumento trynimo riba dienomis"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.py:20
 msgid "Pending Document Cleanup Days cannot be negative"
-msgstr "Laukiančių dokumento trynimo riba dienomis negali būti neigiama"
+msgstr ""
 
-# Related doctypes / tables
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Pending Document Extraction Item"
-msgstr "Laukiamo dokumento išgavimo eilutė"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:103
 msgid "Pending Document created for {0}"
-msgstr "Laukiantis dokumentas sukurtas {0}"
+msgstr ""
 
 #. Description of the 'Row Threshold' (Int) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Pixel threshold for grouping OCR elements into rows based on Y coordinates"
-msgstr "Pikselių slenkstis OCR elementams grupuoti į eilutes pagal Y koordinates"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:452
 msgid "Please ensure each column type is selected only once."
-msgstr "Prašome užtikrinti, kad kiekvienas stulpelio tipas būtų pasirinktas tik vieną kartą."
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:144
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:206
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:226
 msgid "Please select a file first"
-msgstr "Prašome pirmiausia pasirinkti failą"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:82
 msgid "Prefill"
-msgstr "Papildyti"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:74
 msgid "Prefill Header Fields"
-msgstr "Užpildyti antraštės laukus"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:62
 msgid "Prefill Type"
-msgstr "Užpildymo tipas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:45
 #: invoice_helper/public/js/purchase_invoice.js:21
 msgid "Prefill from Pending Document"
-msgstr "Papildyti iš laukiančio dokumento"
+msgstr ""
 
 #. Label of the file_preview (HTML) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Preview"
-msgstr "Peržiūra"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:7
 msgid "Preview File"
-msgstr "Peržiūrėti failą"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:125
 msgid "Preview not available"
-msgstr "Peržiūra negalima"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:432
 msgid "Price"
-msgstr "Kaina"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Processing"
-msgstr "Apdorojama"
+msgstr ""
 
-# Options / Select values
 #. Option for the 'Document Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Purchase"
-msgstr "Pirkimas"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:14
 msgid "Purchase Invoice"
-msgstr "Pirkimo sąskaita"
+msgstr ""
 
 #. Label of the quantity (Float) field in DocType 'Pending Document Extraction
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Qty"
-msgstr "Kiekis"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:431
 msgid "Quantity"
-msgstr "Kiekis"
+msgstr ""
 
 #: invoice_helper/public/js/purchase_invoice.js:27
 #: invoice_helper/public/js/sales_invoice.js:24
 msgid "Restore prefilled rates"
-msgstr "Atkurti užpildytas kainas"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:650
 msgid "Restored {0} item price(s) to original extraction value"
-msgstr "Atkurta {0} prekės(-ių) kaina į pradinę išgavimo reikšmę"
+msgstr ""
 
 #. Label of the row_threshold (Int) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Row Threshold"
-msgstr "Eilučių slenkstis"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.py:18
 msgid "Row Threshold must be at least 1"
-msgstr "Eilučių slenkstis turi būti bent 1"
+msgstr ""
 
 #. Label of the s3_bucket (Data) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "S3 Bucket"
-msgstr "S3 kibirėlis"
+msgstr ""
 
 #. Label of the s3_prefix (Data) field in DocType 'Textract Settings'
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "S3 Prefix"
-msgstr "S3 prefiksas"
+msgstr ""
 
 #. Option for the 'Document Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Sale"
-msgstr "Pardavimas"
+msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:15
 msgid "Sales Invoice"
-msgstr "Pardavimo sąskaita"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:354
 msgid "Select Table"
-msgstr "Pasirinkite lentelę"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:43
 msgid "Select folder where split PDFs will be saved (optional)"
-msgstr "Pasirinkite aplanką, kuriame bus išsaugoti padalinti PDF failai (pasirinktinai)"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:25
 msgid "Show Drawer"
-msgstr "Rodyti stalčių"
+msgstr ""
 
 #: invoice_helper/public/js/pending_file_drawer.js:85
 msgid "Shrink"
-msgstr "Sutraukti"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Split"
-msgstr "Padalinta"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:28
 #: invoice_helper/public/js/file.js:4
 #: invoice_helper/public/js/split_dialog.js:62
 msgid "Split PDF"
-msgstr "Padalinti PDF"
+msgstr ""
 
 #: invoice_helper/public/js/split_dialog.js:21
 msgid "Split PDF File"
-msgstr "Padalinti PDF failą"
+msgstr ""
 
 #. Label of the status (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Status"
-msgstr "Statusas"
+msgstr ""
 
 #. Label of the subtotal (Currency) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Subtotal"
-msgstr "Tarpinė suma"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:221
 msgid "Successfully prefilled {0} items, but {1} rows seem to be unmatched. Do you want to review these unmatched rows or create items with a quick entry dialog?"
-msgstr "Sėkmingai užpildyta {0} prekių, tačiau {1} eilutės(-ių) nepavyko susieti. Ar norite peržiūrėti šias eilutes ar sukurti prekes dialogo lange?"
+msgstr ""
 
 #. Option for the 'Party Type' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Supplier"
-msgstr "Tiekėjas"
+msgstr ""
 
 #. Label of the business_id (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Supplier Business Code"
-msgstr "Tiekėjo įmonės kodas"
+msgstr ""
 
 #. Label of the tax_code (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Supplier VAT Code"
-msgstr "Tiekėjo PVM mokėtojo kodas"
+msgstr ""
+
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "System Manager"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:375
 msgid "Table"
-msgstr "Lentelė"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:402
 msgid "Table has insufficient rows"
-msgstr "Lentelėje nepakanka eilučių"
+msgstr ""
 
 #. Label of the tax_amount (Currency) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Tax Amount"
-msgstr "Mokesčio suma"
+msgstr ""
 
 #. Description of the 'OCR Config' (Data) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Tesseract configuration flags (--oem 3 uses LSTM, --psm 6 assumes uniform text block)"
-msgstr "Tesseract konfigūracijos parametrai (--oem 3 naudoja LSTM, --psm 6 daro prielaidą apie vienodą teksto bloką)"
+msgstr ""
 
 #. Description of the 'OCR Language' (Data) field in DocType 'OCR Settings'
 #: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
 msgid "Tesseract language code (e.g., 'lit' for Lithuanian, 'eng' for English, or multiple separated by '+' like 'lit+eng')"
-msgstr "Tesseract kalbos kodas (pvz., 'lit' lietuvių kalbai, 'eng' anglų kalbai arba keli atskirti '+' kaip 'lit+eng')"
+msgstr ""
 
 #: invoice_helper/extraction/textract.py:63
 msgid "Textract S3 bucket is not configured. Please set 's3_bucket' in Textract Settings."
-msgstr "Textract S3 kibirėlis nėra sukonfigūruotas. Prašome nustatyti 's3_bucket' Textract nustatymuose."
+msgstr ""
 
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
 msgid "Textract Settings"
-msgstr "Textract nustatymai"
+msgstr ""
 
 #: invoice_helper/extraction/textract.py:37
 msgid "Textract integration is not enabled. Please configure it in Textract Settings."
-msgstr "Textract integracija nėra įgalinta. Prašome sukonfigūruoti ją Textract nustatymuose."
+msgstr ""
 
 #. Label of the total (Currency) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Total"
-msgstr "Bendra suma"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:58
 msgid "Type = {0}"
-msgstr "Tipas = {0}"
+msgstr ""
 
 #. Label of the price (Currency) field in DocType 'Pending Document Extraction
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Unit Price"
-msgstr "Vieneto kaina"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:11
 msgid "Upload File"
-msgstr "Įkelti failą"
+msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:20
 msgid "Upload succeeded, but File doc reference missing."
-msgstr "Įkėlimas pavyko, tačiau trūksta failo dokumento nuorodos."
+msgstr ""
 
 #. Label of the uploaded_on (Datetime) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Uploaded On"
-msgstr "Įkėlimo data"
+msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Used"
-msgstr "Naudota"
+msgstr ""
 
 #. Description of the 'Supplier VAT Code' (Data) field in DocType 'Pending
 #. Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
 msgid "Used to pick supplier"
-msgstr "Naudojamas tiekėjo pasirinkimui"
+msgstr ""
 
 #. Description of the 'ID Value' (Data) field in DocType 'OCR Ignored ID'
 #: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
 msgid "VAT code or business ID to ignore (e.g., 'LT112322334' or '498349874')"
-msgstr "Ignoruojamas PVM kodas arba įmonės ID (pvz., 'LT112322334' arba '498349874')"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "ap-northeast-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "ap-southeast-1"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:375
 msgid "columns"
-msgstr "stulpeliai"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "eu-central-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "eu-west-1"
+msgstr ""
 
 #: invoice_helper/public/js/prefill_dialog.js:375
 msgid "rows"
-msgstr "eilutės"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-east-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-west-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-west-2"
+msgstr ""
+

@@ -35,12 +35,12 @@ invoice_helper.show_move_file_dialog = function (pendingDocument, pendingFile) {
         primary_action: async (values) => {
             if (!values?.invoice || !values?.invoice_type) return;
             d.hide();
-            const r = await invoice_helper.attach_pending_document_file(
+            const attachment = await invoice_helper.attach_pending_document_file(
                 pendingFile,
                 values.invoice_type,
                 values.invoice
             );
-            if (r.message) {
+            if (attachment) {
                 frappe.show_alert({
                     message: __("File attached successfully"),
                     indicator: "green",

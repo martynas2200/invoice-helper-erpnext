@@ -11,6 +11,8 @@ from invoice_helper.extraction.textract import get_textract_extractor, is_textra
 logger = frappe.logger("invoice_helper.tasks")
 logger.setLevel("DEBUG")
 
+MAX_INVOICE_NUMBER_LENGTH = 140
+
 
 def cleanup_pending_documents():
 	"""
@@ -175,7 +177,9 @@ def extract_document(doc_name):
 		# Map extracted data to pending document fields
 		extracted_data = {
 			"bill_date": invoice_data.get("bill_date"),
-			"bill_no": invoice_data.get("bill_no"),
+			"bill_no": invoice_data.get("bill_no")[:MAX_INVOICE_NUMBER_LENGTH]
+			if invoice_data.get("bill_no")
+			else None,
 			"tax_code": invoice_data.get("supplier_vat"),  # TODO: change it
 			"business_id": invoice_data.get("supplier_id"),  # TODO: change it
 			"due_date": invoice_data.get("due_date"),

@@ -568,65 +568,35 @@ invoice_helper.attach_pending_document_file_to_form = async (frm, pendingFile) =
     const doctype = frm.doctype || frm.doc.doctype;
     const docname = frm.docname || frm.doc.name;
 
-    const r = await invoice_helper.attach_pending_document_file(pendingFile, doctype, docname);
-    if (r.message) {
-        frm.attachments.attachment_uploaded(r.message);
-        console.log("File attached successfully:", r.message);
-        frappe.show_alert({
-            message: __("File attached"),
-            indicator: "green",
-        });
-    }
+    const attachment = await invoice_helper.attach_pending_document_file(
+        pendingFile,
+        doctype,
+        docname
+    );
+    if (!attachment) return;
+
+    frm.attachments.attachment_uploaded(attachment);
+    frappe.show_alert({
+        message: __("File attached"),
+        indicator: "green",
+    });
 };
 
 // We could use predefined frappe methods to attach files
 // However, it is always "Home/Attachments" folder which is not desired
-// Therefore, we make a custom implementation here
 invoice_helper.attach_pending_document_file = async (pendingFile, doctype, docname) => {
-    try {
-        const fileDoc = await frappe.db.get_doc("File", pendingFile);
+    const { message: source } = await frappe.db.get_value("File", pendingFile, "folder");
 
-        if (fileDoc) {
-            // POST /api/method/upload_file
-            return new Promise((resolve, reject) => {
-                frappe.call({
-                    method: "frappe.handler.upload_file",
-                    args: {
-                        is_private: fileDoc.is_private,
-                        folder: fileDoc.folder,
-                        library_file_name: fileDoc.name,
-                        doctype: doctype,
-                        docname: docname,
-                    },
-                    callback: (r) => {
-                        if (r.message) {
-                            console.log("File attached successfully:", r.message);
-                            resolve(r);
-                        } else {
-                            reject(new Error("No message in response"));
-                        }
-                    },
-                    error: (r) => {
-                        reject(new Error(r.message || "Unknown error"));
-                    },
-                });
-            });
-        } else {
-            frappe.msgprint({
-                title: __("File not found"),
-                message: __("Could not find File document: {0}", [pendingFile]),
-                indicator: "red",
-            });
-            throw new Error("File not found: " + pendingFile);
-        }
-    } catch (err) {
-        console.error("Error attaching file:", err);
-        frappe.show_alert({
-            message: __("Could not attach file from Pending Document: {0}", [err.message]),
-            indicator: "orange",
-        });
-        throw err;
-    }
+    const r = await frappe.call({
+        method: "frappe.handler.upload_file",
+        args: {
+            library_file_name: pendingFile,
+            folder: source?.folder || "Home",
+            doctype: doctype,
+            docname: docname,
+        },
+    });
+    return r.message;
 };
 // Render a preview table (header + up to 3 data rows)
 function render_table_preview(table) {
@@ -733,6 +703,7 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
 
     // Fetch all item details in a single API call instead of handlers calling 5 times for each item_code
     const detailsByIndex = {};
+    const errorsByIndex = {};
     let fetchFailed = 0;
     if (payload.length) {
         try {
@@ -745,6 +716,7 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
                     detailsByIndex[r.row_index] = r.details;
                 } else if (r?.error) {
                     fetchFailed++;
+                    errorsByIndex[r.row_index] = r.error;
                     console.error(
                         `Could not fetch details for row ${r.row_index} (${r.item_code}):`,
                         r.error
@@ -758,11 +730,17 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
     }
 
     if (fetchFailed > 0) {
-        frappe.show_alert({
-            message: __(
-                "Could not fetch item details for {0} row(s). You may need to re-select them.",
-                [fetchFailed]
-            ),
+        const errorMessages = Object.entries(errorsByIndex)
+            .map(([rowIndex, error]) => `${rowIndex}: ${frappe.utils.escape_html(error)}`)
+            .join("<br>");
+        frappe.msgprint({
+            title: __("Could not add item details"),
+            message:
+                errorMessages ||
+                __(
+                    "Could not fetch item details for {0} row(s). You may need to re-select them.",
+                    [fetchFailed]
+                ),
             indicator: "orange",
         });
     }
@@ -770,6 +748,9 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
     // Add rows in source order.
     for (const [idx, row] of prefillRows.entries()) {
         if (row?.matched_item?.item_code && row.resolution !== "ignored") {
+            if (errorsByIndex[row.row_index ?? idx]) {
+                continue;
+            }
             const child = frm.add_child("items", {});
             const details = detailsByIndex[row.row_index ?? idx] || {};
             Object.assign(child, details);
@@ -800,9 +781,15 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
     }
 
     frm.refresh_field("items");
+    for (const item of frm.doc.items || []) {
+        if (item.item_tax_rate) {
+            frm.cscript.add_taxes_from_item_tax_template(item.item_tax_rate);
+        }
+    }
 
     try {
         await frm.trigger("calculate_taxes_and_totals");
+        await frm.trigger("calculate_net_weight");
     } catch (err) {
         console.error("Error recalculating totals after prefill:", err);
     }
@@ -1454,12 +1441,12 @@ invoice_helper.show_move_file_dialog = function (pendingFile) {
         primary_action: async (values) => {
             if (!values?.invoice || !values?.invoice_type) return;
             d.hide();
-            const r = await invoice_helper.attach_pending_document_file(
+            const attachment = await invoice_helper.attach_pending_document_file(
                 pendingFile,
                 values.invoice_type,
                 values.invoice
             );
-            if (r.message) {
+            if (attachment) {
                 frappe.show_alert({
                     message: __("File attached successfully"),
                     indicator: "green",
