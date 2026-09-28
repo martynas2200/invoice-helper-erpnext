@@ -1,8 +1,6 @@
 frappe.ui.form.on("Pending Document", {
     refresh(frm) {
         frm.trigger("update_file_preview");
-        frm.trigger("toggle_party_field");
-        // Ensure party_type is set based on type when form loads
         frm.add_custom_button(
             __("Preview File"),
             function () {
@@ -29,10 +27,7 @@ frappe.ui.form.on("Pending Document", {
                 invoice_helper.show_split_dialog(frm);
             });
 
-            if (
-                (frm.doc.type === "Purchase" || frm.doc.type === "Sale") &&
-                frm.doc.status == "Extracted"
-            ) {
+            if (frm.doc.status == "Extracted") {
                 frm.add_custom_button(__("Create Record"), function () {
                     frm.trigger("open_new_invoice");
                 })
@@ -48,29 +43,6 @@ frappe.ui.form.on("Pending Document", {
 
     file(frm) {
         frm.trigger("update_file_preview");
-    },
-
-    type(frm) {
-        // Auto-set party_type based on document type
-        if (frm.doc.type === "Purchase") {
-            frm.set_value("party_type", "Supplier");
-        } else if (frm.doc.type === "Sale") {
-            frm.set_value("party_type", "Customer");
-        } else {
-            // Internal or Other - clear party_type
-            frm.set_value("party_type", "");
-            frm.set_value("party", "");
-        }
-        frm.trigger("toggle_party_field");
-    },
-
-    party_type(frm) {
-        frm.trigger("toggle_party_field");
-    },
-
-    toggle_party_field(frm) {
-        // Hide party field if party_type is empty
-        frm.set_df_property("party", "hidden", !frm.doc.party_type);
     },
 
     update_file_preview(frm) {
@@ -264,13 +236,9 @@ frappe.ui.form.on("Pending Document", {
     },
 
     open_new_invoice(frm) {
-        const invoice_type = frm.doc.type === "Purchase" ? "Purchase Invoice" : "Sales Invoice";
-        const party_field = frm.doc.type === "Purchase" ? "supplier" : "customer";
-        // let route = `/app/${doctype_route}/new`;
-        // Open the new invoice form
         frappe._pending_document = frm.doc.name;
-        frappe.new_doc(invoice_type, {
-            [party_field]: frm.doc.party,
+        frappe.new_doc("Purchase Invoice", {
+            supplier: frm.doc.party,
             bill_date: frm.doc.bill_date,
             posting_time: "07:00:00",
             edit_posting_date: 1,

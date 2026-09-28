@@ -99,7 +99,6 @@ def upload_pending_document() -> dict:
 			"file": file_doc.name,
 			"status": "Pending",
 			"document_name": file_name,
-			"party_type": "Supplier",
 		}
 	).insert(ignore_permissions=True)
 
@@ -121,7 +120,6 @@ def upload_pending_document() -> dict:
 		"file_name": file_doc.file_name,
 		"status": pending.status,
 		"document_name": pending.get("document_name"),
-		"party_type": pending.get("party_type"),
 		"party": pending.get("party"),
 	}
 
@@ -157,7 +155,6 @@ def create_pending_from_file(
 		{
 			"doctype": "Pending Document",
 			"file": file_doc.name,
-			"type": (type or "Other").title(),
 			"status": "Pending",
 			"document_name": document_name,
 		}
@@ -461,16 +458,45 @@ def _detect_brands_from_title(
 	return result
 
 
+def _get_first_barcode_by_item(item_codes: list[str]) -> dict[str, str]:
+	if not item_codes:
+		return {}
+
+	barcode_rows = frappe.get_all(
+		"Item Barcode",
+		filters={"parent": ["in", item_codes]},
+		fields=["parent", "barcode"],
+		order_by="parent asc, idx asc",
+	)
+
+	barcodes_by_item = {}
+	for barcode_row in barcode_rows:
+		item_code = barcode_row.get("parent")
+		barcode = str(barcode_row.get("barcode") or "").strip()
+		if item_code and barcode and item_code not in barcodes_by_item:
+			barcodes_by_item[item_code] = barcode
+
+	return barcodes_by_item
+
+
+def _augment_recommendations_with_barcodes(recommendations: list[dict]) -> list[dict]:
+	item_codes = [recommendation["item_code"] for recommendation in recommendations]
+	barcodes_by_item = _get_first_barcode_by_item(item_codes)
+
+	for recommendation in recommendations:
+		recommendation["matched_barcode"] = barcodes_by_item.get(recommendation["item_code"])
+
+	return recommendations
+
+
 @frappe.whitelist()
 def recommend_items_for_title(title=None, max_results=8):
 	"""Return ranked Item suggestions for noisy extracted invoice titles.
 
-	Args:
-	    title: Extracted title text from invoice row.
-	    max_results: Max number of recommended rows to return (default 8).
+		:param title: Extracted title text from invoice row.
+		:param max_results: Max number of recommended rows to return (default 8).
 
-	Returns:
-	    List of ranked suggestions with item_code, item_name, stock_uom and score.
+	Returns a list of ranked suggestions with item_code, item_name, stock_uom, score and matched_barcode.
 	"""
 	if not title:
 		return []
@@ -608,7 +634,8 @@ def recommend_items_for_title(title=None, max_results=8):
 		)
 
 	ranked.sort(key=lambda d: d.get("score", 0), reverse=True)
-	return ranked[:max_results]
+	recommendations = ranked[:max_results]
+	return _augment_recommendations_with_barcodes(recommendations)
 
 
 @frappe.whitelist()

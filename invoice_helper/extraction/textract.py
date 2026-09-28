@@ -13,8 +13,10 @@ import frappe
 
 try:
 	import boto3
+	from botocore.config import Config
 except ImportError:
 	boto3 = None
+	Config = None
 
 
 class TextractExtractor:
@@ -30,9 +32,9 @@ class TextractExtractor:
 		self.enabled = settings.enabled or False
 		self.s3_bucket = getattr(settings, "s3_bucket", None)
 		self.s3_prefix = (getattr(settings, "s3_prefix", None) or "").strip("/")
+		self.min_table_columns = getattr(settings, "min_table_columns", 4) or 4
 
 		if not self.enabled:
-			# assuming we checked before initialization that Textract is enabled
 			frappe.throw(
 				frappe._("Textract integration is not enabled. Please configure it in Textract Settings.")
 			)
@@ -42,8 +44,15 @@ class TextractExtractor:
 				frappe._("AWS credentials are not configured. Please set them in Textract Settings.")
 			)
 
+		client_config = Config(
+			connect_timeout=10,
+			read_timeout=180,
+			retries={"max_attempts": 5, "mode": "standard"},
+		)
+
 		self.client = boto3.client(
 			"textract",
+			config=client_config,
 			region_name=self.region,
 			aws_access_key_id=self.aws_access_key,
 			aws_secret_access_key=self.aws_secret_key,
@@ -51,6 +60,7 @@ class TextractExtractor:
 
 		self.s3_client = boto3.client(
 			"s3",
+			config=client_config,
 			region_name=self.region,
 			aws_access_key_id=self.aws_access_key,
 			aws_secret_access_key=self.aws_secret_key,
@@ -97,27 +107,30 @@ class TextractExtractor:
 		"""
 		if job_type == "TEXT":
 			get_fn = self.client.get_document_text_detection
-			job_label = "StartDocumentTextDetection"
 		else:
 			get_fn = self.client.get_document_analysis
-			job_label = "StartDocumentAnalysis"
 
-		max_tries = 60
-		delay_seconds = 15
+		poll_delay_seconds = 20
+		deadline = time.monotonic() + 15 * 60
 
-		for attempt in range(max_tries):
+		while time.monotonic() < deadline:
 			result = get_fn(JobId=job_id)
 			status = result.get("JobStatus")
 			frappe.logger().info(
-				f"Textract: {job_label} job {job_id} status: {status} (attempt {attempt + 1}/{max_tries})"
+				f"Textract job {job_id} status: {status} ({int(deadline - time.monotonic())}s remaining)"
 			)
 
-			if status in {"SUCCEEDED", "FAILED", "PARTIAL_SUCCESS"}:
-				if status != "SUCCEEDED":
-					frappe.logger().warning(
-						f"Textract: {job_label} job {job_id} completed with status {status}"
-					)
+			if result.get("StatusMessage"):
+				frappe.logger().warning(f"Textract job {job_id} message: {result.get('StatusMessage')}")
 
+			if status == "FAILED":
+				frappe.throw(
+					frappe._(
+						f"Textract job {job_id} failed: {result.get('StatusMessage', 'No message available')}"
+					)
+				)
+
+			if status in {"SUCCEEDED", "PARTIAL_SUCCESS"}:
 				# Collect all pages using pagination (first page is current result)
 				pages: list[dict] = [result]
 				next_token = result.get("NextToken")
@@ -128,7 +141,8 @@ class TextractExtractor:
 
 				return pages
 
-			time.sleep(delay_seconds)
+			time.sleep(min(poll_delay_seconds, max(0, deadline - time.monotonic())))
+			poll_delay_seconds = min(poll_delay_seconds * 2, 60)
 
 		frappe.throw(
 			frappe._(
@@ -143,6 +157,7 @@ class TextractExtractor:
 			DocumentLocation={"S3Object": {"Bucket": bucket, "Name": key}}
 		)
 		job_id = response["JobId"]
+		frappe.logger().info(f"Textract: StartDocumentTextDetection job started with ID: {job_id}")
 		return self._wait_for_job(job_id, job_type="TEXT")
 
 	def _start_async_document_analysis(self, bucket: str, key: str, feature_types: list[str]) -> list[dict]:
@@ -155,6 +170,7 @@ class TextractExtractor:
 			FeatureTypes=feature_types,
 		)
 		job_id = response["JobId"]
+		frappe.logger().info(f"Textract: StartDocumentAnalysis job started with ID: {job_id}")
 		return self._wait_for_job(job_id, job_type="ANALYSIS")
 
 	def _parse_s3_uri(self, s3_uri: str) -> tuple:
@@ -353,13 +369,9 @@ class TextractExtractor:
 	def _parse_tables_response(self, response: dict) -> dict[str, any]:
 		"""Parse Textract tables response and extract table data.
 
-		Args:
-			response: Raw response from Textract AnalyzeDocument or a list
-				of paginated responses from an async StartDocumentAnalysis
-				operation.
+		:param response: Raw response from Textract AnalyzeDocument or a list of responses from StartDocumentAnalysis
 
-		Returns:
-			Dictionary with extracted tables
+		Returns a dictionary with extracted tables
 		"""
 		# Normalise response into a single Blocks list
 		if isinstance(response, list):
@@ -378,7 +390,8 @@ class TextractExtractor:
 					"confidence": item.get("Confidence", 0),
 					"rows": self._extract_table_rows(item, blocks),
 				}
-				tables.append(table_data)
+				if len(table_data["rows"]) > 0 and len(table_data["rows"][0]) > self.min_table_columns:
+					tables.append(table_data)
 
 		return {"tables": tables, "raw_response": response}
 

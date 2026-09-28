@@ -60,53 +60,47 @@ def cleanup_pending_documents():
 	)
 
 
-def find_party_by_tax_or_business_code(tax_code, business_code, party_type="Supplier"):
+def find_supplier_by_tax_or_business_code(tax_code, business_code):
 	"""
-	Find a Supplier or Customer based on tax code and business ID.
+	    Find a Supplier or Customer based on tax code and business ID.
 
-	Searches for a matching party by:
-	1. First tries to match by tax_code (VAT code)
-	2. If not found, tries to match by business_code
+	    Searches for a matching party by:
+	    1. First tries to match by tax_code (VAT code)
+	    2. If not found, tries to match by business_code
 
-	Args:
-		tax_code: VAT/Tax code of the party
-		business_code: Business code of the party
-		party_type: Either "Supplier" or "Customer"
+	:param tax_code: VAT/Tax code of the party
+	:param business_code: Business code of the party
 
-	Returns:
-		str: Name of the matching document, or None if not found
+	    Returns the supplier name, or None if not found
 	"""
-	if not party_type or party_type not in ["Supplier", "Customer"]:
-		return None
-
 	# Try to find by tax_code first
 	if tax_code:
 		try:
 			parties = frappe.get_list(
-				party_type, filters={"tax_id": tax_code}, limit_page_length=1, ignore_permissions=True
+				"Supplier", filters={"tax_id": tax_code}, limit_page_length=1, ignore_permissions=True
 			)
 			if parties:
-				logger.info(f"Found {party_type} by tax_code {tax_code}: {parties[0]['name']}")
+				logger.info(f"Found supplier by tax_code {tax_code}: {parties[0]['name']}")
 				return parties[0]["name"]
 		except Exception as e:
-			logger.warning(f"Error searching {party_type} by tax_code: {e!s}")
+			logger.warning(f"Error searching supplier by tax_code: {e!s}")
 
 	# Try to find by business_code if tax_code didn't match
 	if business_code:
 		try:
 			parties = frappe.get_list(
-				party_type,
+				"Supplier",
 				filters={"business_code": business_code},
 				limit_page_length=1,
 				ignore_permissions=True,
 			)
 			if parties:
-				logger.info(f"Found {party_type} by business_code {business_code}: {parties[0]['name']}")
+				logger.info(f"Found supplier by business_code {business_code}: {parties[0]['name']}")
 				return parties[0]["name"]
 		except Exception as e:
-			logger.warning(f"Error searching {party_type} by business_code: {e!s}")
+			logger.warning(f"Error searching supplier by business_code: {e!s}")
 
-	logger.info(f"No {party_type} found for tax_code={tax_code}, business_code={business_code}")
+	logger.info(f"No supplier found for tax_code={tax_code}, business_code={business_code}")
 	return None
 
 
@@ -128,7 +122,6 @@ def extract_document(doc_name):
 		pending_doc.update({"status": "Processing"})
 		pending_doc.save(ignore_permissions=True)
 		# Commit early so we don't hold locks while doing long-running extraction
-		frappe.db.commit()
 		frappe.db.commit()
 
 		# Get file path from the linked file
@@ -157,20 +150,12 @@ def extract_document(doc_name):
 		# Amazon Textract if enabled
 		tables_data = None
 		if is_textract_enabled():
-			try:
-				extractor = get_textract_extractor()
-				tables_result = extractor.extract_tables(file_path)
-				tables_data = tables_result.get("tables", [])
-				logger.info(f"Successfully extracted {len(tables_data)} table(s) from document")
-				if tables_data:
-					invoice_data["tables"] = tables_data
-			except Exception as textract_error:
-				logger.warning(f"Textract extraction failed: {textract_error!s}")
-				# add comment to pending document
-				pending_doc.add_comment(
-					"Comment", f"{_('Amazon Textract extraction failed.')} <br>{textract_error!s}"
-				)
-				# Continue processing even if Textract fails
+			extractor = get_textract_extractor()
+			tables_result = extractor.extract_tables(file_path)
+			tables_data = tables_result.get("tables", [])
+			logger.info(f"Successfully extracted {len(tables_data)} table(s) from document")
+			if tables_data:
+				invoice_data["tables"] = tables_data
 		if isinstance(invoice_data.get("bill_no"), list):
 			invoice_data["bill_no"] = ",".join(invoice_data["bill_no"])
 
@@ -188,21 +173,15 @@ def extract_document(doc_name):
 			"subtotal_amount": invoice_data.get("subtotal"),
 		}
 
-		# Try to find and set the party (Supplier/Customer) based on tax code and business ID
 		tax_code = invoice_data.get("supplier_vat")
 		business_code = invoice_data.get("supplier_id")
-		party_type = pending_doc.party_type or "Supplier"
-		if party_type not in ["Supplier", "Customer"]:
-			party_type = "Supplier"
 
-		party = find_party_by_tax_or_business_code(tax_code, business_code, party_type)
+		party = find_supplier_by_tax_or_business_code(tax_code, business_code)
 		if party:
 			extracted_data["party"] = party
-			logger.info(f"Matched party: {party_type} - {party}")
+			logger.info(f"Matched supplier - {party}")
 		else:
-			logger.warning(
-				f"Could not match {party_type} for tax_code={tax_code}, business_code={business_code}"
-			)
+			logger.warning(f"Could not match supplier for tax_code={tax_code}, business_code={business_code}")
 		# Format barcodes from line items into Pending Document Barcode table
 		if invoice_data.get("re_barcodes"):
 			extracted_data["re_barcodes"] = [{"barcode": barcode} for barcode in invoice_data["re_barcodes"]]

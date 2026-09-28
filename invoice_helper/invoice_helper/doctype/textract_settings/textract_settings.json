@@ -1,93 +1,113 @@
 {
- "actions": [],
- "allow_rename": 0,
- "creation": "2025-11-26T00:00:00.000000",
- "docstatus": 0,
- "doctype": "DocType",
- "document_type": "",
- "engine": "InnoDB",
-    "field_order": [
-     "aws_access_key",
-     "aws_secret_key",
-     "region",
-     "enabled",
-     "s3_bucket",
-     "s3_prefix"
-    ],
-    "fields": [
-  {
-   "fieldname": "aws_access_key",
-   "fieldtype": "Data",
-   "label": "AWS Access Key",
-   "reqd": 1
-  },
-  {
-   "fieldname": "aws_secret_key",
-   "fieldtype": "Password",
-   "label": "AWS Secret Key",
-   "reqd": 1
-  },
-  {
-   "fieldname": "region",
-   "fieldtype": "Select",
-   "label": "AWS Region",
-   "options": "us-east-1\nus-west-1\nus-west-2\neu-west-1\neu-central-1\nap-southeast-1\nap-northeast-1",
-   "default": "us-east-1"
-  },
-  {
-   "fieldname": "enabled",
-   "fieldtype": "Check",
-   "label": "Enable Textract Integration",
-   "default": 0
-     },
-     {
-        "fieldname": "s3_bucket",
-        "fieldtype": "Data",
-        "label": "S3 Bucket",
-        "reqd": 1,
-        "description": "Name of the S3 bucket used for Textract input documents."
-     },
-     {
-        "fieldname": "s3_prefix",
-        "fieldtype": "Data",
-        "label": "S3 Prefix",
-        "reqd": 0,
-        "description": "Optional folder/prefix inside the S3 bucket for uploaded documents."
-  }
- ],
- "hide_toolbar": 0,
- "idx": 0,
- "issingle": 1,
- "istable": 0,
- "links": [],
- "modified": "2025-11-26T00:00:00.000000",
- "modified_by": "Administrator",
- "module": "Invoice Helper",
- "name": "Textract Settings",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 0,
-   "print": 1,
-   "read": 1,
-   "report": 0,
-   "role": "System Manager",
-   "share": 1,
-   "submit": 0,
-   "write": 1
-  }
- ],
- "quick_entry": 0,
- "read_only": 0,
- "read_only_onload": 0,
- "show_name_in_global_search": 0,
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": [],
- "sync_on_migrate": 1,
- "title_field": "",
- "track_changes": 0
+   "actions": [],
+   "allow_rename": 0,
+   "creation": "2025-11-26T00:00:00.000000",
+   "docstatus": 0,
+   "doctype": "DocType",
+   "document_type": "",
+   "engine": "InnoDB",
+   "field_order": [
+      "textract_configuration",
+      "aws_access_key",
+      "aws_secret_key",
+      "region",
+      "enabled",
+      "s3_bucket",
+      "s3_prefix",
+      "other_settings",
+      "min_table_columns"
+   ],
+   "fields": [
+      {
+         "fieldname": "textract_configuration",
+         "fieldtype": "Section Break",
+         "label": "Textract Configuration"
+      },
+      {
+         "fieldname": "aws_access_key",
+         "fieldtype": "Data",
+         "label": "AWS Access Key",
+         "reqd": 1
+      },
+      {
+         "fieldname": "aws_secret_key",
+         "fieldtype": "Password",
+         "label": "AWS Secret Key",
+         "reqd": 1
+      },
+      {
+         "fieldname": "region",
+         "fieldtype": "Select",
+         "label": "AWS Region",
+         "options": "us-east-1\nus-west-1\nus-west-2\neu-west-1\neu-central-1\nap-southeast-1\nap-northeast-1",
+         "default": "us-east-1"
+      },
+      {
+         "fieldname": "enabled",
+         "fieldtype": "Check",
+         "label": "Enable Textract Integration",
+         "default": 0
+      },
+      {
+         "fieldname": "s3_bucket",
+         "fieldtype": "Data",
+         "label": "S3 Bucket",
+         "reqd": 1,
+         "description": "Name of the S3 bucket used for Textract input documents."
+      },
+      {
+         "fieldname": "s3_prefix",
+         "fieldtype": "Data",
+         "label": "S3 Prefix",
+         "reqd": 0,
+         "description": "Optional folder/prefix inside the S3 bucket for uploaded documents."
+      },
+      {
+         "fieldname": "other_settings",
+         "fieldtype": "Section Break",
+         "label": "Other Settings"
+      },
+      {
+         "label": "Minimum number of columns for a table",
+         "fieldname": "min_table_columns",
+         "fieldtype": "Int",
+         "description": "If a table has fewer columns than the defined minimum, the extraction results won’t contain that table.",
+         "default": 4
+      }
+   ],
+   "hide_toolbar": 0,
+   "idx": 0,
+   "issingle": 1,
+   "istable": 0,
+   "links": [],
+   "modified": "2025-11-26T00:00:00.000000",
+   "modified_by": "Administrator",
+   "module": "Invoice Helper",
+   "name": "Textract Settings",
+   "owner": "Administrator",
+   "permissions": [
+      {
+         "create": 1,
+         "delete": 1,
+         "email": 1,
+         "export": 0,
+         "print": 1,
+         "read": 1,
+         "report": 0,
+         "role": "System Manager",
+         "share": 1,
+         "submit": 0,
+         "write": 1
+      }
+   ],
+   "quick_entry": 0,
+   "read_only": 0,
+   "read_only_onload": 0,
+   "show_name_in_global_search": 0,
+   "sort_field": "modified",
+   "sort_order": "DESC",
+   "states": [],
+   "sync_on_migrate": 1,
+   "title_field": "",
+   "track_changes": 0
 }

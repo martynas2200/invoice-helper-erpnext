@@ -27,14 +27,6 @@ frappe.listview_settings["Pending Document"] = {
                         title: __("Create Pending Document"),
                         fields: [
                             {
-                                fieldname: "type",
-                                label: "Type",
-                                fieldtype: "Select",
-                                options: ["Purchase", "Sale", "Other"],
-                                default: "Purchase",
-                                reqd: 1,
-                            },
-                            {
                                 fieldname: "document_name",
                                 label: "Name",
                                 fieldtype: "Data",
@@ -47,9 +39,7 @@ frappe.listview_settings["Pending Document"] = {
                                 method: "invoice_helper.api.create_pending_from_file",
                                 args: {
                                     file: file_doc.name,
-                                    type: values.type,
                                     document_name: values.document_name,
-                                    party_type: values.party_type,
                                     party: values.party,
                                 },
                                 freeze: true,
@@ -85,13 +75,6 @@ frappe.listview_settings["Pending Document"] = {
                         fieldtype: "Link",
                         options: "File",
                         reqd: 1,
-                    },
-                    {
-                        fieldname: "type",
-                        label: "Type",
-                        fieldtype: "Select",
-                        options: ["Purchase", "Sale", "Other"],
-                        default: "Purchase",
                     },
                     { fieldname: "document_name", label: "Name", fieldtype: "Data" },
                 ],

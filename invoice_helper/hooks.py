@@ -29,6 +29,7 @@ app_license = "mit"
 # include js, css files in header of desk.html
 app_include_css = "/assets/invoice_helper/css/drawer.css"
 app_include_js = [
+	"/assets/invoice_helper/js/unmatched_items_modal.bundle.js",
 	"/assets/invoice_helper/js/pending_file_drawer.js",
 	"/assets/invoice_helper/js/prefill_dialog.js",
 	"/assets/invoice_helper/js/split_dialog.js",
@@ -52,7 +53,6 @@ app_include_js = [
 # include js in doctype views
 doctype_js = {
 	"Purchase Invoice": "public/js/purchase_invoice.js",
-	"Sales Invoice": "public/js/sales_invoice.js",
 	"File": "public/js/file.js",
 }
 

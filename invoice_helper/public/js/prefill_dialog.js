@@ -24,11 +24,7 @@ invoice_helper.after_save_hook = async function (frm) {
     }
 };
 
-invoice_helper.prefill_from_pending_dialog = function (
-    frm,
-    type = "Purchase",
-    pendingName = null
-) {
+invoice_helper.prefill_from_pending_dialog = function (frm, pendingName = null) {
     if (!frm) return;
 
     if (!pendingName && frm._pending_document) {
@@ -39,17 +35,15 @@ invoice_helper.prefill_from_pending_dialog = function (
         title: __("Prefill from Pending Document"),
         fields: [
             {
-                fieldname: "pending",
+                fieldname: "docname",
                 label: __("Pending Document"),
                 fieldtype: "Link",
                 get_query: () => ({
-                    filters: { type: type },
                     order_by: "`tabPending Document`.`id` desc",
                 }),
                 options: "Pending Document",
                 default: pendingName,
                 reqd: 1,
-                description: __("Type = {0}", [type]),
             },
             {
                 fieldname: "prefill_type",
@@ -75,11 +69,11 @@ invoice_helper.prefill_from_pending_dialog = function (
         ],
         primary_action_label: __("Prefill"),
         primary_action: async (values) => {
-            if (!values?.pending) return;
+            if (!values?.docname) return;
             d.hide();
             await prefill_from_pending(
                 frm,
-                values.pending,
+                values.docname,
                 values.prefill_type,
                 values.should_header_be_prefilled
             );
@@ -101,13 +95,13 @@ async function prefill_from_pending(
     frm._pending_file = pd.file;
 
     if (shouldHeaderBePrefilled) {
-        if (!frm.doc.bill_no && pd.bill_no && frm.doctype === "Purchase Invoice") {
+        if (!frm.doc.bill_no && pd.bill_no) {
             await frm.set_value("bill_no", pd.bill_no);
         }
 
         await frm.set_value("set_posting_time", 1);
         await frm.set_value("posting_time", "07:00:00");
-        if (!frm.doc.bill_date && pd.bill_date && frm.doctype === "Purchase Invoice") {
+        if (!frm.doc.bill_date && pd.bill_date) {
             // check if the date is not older than 30 days
             const billDate = frappe.datetime.str_to_obj(pd.bill_date);
             const today = new Date();
@@ -122,14 +116,8 @@ async function prefill_from_pending(
         if (!frm.doc.due_date && pd.due_date) {
             await frm.set_value("due_date", pd.due_date);
         }
-        if ((pd.party_type || "").toLowerCase() === "supplier" && pd.party && !frm.doc.supplier) {
+        if (!frm.doc.supplier && pd.party) {
             await frm.set_value("supplier", pd.party);
-        } else if (
-            (pd.party_type || "").toLowerCase() === "customer" &&
-            pd.party &&
-            !frm.doc.customer
-        ) {
-            await frm.set_value("customer", pd.party);
         }
     }
 
@@ -139,7 +127,7 @@ async function prefill_from_pending(
 
     if (prefillType === "local_tables") {
         // rows = Array.isArray(pd.items) ? pd.items : [];
-        rows = await selectTableAndColumnsFromTextractData(pd, "purchase", "local_tables");
+        rows = await selectTableAndColumnsFromTextractData(pd, "local_tables");
         barcodes = rows.map((r) => r.barcode).filter(Boolean);
     } else if (prefillType === "barcodes") {
         const barcodeTable = Array.isArray(pd.re_barcodes) ? pd.re_barcodes : [];
@@ -148,7 +136,7 @@ async function prefill_from_pending(
             .filter((b) => b.length > 0);
         rows = barcodes.map((barcode) => ({ barcode }));
     } else {
-        rows = await selectTableAndColumnsFromTextractData(pd, "purchase");
+        rows = await selectTableAndColumnsFromTextractData(pd);
         barcodes = rows.map((r) => r.barcode).filter(Boolean);
     }
 
@@ -233,7 +221,6 @@ async function prefill_from_pending(
         invoice_helper.show_pending_file_drawer(frm);
     }
 }
-// TODO: Consider passing everything to backend and brute forcing all barcodes until a match found, or show a pop up to ask user if they want to create items for unmatched barcodes, and in that case by user inspecting the barcode, we might found out that actually the item is in the system.
 function extractBarcodeFromText(text) {
     // Look for 7, 8, 12, or 13 consecutive digits
     // Can be embedded in text like "text": "Milk 330ml 5900512300481 Poland"
@@ -266,49 +253,114 @@ function extractBarcodeFromText(text) {
     return null;
 }
 
-function detectColumnType(values, headerText = "") {
-    let barcodeScore = 0,
-        quantityScore = 0,
-        priceScore = 0;
+function normalizeColumnText(value) {
+    return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // remove diacritics
+        .trim();
+}
 
-    for (const val of values) {
-        const text = (val || "").toString().trim();
-        if (!text) continue;
+function isNumeric(value) {
+    const text = String(value || "").trim();
+    const number = parseFloat(text.replace(/\s/g, "").replace(",", "."));
+    return !isNaN(number) && number > 0 && number < 10000 && /^[\d,.\s]+$/.test(text);
+}
 
-        const barcode = extractBarcodeFromText(text);
-        if (barcode) {
-            barcodeScore += 2;
-        } else if (/^\d+$/.test(text) && text.length >= 5) {
-            barcodeScore += 1;
+function scoreBarcodeColumn(values) {
+    return values.reduce((score, value) => {
+        const text = String(value || "").trim();
+        if (extractBarcodeFromText(text)) return score + 2;
+        return /^\d+$/.test(text) && text.length >= 5 ? score + 1 : score;
+    }, 0);
+}
+
+function are_values_strictly_increasing(values) {
+    for (let i = 1; i < values.length; i++) {
+        if (values[i] <= values[i - 1]) {
+            return false;
         }
+    }
+    return true;
+}
 
-        const num = parseFloat(text);
-        if (!isNaN(num) && num > 0 && num < 10000 && /^[\d,.\s]+$/.test(text)) {
-            quantityScore += 1;
-        }
+function scoreQuantityColumn(values, headerText) {
+    if (are_values_strictly_increasing(values)) {
+        return 0;
+    }
+    const header = normalizeColumnText(headerText);
+    let score = /(quantity|qty|kiekis)/.test(header) ? 5 : 0;
+    if (/(kg|l|litre|litrais|litres)/.test(header)) {
+        return score - 3;
+    }
+    return score + values.filter(isNumeric).length;
+}
 
-        if (/^[\d,.\s]+$/.test(text) && (text.includes(".") || text.includes(","))) {
-            priceScore += 1;
+function scorePriceColumn(values, headerText) {
+    if (are_values_strictly_increasing(values)) {
+        return 0;
+    }
+    const header = normalizeColumnText(headerText);
+    let score = 0;
+
+    if (/(price|rate|kaina)/.test(header)) score += 5;
+    if (/(po\s+nuolaidos|po|su\s+nuolaida|after\s+discount|discounted)/.test(header)) score += 3;
+    if (/(be\s+pvm|be\s+vat|excl\.?\s*vat|excluding\s+vat)/.test(header)) score += 2;
+
+    return score + values.filter(isNumeric).length;
+}
+
+function detectColumnTypes(values, headerText = "") {
+    return {
+        barcode: { type: "barcode", score: scoreBarcodeColumn(values) },
+        quantity: { type: "quantity", score: scoreQuantityColumn(values, headerText) },
+        price: { type: "price", score: scorePriceColumn(values, headerText) },
+    };
+}
+
+function compareColumnCandidates(left, right) {
+    if (right.candidate.score !== left.candidate.score) {
+        return right.candidate.score - left.candidate.score;
+    }
+    return left.colIdx - right.colIdx;
+}
+
+function selectBestColumns(columnDetection) {
+    const bestByType = {};
+    const selectedByColumn = {};
+    const candidatesByType = ["barcode", "quantity", "price"].reduce((result, type) => {
+        result[type] = Object.entries(columnDetection)
+            .map(([colIdx, detection]) => ({
+                colIdx: Number(colIdx),
+                candidate: detection[type],
+            }))
+            .filter(({ candidate }) => candidate.score > 0)
+            .sort(compareColumnCandidates);
+        return result;
+    }, {});
+
+    // A column can only receive one mapping when generic numeric values score
+    // for both quantity and price. Keep the strongest candidate, then barcode.
+    for (const type of ["barcode", "quantity", "price"]) {
+        for (const entry of candidatesByType[type]) {
+            const selected = selectedByColumn[entry.colIdx];
+            if (
+                selected &&
+                (selected.candidate.score > entry.candidate.score ||
+                    (selected.candidate.score === entry.candidate.score &&
+                        selected.type === "barcode"))
+            ) {
+                continue;
+            }
+
+            if (selected) delete bestByType[selected.type];
+            selectedByColumn[entry.colIdx] = { type, candidate: entry.candidate };
+            bestByType[type] = entry.colIdx;
+            break;
         }
     }
 
-    if (barcodeScore > 0 && barcodeScore >= quantityScore && barcodeScore >= priceScore) {
-        return "barcode";
-    } else if (
-        (headerText.toLowerCase().includes("price") ||
-            headerText.toLowerCase().includes("kaina")) &&
-        priceScore > 0
-    ) {
-        return "price";
-    } else if (
-        (headerText.toLowerCase().includes("quantity") ||
-            headerText.toLowerCase().includes("kiekis")) &&
-        quantityScore > 0
-    ) {
-        return "quantity";
-    }
-
-    return "unknown";
+    return bestByType;
 }
 
 // Extract column values from all rows for analysis
@@ -319,7 +371,7 @@ function getColumnValues(rows, colIndex) {
         .filter((v) => v.trim());
 }
 
-async function selectTableAndColumnsFromTextractData(pendingDoc, docType, variable = "tables") {
+async function selectTableAndColumnsFromTextractData(pendingDoc, variable = "tables") {
     return new Promise((resolve) => {
         let tables = [];
         if (pendingDoc.extraction_json) {
@@ -412,8 +464,18 @@ function showColumnMappingDialog(table, resolve) {
     for (let colIdx = 0; colIdx < numCols; colIdx++) {
         const columnHeader = (table.rows[0][colIdx] || {}).text || "";
         const values = getColumnValues(table.rows, colIdx);
-        const detectedType = detectColumnType(values, columnHeader); // needs improvement
-        columnDetection[colIdx] = detectedType;
+        columnDetection[colIdx] = detectColumnTypes(values, columnHeader);
+    }
+
+    const selectedColumns = selectBestColumns(columnDetection);
+
+    for (let colIdx = 0; colIdx < numCols; colIdx++) {
+        const columnHeader = (table.rows[0][colIdx] || {}).text || "";
+        const values = getColumnValues(table.rows, colIdx);
+        const detectedType =
+            Object.entries(selectedColumns).find(
+                ([, selectedColIdx]) => selectedColIdx === colIdx
+            )?.[0] || "";
         const headerText = `${__("Column")} ${colIdx + 1} (${columnHeader})`;
         fields.push({
             fieldname: `col_${colIdx}_type`,
@@ -425,7 +487,7 @@ function showColumnMappingDialog(table, resolve) {
                 { label: __("Quantity"), value: "quantity" },
                 { label: __("Price"), value: "price" },
             ],
-            default: detectedType !== "unknown" ? detectedType : "",
+            default: detectedType,
             description: values.slice(0, 3).join("; "),
         });
     }
@@ -550,7 +612,6 @@ function extractMappedRows(table, columnMapping) {
                 .filter(Boolean)
                 .join(" ");
 
-        // Only add rows that actually carry a barcode, quantity, price or title.
         const hasMappedValue = ["barcode", "quantity", "price"].some(
             (field) => String(mapped[field] || "").trim() !== ""
         );
@@ -568,35 +629,42 @@ invoice_helper.attach_pending_document_file_to_form = async (frm, pendingFile) =
     const doctype = frm.doctype || frm.doc.doctype;
     const docname = frm.docname || frm.doc.name;
 
-    const attachment = await invoice_helper.attach_pending_document_file(
-        pendingFile,
-        doctype,
-        docname
-    );
-    if (!attachment) return;
-
-    frm.attachments.attachment_uploaded(attachment);
-    frappe.show_alert({
-        message: __("File attached"),
-        indicator: "green",
-    });
+    const r = await invoice_helper.attach_pending_document_file(pendingFile, doctype, docname);
+    if (r.message) {
+        frm.attachments.attachment_uploaded(r.message);
+        frappe.show_alert({
+            message: __("File attached"),
+            indicator: "green",
+        });
+    }
 };
 
 // We could use predefined frappe methods to attach files
 // However, it is always "Home/Attachments" folder which is not desired
 invoice_helper.attach_pending_document_file = async (pendingFile, doctype, docname) => {
-    const { message: source } = await frappe.db.get_value("File", pendingFile, "folder");
+    if (!pendingFile || !doctype || !docname) {
+        throw new Error("A source file and target document are required");
+    }
 
-    const r = await frappe.call({
-        method: "frappe.handler.upload_file",
-        args: {
-            library_file_name: pendingFile,
-            folder: source?.folder || "Home",
-            doctype: doctype,
-            docname: docname,
-        },
-    });
-    return r.message;
+    try {
+        return await frappe.call({
+            method: "frappe.handler.upload_file",
+            args: {
+                library_file_name: pendingFile,
+                doctype: doctype,
+                docname: docname,
+            },
+        });
+    } catch (err) {
+        console.error("Error attaching file:", err);
+        frappe.show_alert({
+            message: __("Could not attach file from Pending Document: {0}", [
+                err.message || __("Unknown error"),
+            ]),
+            indicator: "orange",
+        });
+        throw err;
+    }
 };
 // Render a preview table (header + up to 3 data rows)
 function render_table_preview(table) {
@@ -800,607 +868,138 @@ invoice_helper.apply_prefill_rows_to_items = async function (frm) {
 
 invoice_helper.show_unmatched_items_dialog = function (frm) {
     const prefillRows = Array.isArray(frm?._prefill_rows) ? frm._prefill_rows : [];
-    frm._prefill_rows = prefillRows;
-
-    const unmatchedRows = prefillRows.filter((row) => !row?.matched_item?.item_code);
-    const pendingRows = unmatchedRows.filter((row) => !row.resolution);
+    const pendingRows = prefillRows.filter(
+        (row) => !row?.matched_item?.item_code && !row.resolution
+    );
 
     if (!pendingRows.length) {
-        frappe.show_alert({
-            message: __("No unmatched rows to review"),
-            indicator: "blue",
-        });
+        frappe.show_alert({ message: __("No unmatched rows to review"), indicator: "blue" });
         return;
     }
 
-    const escapeHtml = (value) =>
-        String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\"/g, "&quot;")
-            .replace(/'/g, "&#39;");
+    const modalContainer = document.createElement("div");
+    document.body.appendChild(modalContainer);
 
-    const normalizeBarcode = (value) => {
-        const raw = String(value || "").trim();
-        if (!raw) return null;
-
-        return raw.replace(/\D/g, "");
-    };
-
-    const parseNumeric = (value) => {
-        const text = String(value ?? "").trim();
-        if (!text) return null;
-        const normalized = text.replace(/\s/g, "").replace(/,/g, ".");
-        const parsed = parseFloat(normalized);
-        return Number.isNaN(parsed) ? null : parsed;
-    };
-
-    const extractTitle = (row) => {
-        const source = [
-            row?.title,
-            row?.extracted_row?.title,
-            row?.extracted_row?.item,
-            row?.extracted_row?.name,
-            row?.barcode,
-        ]
-            .map((value) => String(value || "").trim())
-            .filter(Boolean);
-        return source[0] || "";
-    };
-
-    const getFuzzyRecommendations = async (queryTitle) => {
-        try {
-            const res = await frappe.call({
-                method: "invoice_helper.api.recommend_items_for_title",
-                args: { title: queryTitle, max_results: 8 },
-            });
-            return Array.isArray(res?.message) ? res.message : [];
-        } catch (err) {
-            console.error("Could not load fuzzy recommendations:", err);
-            return [];
-        }
-    };
-
-    const getPartialBarcodeRecommendations = async (barcode) => {
-        try {
-            const res = await frappe.call({
-                method: "invoice_helper.api.recommend_items_for_partial_barcode",
-                args: { barcode: barcode, max_results: 10 },
-            });
-            return Array.isArray(res?.message) ? res.message : [];
-        } catch (err) {
-            console.error("Could not load partial barcode recommendations:", err);
-            return [];
-        }
-    };
-
-    const updateMatchedRowData = (row, match, barcode, quantity, price) => {
+    const resolveRow = async (row, match, barcode, quantity, price, resolution = "amended") => {
         row.matched_item = {
             item_code: match.item_code,
-            item_name: match.item_name,
-            uom: match.uom,
-            stock_uom: match.stock_uom,
+            item_name: match.item_name || match.item_code,
+            uom: match.uom || match.stock_uom || "Nos",
+            stock_uom: match.stock_uom || match.uom || "Nos",
         };
         row.barcode = barcode;
         row.quantity = quantity;
         row.price = price;
-        row.extracted_row = {
-            ...(row.extracted_row || {}),
-            barcode,
-            quantity,
-            price,
-        };
+        row.resolution = resolution;
+        row.extracted_row = { ...(row.extracted_row || {}), barcode, quantity, price };
     };
 
-    const processUnmatchedRowAt = async (index) => {
-        if (index >= pendingRows.length) {
-            invoice_helper.apply_prefill_rows_to_items(frm);
-            frappe.show_alert({
-                message: __("Finished reviewing unmatched rows"),
-                indicator: "green",
-            });
-            return;
-        }
+    const createItemForRow = (row, barcode, itemName) =>
+        new Promise((resolve, reject) => {
+            frappe.ui.form.make_quick_entry(
+                "Item",
+                async (newItem) => {
+                    try {
+                        const createdItemName = newItem?.name || newItem?.doc?.name;
+                        if (!createdItemName)
+                            throw new Error("Created Item name missing from quick entry callback");
 
-        const row = pendingRows[index];
-        const rowNumber = row.row_index ?? index;
-        const extractedJson = JSON.stringify(row.extracted_row || {}, null, 2);
-        const allColumns = Array.isArray(row?.extracted_row?.all_columns)
-            ? row.extracted_row.all_columns
-            : [];
-
-        const originalBarcode = normalizeBarcode(row.barcode || row.extracted_row?.barcode || "");
-        let validatedMatch = null;
-        let validatedBarcode = null;
-
-        const amendDialog = new frappe.ui.Dialog({
-            title: __("Unmatched Row {0} of {1}", [index + 1, pendingRows.length]),
-            fields: [
-                {
-                    fieldname: "row_preview",
-                    fieldtype: "HTML",
-                    label: __("Extracted Row"),
-                },
-                {
-                    fieldname: "barcode",
-                    label: __("Barcode (Optional)"),
-                    fieldtype: "Data",
-                    default: row.barcode || row.extracted_row?.barcode || "",
-                },
-                {
-                    fieldname: "recommended_html",
-                    fieldtype: "HTML",
-                    label: __("Recommended Items"),
-                },
-                {
-                    fieldname: "manual_item_code",
-                    label: __("Manual Item (Optional)"),
-                    fieldtype: "Link",
-                    options: "Item",
-                    description: __("You may also try to search using item name or code."),
-                },
-                {
-                    fieldname: "quantity",
-                    label: __("Quantity"),
-                    fieldtype: "Data",
-                    default:
-                        row.quantity ??
-                        row.extracted_row?.quantity ??
-                        row.extracted_row?.qty ??
-                        "",
-                },
-                {
-                    fieldname: "price",
-                    label: __("Price"),
-                    fieldtype: "Data",
-                    default:
-                        row.price ?? row.extracted_row?.price ?? row.extracted_row?.rate ?? "",
-                },
-                {
-                    fieldname: "barcode_status",
-                    fieldtype: "HTML",
-                    label: __("Validation"),
-                },
-            ],
-            primary_action_label: __("Skip"),
-            primary_action: () => {
-                row.resolution = "ignored";
-                amendDialog.hide();
-                void processUnmatchedRowAt(index + 1);
-            },
-            secondary_action_label: __("Create New Item"),
-            secondary_action: () => {
-                const barcode = normalizeBarcode(amendDialog.get_value("barcode"));
-                if (!barcode) {
-                    frappe.msgprint({
-                        title: __("Invalid Barcode"),
-                        message: __("Please provide a valid barcode before creating a new item."),
-                        indicator: "orange",
-                    });
-                    return;
-                }
-
-                const itemName =
-                    row.title || row.extracted_row?.title || row.barcode || __("New Item");
-                amendDialog.hide();
-                const quickEntryDoc = frappe.model.get_new_doc("Item");
-                quickEntryDoc.item_name = itemName;
-                frappe.ui.form.make_quick_entry(
-                    "Item",
-                    async (newItem) => {
-                        try {
-                            const createdItemName = newItem?.name || newItem?.doc?.name;
-                            if (!createdItemName) {
-                                throw new Error(
-                                    "Created Item name missing from quick entry callback"
-                                );
-                            }
-
-                            const itemDoc = await frappe.db.get_doc("Item", createdItemName);
-                            const hasBarcode = (itemDoc.barcodes || []).some(
-                                (barcodeRow) => (barcodeRow.barcode || "").trim() === barcode
+                        const itemDoc = await frappe.db.get_doc("Item", createdItemName);
+                        const hasBarcode = (itemDoc.barcodes || []).some(
+                            (barcodeRow) => (barcodeRow.barcode || "").trim() === barcode
+                        );
+                        if (!hasBarcode) {
+                            const barcodeRow = frappe.model.add_child(
+                                itemDoc,
+                                "Item Barcode",
+                                "barcodes"
                             );
-
-                            if (!hasBarcode) {
-                                const barcodeRow = frappe.model.add_child(
-                                    itemDoc,
-                                    "Item Barcode",
-                                    "barcodes"
-                                );
-                                barcodeRow.barcode = barcode;
-                                barcodeRow.uom = itemDoc.stock_uom || "Nos";
-
-                                const docToSave = {
-                                    ...itemDoc,
-                                    doctype: itemDoc.doctype || "Item",
-                                    name: itemDoc.name || createdItemName,
-                                };
-
-                                await frappe.call({
-                                    method: "frappe.client.save",
-                                    args: { doc: docToSave },
-                                });
-                            }
-                        } catch (err) {
-                            console.error("Could not append barcode on created Item:", err);
-                            frappe.show_alert({
-                                message: __(
-                                    "Item was created, but barcode row was not added automatically."
-                                ),
-                                indicator: "orange",
+                            barcodeRow.barcode = barcode;
+                            barcodeRow.uom = itemDoc.stock_uom || "Nos";
+                            await frappe.call({
+                                method: "frappe.client.save",
+                                args: {
+                                    doc: {
+                                        ...itemDoc,
+                                        doctype: itemDoc.doctype || "Item",
+                                        name: itemDoc.name || createdItemName,
+                                    },
+                                },
                             });
                         }
 
-                        row.resolution = "create_item";
-                        row.created_item = newItem?.name || newItem?.doc?.name || null;
-                        row.matched_item = {
-                            item_code: row.created_item,
+                        resolve({
+                            item_code: createdItemName,
                             item_name: newItem?.item_name || itemName,
                             uom: newItem?.stock_uom || "Nos",
                             stock_uom: newItem?.stock_uom || "Nos",
-                        };
-                        frappe.show_alert({
-                            message: __("Created Item: {0}. Continuing unmatched review.", [
-                                newItem?.name || newItem?.doc?.name || itemName,
-                            ]),
-                            indicator: "green",
                         });
-                        void processUnmatchedRowAt(index + 1);
-                    },
-                    null,
-                    quickEntryDoc,
-                    true
-                );
-            },
+                    } catch (error) {
+                        console.error("Could not append barcode on created Item:", error);
+                        frappe.show_alert({
+                            message: __(
+                                "Item was created, but barcode row was not added automatically."
+                            ),
+                            indicator: "orange",
+                        });
+                        reject(error);
+                    }
+                },
+                (quickEntry) => {
+                    quickEntry.set_value("item_name", itemName);
+                }
+            );
         });
 
-        const setStatusHtml = (message, color = "#6b7280") => {
-            amendDialog.fields_dict.barcode_status.$wrapper.html(
-                `<div style="color: ${color}; margin-top: 4px;">${escapeHtml(message)}</div>`
-            );
-        };
-
-        const getActionButtons = () => {
-            const primary = amendDialog.get_primary_btn ? amendDialog.get_primary_btn() : null;
-            const secondary = amendDialog.get_secondary_btn
-                ? amendDialog.get_secondary_btn()
-                : null;
-            return {
-                primary,
-                secondary,
-            };
-        };
-
-        const setActionsVisible = (visible) => {
-            const { primary, secondary } = getActionButtons();
-            const displayValue = visible ? "" : "none";
-
-            if (primary && primary.length) {
-                primary.css("display", displayValue);
-            }
-            if (secondary && secondary.length) {
-                secondary.css("display", displayValue);
-            }
-        };
-
-        const setPrimaryAsSkip = () => {
-            amendDialog.set_primary_action(__("Skip"), () => {
-                row.resolution = "ignored";
-                amendDialog.hide();
-                void processUnmatchedRowAt(index + 1);
-            });
-        };
-
-        const toMatchShape = (item) => {
-            if (!item?.item_code) return null;
-            return {
-                item_code: item.item_code,
-                item_name: item.item_name || item.item_code,
-                uom: item.uom || item.stock_uom || "Nos",
-                stock_uom: item.stock_uom || item.uom || "Nos",
-            };
-        };
-
-        const applySelection = ({
-            match,
-            barcode = null,
-            statusMessage = null,
-            statusColor = "#15803d",
-        }) => {
-            const normalizedMatch = toMatchShape(match);
-            if (!normalizedMatch) {
-                validatedMatch = null;
-                validatedBarcode = null;
-                setPrimaryAsSkip();
-                return;
-            }
-
-            validatedMatch = normalizedMatch;
-            validatedBarcode =
-                barcode || normalizeBarcode(amendDialog.get_value("barcode")) || null;
-            amendDialog.set_value("manual_item_code", normalizedMatch.item_code);
-            setPrimaryAsContinue();
-
-            if (statusMessage) {
-                setStatusHtml(statusMessage, statusColor);
-            }
-        };
-
-        const setPrimaryAsContinue = () => {
-            amendDialog.set_primary_action(__("Continue"), () => {
-                if (!validatedMatch) {
-                    setPrimaryAsSkip();
-                    setStatusHtml(
-                        __(
-                            "No selected item yet. Pick recommendation, set Manual Item, or verify barcode."
-                        ),
-                        "#b45309"
-                    );
-                    return;
-                }
-
-                const quantity = parseNumeric(amendDialog.get_value("quantity"));
-                const price = parseNumeric(amendDialog.get_value("price"));
-
-                updateMatchedRowData(
-                    row,
-                    validatedMatch,
-                    validatedBarcode || normalizeBarcode(amendDialog.get_value("barcode")) || null,
-                    quantity,
-                    price
-                );
-                row.resolution = "amended";
-
-                amendDialog.hide();
-                void processUnmatchedRowAt(index + 1);
-            });
-        };
-
-        const verifyChangedBarcode = async () => {
-            validatedMatch = null;
-            validatedBarcode = null;
-            amendDialog.set_value("manual_item_code", "");
-            setPrimaryAsSkip();
-
-            const normalized = normalizeBarcode(amendDialog.get_value("barcode"));
-
-            if (!normalized) {
-                setStatusHtml(__("Barcode must contain digits."), "#dc2626");
-                return;
-            }
-
-            if (normalized === originalBarcode) {
-                setStatusHtml(
-                    __("Barcode not changed yet. Change it to validate and enable Continue."),
-                    "#b45309"
-                );
-                return;
-            }
-
-            setStatusHtml(__("Checking barcode..."), "#2563eb");
-
-            try {
-                const res = await frappe.call({
-                    method: "invoice_helper.api.get_item_codes_for_barcodes",
-                    args: { barcodes: [normalized] },
-                });
-                const found = res?.message?.[normalized];
-
-                if (found?.item_code) {
-                    applySelection({
-                        match: found,
-                        barcode: normalized,
-                        statusMessage: __("Matched Item: {0} ({1}). You can Continue.", [
-                            found.item_code,
-                            found.item_name || "",
-                        ]),
-                    });
-                    recommendations = [];
-                    renderRecommendations();
-                } else {
-                    amendDialog.set_value("manual_item_code", "");
-                    recommendations = await getPartialBarcodeRecommendations(normalized);
-                    renderRecommendations();
-                    setStatusHtml(
-                        __("No Item found for this barcode. Use Skip or Create new item."),
-                        "#b45309"
-                    );
-                }
-            } catch (err) {
-                console.error("Barcode verification failed:", err);
-                amendDialog.set_value("manual_item_code", "");
-                recommendations = [];
-                renderRecommendations();
-                setStatusHtml(__("Barcode check failed. Please try again."), "#dc2626");
-            }
-        };
-
-        const wrapper = amendDialog.fields_dict.row_preview.$wrapper;
-        const allColumnsHtml = allColumns.length
-            ? `<div style="max-height: 250px; overflow: auto;">
-                    <table class="table table-bordered" style="margin: 0; font-size: 12px; line-height:1;">
-                        <thead>
-                            <tr>
-                                <th style="width: 60px;">${escapeHtml(__("Column"))}</th>
-                                <th>${escapeHtml(__("Value"))}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${allColumns
-                                .map(
-                                    (value, idx) => `<tr>
-                                        <td>${escapeHtml(String(idx + 1))}</td>
-                                        <td>${escapeHtml(String(value || ""))}</td>
-                                    </tr>`
-                                )
-                                .join("")}
-                        </tbody>
-                    </table>
-                </div>`
-            : `<pre style="max-height: 280px; overflow: auto;">${escapeHtml(extractedJson)}</pre>`;
-
-        wrapper.html(
-            `<div style="margin-bottom: 10px;"><strong>${__("Source row")}: ${escapeHtml(
-                rowNumber + 1
-            )}</strong></div>${allColumnsHtml}`
-        );
-
-        let recommendations = await getFuzzyRecommendations(extractTitle(row));
-        const recommendedWrapper = amendDialog.fields_dict.recommended_html.$wrapper;
-
-        const syncRecommendationSelection = (itemCode) => {
-            const normalized = String(itemCode || "").trim();
-            const buttons = recommendedWrapper.find(".invoice-helper-fuzzy-option");
-            if (!buttons.length) return;
-
-            buttons.removeClass("btn-primary").addClass("btn-default");
-            if (!normalized) return;
-
-            buttons.each(function () {
-                const buttonCode = String($(this).data("item-code") || "").trim();
-                if (buttonCode === normalized) {
-                    $(this).removeClass("btn-default").addClass("btn-primary");
-                }
-            });
-        };
-
-        const renderRecommendations = () => {
-            if (!recommendations.length) {
-                recommendedWrapper.html(
-                    `<div style="color: #b45309;">${escapeHtml(
-                        __("No recommendations found. Use Manual Item field.")
-                    )}</div>`
-                );
-                return;
-            }
-
-            const rowsHtml = recommendations
-                .map((rec) => {
-                    const title = [rec.item_name, rec.stock_uom].filter(Boolean).join(" • ");
-                    const subtitle = rec.matched_barcode
-                        ? __("Score {0} • Item {1} • Barcode {2}", [
-                              rec.score || 0,
-                              rec.item_code,
-                              rec.matched_barcode,
-                          ])
-                        : __("Score {0} • Item {1}", [rec.score || 0, rec.item_code]);
-                    return `<button type="button" class="btn btn-default invoice-helper-fuzzy-option" data-item-code="${escapeHtml(
-                        rec.item_code
-                    )}" style="display:block; width:100%; text-align:left; margin-bottom:6px;">
-                        <div>${escapeHtml(title)}</div>
-                        <div style="font-size:11px; color:#9ca3af;">${escapeHtml(subtitle)}</div>
-                    </button>`;
-                })
-                .join("");
-
-            recommendedWrapper.html(rowsHtml);
-
-            recommendedWrapper.find(".invoice-helper-fuzzy-option").on("click", function () {
-                const itemCode = String($(this).data("item-code") || "").trim();
-                if (!itemCode) return;
-                const selected = recommendations.find((rec) => rec.item_code === itemCode);
-                applySelection({
-                    match: selected,
-                    barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
-                    statusMessage: __("Selected recommendation: {0}", [
-                        selected?.item_code || itemCode,
-                    ]),
-                });
-                syncRecommendationSelection(itemCode);
-            });
-        };
-
-        renderRecommendations();
-
-        const manualField = amendDialog.get_field("manual_item_code");
-        if (manualField?.$input) {
-            manualField.$input.on("change blur", async () => {
-                const manualItemCode = String(
-                    amendDialog.get_value("manual_item_code") || ""
-                ).trim();
-                if (!manualItemCode) {
-                    validatedMatch = null;
-                    validatedBarcode = null;
-                    setPrimaryAsSkip();
-                    return;
-                }
-
-                const fromRecommendations = recommendations.find(
-                    (rec) => rec.item_code === manualItemCode
-                );
-                if (fromRecommendations) {
-                    applySelection({
-                        match: fromRecommendations,
-                        barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
-                        statusMessage: __("Using: {0}", [manualItemCode]),
-                    });
-                    syncRecommendationSelection(manualItemCode);
-                    return;
-                }
-
-                try {
-                    const itemDoc = await frappe.db.get_doc("Item", manualItemCode);
-                    applySelection({
-                        match: {
-                            item_code: itemDoc.name,
-                            item_name: itemDoc.item_name,
-                            uom: itemDoc.stock_uom,
-                            stock_uom: itemDoc.stock_uom,
-                        },
-                        barcode: normalizeBarcode(amendDialog.get_value("barcode")) || null,
-                        statusMessage: __("Selected: {0}", [itemDoc.item_name]),
-                    });
-                    syncRecommendationSelection(manualItemCode);
-                } catch (err) {
-                    console.error("Manual item lookup failed:", err);
-                    setStatusHtml(__("Manual Item not found. Choose a valid Item."), "#dc2626");
-                    setPrimaryAsSkip();
-                    syncRecommendationSelection(null);
-                }
-            });
-        }
-
-        amendDialog.show();
-        setStatusHtml(
-            __(
-                "Enter/Change barcode to validate, you may also pick a recommendation or enter item name. If matched, Skip becomes Continue."
-            )
-        );
-
-        const barcodeInput = amendDialog.get_field("barcode").$input;
-        if (barcodeInput) {
-            let debounceTimer = null;
-
-            barcodeInput.on("focus", () => {
-                setActionsVisible(false);
-                recommendedWrapper.html("");
-                setStatusHtml(__("Editing barcode..."), "#6b7280");
-            });
-
-            barcodeInput.on("input", () => {
-                setActionsVisible(false);
-                recommendedWrapper.html("");
-                if (debounceTimer) {
-                    clearTimeout(debounceTimer);
-                }
-                debounceTimer = setTimeout(() => {
-                    verifyChangedBarcode();
-                }, 300);
-            });
-
-            barcodeInput.on("blur", async () => {
-                if (debounceTimer) {
-                    clearTimeout(debounceTimer);
-                    debounceTimer = null;
-                }
-                await verifyChangedBarcode();
-                setActionsVisible(true);
-            });
-        }
+    let vueApp;
+    const cleanup = () => {
+        vueApp?.unmount();
+        modalContainer.remove();
     };
 
-    void processUnmatchedRowAt(0);
+    const finish = () => {
+        cleanup();
+        void invoice_helper.apply_prefill_rows_to_items(frm);
+        frappe.show_alert({
+            message: __("Finished reviewing unmatched rows"),
+            indicator: "green",
+        });
+    };
+
+    const mount = () => {
+        if (!frappe.ui.mountUnmatchedItemsModal) {
+            throw new Error("Unmatched items modal bundle did not register its Vue component");
+        }
+        vueApp = frappe.ui.mountUnmatchedItemsModal(modalContainer, {
+            isOpen: true,
+            rows: pendingRows,
+            resolveRow,
+            createItemForRow,
+            finish,
+        });
+    };
+
+    if (frappe.ui.mountUnmatchedItemsModal) {
+        console.log("Mounting unmatched items modal directly");
+        mount();
+    } else {
+        frappe
+            .require("unmatched_items_modal.bundle.js")
+            .then(() => {
+                mount();
+            })
+            .catch((error) => {
+                console.error("Failed to load unmatched items modal:", error);
+                modalContainer.remove();
+                frappe.msgprint({
+                    title: __("Could not open unmatched items"),
+                    message: __(
+                        "The unmatched item modal could not be loaded. Please reload the page and try again."
+                    ),
+                    indicator: "red",
+                });
+            });
+    }
 };
 
 invoice_helper.show_move_file_dialog = function (pendingFile) {
@@ -1410,43 +1009,37 @@ invoice_helper.show_move_file_dialog = function (pendingFile) {
         title: __("Attach File to Invoice"),
         fields: [
             {
-                fieldname: "invoice_type",
-                label: __("Invoice Type"),
-                fieldtype: "Select",
-                options: [
-                    { label: __("Purchase Invoice"), value: "Purchase Invoice" },
-                    { label: __("Sales Invoice"), value: "Sales Invoice" },
-                ],
+                fieldname: "doctype",
+                label: __("Document Type"),
+                fieldtype: "Link",
+                options: "DocType",
                 default: "Purchase Invoice",
                 reqd: 1,
                 onchange: () => {
-                    const invoiceType = d.get_value("invoice_type");
-                    d.fields_dict.invoice.df.options = invoiceType;
-                    d.fields_dict.invoice.refresh();
-                    d.set_value("invoice", "");
+                    const doctype = d.get_value("doctype");
+                    d.fields_dict.docname.df.options = doctype;
+                    d.fields_dict.docname.refresh();
+                    d.set_value("docname", "");
                 },
             },
             {
-                fieldname: "invoice",
-                label: __("Invoice"),
+                fieldname: "docname",
+                label: __("Document Name"),
                 fieldtype: "Link",
                 options: "Purchase Invoice",
-                get_query: () => ({
-                    filters: { docstatus: 0 },
-                }),
                 reqd: 1,
             },
         ],
         primary_action_label: __("Attach"),
         primary_action: async (values) => {
-            if (!values?.invoice || !values?.invoice_type) return;
+            if (!values?.docname || !values?.doctype) return;
             d.hide();
-            const attachment = await invoice_helper.attach_pending_document_file(
+            const r = await invoice_helper.attach_pending_document_file(
                 pendingFile,
-                values.invoice_type,
-                values.invoice
+                values.doctype,
+                values.docname
             );
-            if (attachment) {
+            if (r.message) {
                 frappe.show_alert({
                     message: __("File attached successfully"),
                     indicator: "green",
