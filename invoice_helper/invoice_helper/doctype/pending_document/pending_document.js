@@ -82,14 +82,18 @@ frappe.ui.form.on("Pending Document", {
                         // PDF preview (thumbnail/button)
                         else if (file_ext === "pdf") {
                             preview_html = `<div style="padding: 10px; text-align: center; cursor: pointer;" data-file-preview="true">
-								<i class="fa fa-file-pdf-o" style="font-size: 48px; color: #c41230;"></i>
+                                <svg class="icon icon-xl" style="color: #c41230;" aria-hidden="true">
+                                    <use class="" href="#icon-file-text"></use>
+                                </svg>
 								<p style="margin-top: 8px; color: #666; font-size: 12px;">${__("PDF - Click to view")}</p>
 							</div>`;
                         }
                         // Fallback: link to file
                         else {
                             preview_html = `<div style="padding: 10px; text-align: center;">
-								<i class="fa fa-file-o" style="font-size: 48px; color: #999;"></i>
+                                <svg class="icon icon-xl" style="color: #999;" aria-hidden="true">
+                                    <use class="" href="#icon-file"></use>
+                                </svg>
 								<p style="margin-top: 8px; color: #666; font-size: 12px;">
 									${file_ext.toUpperCase()}
 								</p>
@@ -144,11 +148,17 @@ frappe.ui.form.on("Pending Document", {
                         // Fallback
                         else {
                             modal_content = `<div style="padding: 40px; text-align: center;">
-								<i class="fa fa-file-o" style="font-size: 120px; color: #999; margin-bottom: 20px;"></i>
+                                <svg class="icon" style="height: 120px; width:120px; color: #999; margin-bottom: 20px;" aria-hidden="true">
+                                    <use class="" href="#icon-file-text"></use>
+                                </svg>
+
 								<h4>${file.file_name || file.name}</h4>
 								<p style="color: #999; margin: 20px 0;">${__("File type")}: ${file_ext.toUpperCase()}</p>
 								<a href="${file.file_url}" target="_blank" class="btn btn-primary btn-lg">
-									<i class="icon icon-download"></i> ${__("Download File")}
+                                    <svg class="icon icon-sm" aria-hidden="true">
+                                        <use href="#icon-download"></use>
+                                    </svg>
+                                    ${__("Download File")}
 								</a>
 							</div>`;
                         }

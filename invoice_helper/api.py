@@ -6,7 +6,6 @@ from difflib import SequenceMatcher
 
 import frappe
 from frappe.core.api.file import create_new_folder
-from frappe.share import add_docshare
 
 
 def get_or_create_folder(folder_path: str) -> str:
@@ -247,16 +246,11 @@ def get_item_details_for_prefill(doc, rows):
 		row = frappe._dict(row or {})
 		item_code = (row.get("item_code") or "").strip()
 
-		if not item_code:
-			results.append(
-				{
-					"row_index": row.get("row_index"),
-					"item_code": None,
-					"details": None,
-					"error": None,
-				}
-			)
+		if not item_code or not frappe.db.exists("Item", item_code):
 			continue
+
+		if frappe.has_permission("Item", "write", doc=item_code):
+			frappe.db.set_value("Item", item_code, "disabled", 0, update_modified=False)
 
 		try:
 			ctx = frappe._dict(

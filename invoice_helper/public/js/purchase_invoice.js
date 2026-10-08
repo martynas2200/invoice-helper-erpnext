@@ -10,9 +10,9 @@ frappe.ui.form.on("Purchase Invoice", {
     async refresh(frm) {
         if (frappe._pending_document) {
             // delete the global variable to avoid re-triggering
-            const pendingDoc = frappe._pending_document;
+            const pending_doc = frappe._pending_document;
             frappe._pending_document = null;
-            await invoice_helper.prefill_from_pending_dialog(frm, pendingDoc);
+            await invoice_helper.prefill_from_pending_dialog(frm, pending_doc);
         }
         if (frm.doc.docstatus == 1 || frm.doc.docstatus == 2) {
             return;
@@ -30,17 +30,9 @@ frappe.ui.form.on("Purchase Invoice", {
             },
             __("Invoice Helper")
         );
-
-        // Show pending file drawer if a file is pending
-        if (frm._pending_file && invoice_helper?.show_pending_file_drawer) {
-            invoice_helper.show_pending_file_drawer(frm);
-        }
     },
     on_submit(frm) {
-        // Hide drawer when invoice is submitted
-        if (invoice_helper?.hide_pending_file_drawer) {
-            invoice_helper.hide_pending_file_drawer(frm);
-        }
+        frm?.attachments?.hide_attachment_preview();
     },
     async after_save(frm) {
         await invoice_helper.after_save_hook(frm);

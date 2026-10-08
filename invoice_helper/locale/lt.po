@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Invoice Helper\n"
 "Report-Msgid-Bugs-To: Github issues\n"
-"POT-Creation-Date: 2026-09-28 22:37+0141\n"
-"PO-Revision-Date: 2026-09-16 18:08+0018\n"
+"POT-Creation-Date: 2026-10-08 10:10+0018\n"
+"PO-Revision-Date: 2026-10-08 10:10+0018\n"
 "Last-Translator: Auto-generated <>\n"
 "Language: lt\n"
 "Language-Team: Lithuanian\n"
@@ -37,11 +37,21 @@ msgstr "AWS slaptasis raktas"
 msgid "AWS credentials are not configured. Please set them in Textract Settings."
 msgstr "AWS kredencialai nėra sukonfigūruoti. Prašome juos nustatyti Textract nustatymuose."
 
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+msgid "Accounts Manager"
+msgstr ""
+
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+msgid "Accounts User"
+msgstr ""
+
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document_list.js:68
 msgid "Add File from File List"
 msgstr "Pridėti failą iš failų sąrašo"
 
-#: invoice_helper/public/js/prefill_dialog.js:59
+#: invoice_helper/public/js/prefill_dialog.js:77
 msgid "Amazon Textract Tables"
 msgstr "Amazon Textract lentelės"
 
@@ -56,14 +66,14 @@ msgid "An error occurred"
 msgstr "Įvyko klaida"
 
 #: invoice_helper/public/js/move_dialog.js:34
-#: invoice_helper/public/js/prefill_dialog.js:1035
+#: invoice_helper/public/js/prefill_dialog.js:1065
 msgid "Attach"
 msgstr "Prisegti"
 
 #: invoice_helper/public/js/move_dialog.js:7
-#: invoice_helper/public/js/prefill_dialog.js:1011
-msgid "Attach File to Invoice"
-msgstr "Prisegti failą prie sąskaitos"
+#: invoice_helper/public/js/prefill_dialog.js:1041
+msgid "Attach File to Document"
+msgstr "Prisegti failą prie dokumento"
 
 #. Description of the 'Pending Document Cleanup Days' (Int) field in DocType
 #. 'OCR Settings'
@@ -76,8 +86,8 @@ msgstr "Automatiškai ištrinti Laukiančius dokumentus su būsena Naudota arba 
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:58
-#: invoice_helper/public/js/prefill_dialog.js:492
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:62
+#: invoice_helper/public/js/prefill_dialog.js:518
 msgid "Barcode"
 msgstr "Brūkšninis kodas"
 
@@ -86,7 +96,7 @@ msgstr "Brūkšninis kodas"
 msgid "Barcodes Found"
 msgstr "Rasti brūkšniniai kodai"
 
-#: invoice_helper/public/js/prefill_dialog.js:61
+#: invoice_helper/public/js/prefill_dialog.js:79
 msgid "Barcodes Only"
 msgstr "Tik brūkšniniai kodai"
 
@@ -116,40 +126,36 @@ msgstr "Sąskaitos numeris"
 msgid "Click to expand"
 msgstr "Spustelėkite, kad išplėstumėte"
 
-#: invoice_helper/public/js/pending_file_drawer.js:95
-msgid "Close"
-msgstr "Uždaryti"
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:21
-#: invoice_helper/public/js/prefill_dialog.js:485
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:23
+#: invoice_helper/public/js/prefill_dialog.js:511
 msgid "Column"
 msgstr "Stulpelis"
 
-#: invoice_helper/public/js/prefill_dialog.js:465
+#: invoice_helper/public/js/prefill_dialog.js:490
 msgid "Column Mapping"
 msgstr "Stulpelių sujungimas"
 
-#: invoice_helper/public/js/prefill_dialog.js:430
+#: invoice_helper/public/js/prefill_dialog.js:455
 msgid "Confidence"
 msgstr "Užtikrintumas"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:104
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:112
 msgid "Continue"
 msgstr "Tęsti"
 
-#: invoice_helper/public/js/prefill_dialog.js:815
+#: invoice_helper/public/js/prefill_dialog.js:837
 msgid "Could not add item details"
 msgstr "Nepavyko pridėti prekės detalių"
 
-#: invoice_helper/public/js/prefill_dialog.js:671
+#: invoice_helper/public/js/prefill_dialog.js:693
 msgid "Could not attach file from Pending Document: {0}"
 msgstr "Nepavyko prisegti failo iš laukiančio dokumento: {0}"
 
-#: invoice_helper/public/js/prefill_dialog.js:818
+#: invoice_helper/public/js/prefill_dialog.js:840
 msgid "Could not fetch item details for {0} row(s). You may need to re-select them."
 msgstr "Nepavyko gauti prekės detalių {0} eilutėms(-ėms). Gali tekti jas vėl pasirinkti."
 
-#: invoice_helper/public/js/prefill_dialog.js:999
+#: invoice_helper/public/js/prefill_dialog.js:1027
 msgid "Could not open unmatched items"
 msgstr "Nepavyko atidaryti neatitinkančių elementų"
 
@@ -174,11 +180,11 @@ msgstr "Sukurti laukiantį dokumentą"
 msgid "Create Record"
 msgstr "Kurti įrašą"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:97
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
 msgid "Create a new item"
 msgstr "Sukurti naują prekę"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:97
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
 msgid "Creating..."
 msgstr "Kuriama..."
 
@@ -196,19 +202,15 @@ msgstr "Dokumento informacija"
 
 #. Label of the document_name (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:1029
+#: invoice_helper/public/js/prefill_dialog.js:1059
 msgid "Document Name"
 msgstr "Dokumento pavadinimas"
 
-#: invoice_helper/public/js/prefill_dialog.js:1015
+#: invoice_helper/public/js/prefill_dialog.js:1045
 msgid "Document Type"
 msgstr "Dokumento tipas"
 
-#: invoice_helper/public/js/pending_file_drawer.js:126
-msgid "Download"
-msgstr "Atsisiųsti"
-
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:151
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:161
 msgid "Download File"
 msgstr "Atsisiųsti failą"
 
@@ -232,15 +234,11 @@ msgstr "Įveskite puslapių diapazonus, atskirtus kableliais. Pavyzdys: 1-2,3,4-
 msgid "Error"
 msgstr "Klaida"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:254
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:266
 msgid "Exact barcode match found."
 msgstr "Rastas tikslus brūkšninio kodo atitikmuo."
 
-#: invoice_helper/public/js/pending_file_drawer.js:80
-msgid "Expand"
-msgstr "Išplėsti"
-
-#: invoice_helper/public/js/prefill_dialog.js:504
+#: invoice_helper/public/js/prefill_dialog.js:530
 msgid "Extract"
 msgstr "Išgauti"
 
@@ -278,20 +276,20 @@ msgstr "Išgavimas nepavyko dėl klaidos:"
 msgid "File"
 msgstr "Failas"
 
-#: invoice_helper/public/js/prefill_dialog.js:644
+#: invoice_helper/public/js/prefill_dialog.js:668
 msgid "File attached"
 msgstr "Failas pridėtas"
 
 #: invoice_helper/public/js/move_dialog.js:45
-#: invoice_helper/public/js/prefill_dialog.js:1046
+#: invoice_helper/public/js/prefill_dialog.js:1076
 msgid "File attached successfully"
 msgstr "Failas sėkmingai prisegtas"
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:149
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:156
 msgid "File type"
 msgstr "Failo tipas"
 
-#: invoice_helper/public/js/prefill_dialog.js:968
+#: invoice_helper/public/js/prefill_dialog.js:996
 msgid "Finished reviewing unmatched rows"
 msgstr "Baigta peržiūrėti nesujungtas eilutes"
 
@@ -315,7 +313,7 @@ msgstr "ID reikšmė"
 msgid "If a table has fewer columns than the defined minimum, the extraction results won’t contain that table."
 msgstr "Jei lentelėje yra mažiau stulpelių nei nustatyta minimali riba, išgavimo rezultatuose lentelė nebus įtraukta."
 
-#: invoice_helper/public/js/prefill_dialog.js:71
+#: invoice_helper/public/js/prefill_dialog.js:89
 msgid "If available, Bill No, Posting Date, Due Date, Supplier from Pending Document"
 msgstr "Jei įmanoma, sąskaitos nr., įrašymo data, mokėjimo data, tiekėjas"
 
@@ -330,28 +328,20 @@ msgstr "Jei pažymėta, kiekvienam padalintam PDF sukuriami laukiančio dokument
 msgid "Ignored IDs"
 msgstr "Ignoruojami ID"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:303
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:315
 msgid "Invalid Barcode"
 msgstr "Neteisingas brūkšninis kodas"
-
-#: invoice_helper/public/js/move_dialog.js:28
-msgid "Invoice"
-msgstr "Sąskaita"
 
 #: invoice_helper/public/js/purchase_invoice.js:23
 #: invoice_helper/public/js/purchase_invoice.js:31
 msgid "Invoice Helper"
 msgstr "Sąskaitų pagalbininkas"
 
-#: invoice_helper/public/js/move_dialog.js:11
-msgid "Invoice Type"
-msgstr "Sąskaitos tipas"
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:58
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:62
 msgid "Item name or code"
 msgstr "Prekės pavadinimas arba kodas"
 
-#: invoice_helper/public/js/prefill_dialog.js:944
+#: invoice_helper/public/js/prefill_dialog.js:972
 msgid "Item was created, but barcode row was not added automatically."
 msgstr "Prekė buvo sukurta, tačiau brūkšninio kodo eilutė nebuvo pridėta automatiškai."
 
@@ -372,15 +362,15 @@ msgstr "Eilutės suma"
 msgid "List of VAT codes and business IDs to exclude from extraction"
 msgstr "Sąrašas PVM kodų ir įmonių ID, kurių išgavimas neįtraukiamas"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:65
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:73
 msgid "Loading..."
 msgstr "Kraunama..."
 
-#: invoice_helper/public/js/prefill_dialog.js:60
+#: invoice_helper/public/js/prefill_dialog.js:78
 msgid "Local table extraction"
 msgstr "Vietinis lentelės išgavimas"
 
-#: invoice_helper/public/js/prefill_dialog.js:502
+#: invoice_helper/public/js/prefill_dialog.js:528
 msgid "Map Columns"
 msgstr "Sujungti stulpelius"
 
@@ -398,7 +388,7 @@ msgstr "Perkelti"
 msgid "Moved"
 msgstr "Perkelta"
 
-#: invoice_helper/public/js/prefill_dialog.js:412
+#: invoice_helper/public/js/prefill_dialog.js:437
 msgid "Multiple tables found. Choose the one containing items:"
 msgstr "Rasta kelios lentelės. Pasirinkite tą, kurioje yra prekės:"
 
@@ -407,11 +397,11 @@ msgstr "Rasta kelios lentelės. Pasirinkite tą, kurioje yra prekės:"
 msgid "Name of the S3 bucket used for Textract input documents."
 msgstr "Pavadinimas S3 kibirėlio, naudojamo Textract įvesties dokumentams."
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:314
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:326
 msgid "New Item"
 msgstr "Nauja prekė"
 
-#: invoice_helper/public/js/prefill_dialog.js:206
+#: invoice_helper/public/js/prefill_dialog.js:224
 msgid "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
 msgstr "Nerasta tikslių atitikmenų išgautoms prekėms. Ar norite peržiūrėti nesusietas eilutes ir pabandyti jas susieti rankiniu būdu, pasinaudojant „fuzzy“ paieškos pagalba?<br><br></b> Tai gali būti ypač naudinga, jei sąskaita neturi brūkšninių kodų."
 
@@ -419,23 +409,23 @@ msgstr "Nerasta tikslių atitikmenų išgautoms prekėms. Ar norite peržiūrėt
 msgid "No file found."
 msgstr "Failas nerastas."
 
-#: invoice_helper/public/js/prefill_dialog.js:702
+#: invoice_helper/public/js/prefill_dialog.js:724
 msgid "No items to restore"
 msgstr "Nėra prekių, kurias būtų galima atkurti"
 
-#: invoice_helper/public/js/prefill_dialog.js:727
+#: invoice_helper/public/js/prefill_dialog.js:749
 msgid "No price changes detected"
 msgstr "Kainų pokyčių nepastebėta"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:86
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:94
 msgid "No recommendations found."
 msgstr "Rekomendacijų nerasta."
 
-#: invoice_helper/public/js/prefill_dialog.js:395
+#: invoice_helper/public/js/prefill_dialog.js:420
 msgid "No tables found in the document"
 msgstr "Dokumente nerasta lentelių"
 
-#: invoice_helper/public/js/prefill_dialog.js:880
+#: invoice_helper/public/js/prefill_dialog.js:908
 msgid "No unmatched rows to review"
 msgstr "Nėra nerastų eilučių peržiūrai"
 
@@ -464,17 +454,13 @@ msgstr "OCR kalba"
 msgid "OCR Settings"
 msgstr "OCR nustatymai"
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:96
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:100
 msgid "Open"
 msgstr "Atidaryti"
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:12
 msgid "Open File"
 msgstr "Atidaryti failą"
-
-#: invoice_helper/public/js/pending_file_drawer.js:90
-msgid "Open in new tab"
-msgstr "Atidaryti naujame skirtuke"
 
 #. Description of the 'Extraction JSON' (Code) field in DocType 'Pending
 #. Document'
@@ -503,7 +489,7 @@ msgstr "Išvestis"
 msgid "Output Folder"
 msgstr "Išvesties aplankas"
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:86
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:88
 msgid "PDF - Click to view"
 msgstr "PDF - spustelėkite, kad peržiūrėtumėte"
 
@@ -523,7 +509,7 @@ msgstr "Laukiama"
 # DocType / app
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:45
+#: invoice_helper/public/js/prefill_dialog.js:63
 msgid "Pending Document"
 msgstr "Laukiantis dokumentas"
 
@@ -557,33 +543,33 @@ msgstr "Laukiantis dokumentas sukurtas {0}"
 msgid "Pixel threshold for grouping OCR elements into rows based on Y coordinates"
 msgstr "Pikselių slenkstis OCR elementams grupuoti į eilutes pagal Y koordinates"
 
-#: invoice_helper/public/js/prefill_dialog.js:514
+#: invoice_helper/public/js/prefill_dialog.js:540
 msgid "Please ensure each column type is selected only once."
 msgstr "Prašome užtikrinti, kad kiekvienas stulpelio tipas būtų pasirinktas tik vieną kartą."
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:304
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:316
 msgid "Please provide a valid barcode before creating a new item."
 msgstr "Prašome pateikti galiojantį brūkšninį kodą prieš kuriant naują prekę."
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:116
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:178
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:198
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:120
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:188
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:208
 msgid "Please select a file first"
 msgstr "Prašome pirmiausia pasirinkti failą"
 
-#: invoice_helper/public/js/prefill_dialog.js:76
+#: invoice_helper/public/js/prefill_dialog.js:94
 msgid "Prefill"
 msgstr "Papildyti"
 
-#: invoice_helper/public/js/prefill_dialog.js:68
+#: invoice_helper/public/js/prefill_dialog.js:86
 msgid "Prefill Header Fields"
 msgstr "Užpildyti antraštės laukus"
 
-#: invoice_helper/public/js/prefill_dialog.js:56
+#: invoice_helper/public/js/prefill_dialog.js:74
 msgid "Prefill Type"
 msgstr "Užpildymo tipas"
 
-#: invoice_helper/public/js/prefill_dialog.js:41
+#: invoice_helper/public/js/prefill_dialog.js:59
 #: invoice_helper/public/js/purchase_invoice.js:21
 msgid "Prefill from Pending Document"
 msgstr "Papildyti iš laukiančio dokumento"
@@ -597,12 +583,8 @@ msgstr "Peržiūra"
 msgid "Preview File"
 msgstr "Peržiūrėti failą"
 
-#: invoice_helper/public/js/pending_file_drawer.js:125
-msgid "Preview not available"
-msgstr "Peržiūra negalima"
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:33
-#: invoice_helper/public/js/prefill_dialog.js:494
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:36
+#: invoice_helper/public/js/prefill_dialog.js:520
 msgid "Price"
 msgstr "Kaina"
 
@@ -611,18 +593,14 @@ msgstr "Kaina"
 msgid "Processing"
 msgstr "Apdorojama"
 
-#: invoice_helper/public/js/move_dialog.js:14
-msgid "Purchase Invoice"
-msgstr "Pirkimo sąskaita faktūra"
-
 #. Label of the quantity (Float) field in DocType 'Pending Document Extraction
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Qty"
 msgstr "Kiekis"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:29
-#: invoice_helper/public/js/prefill_dialog.js:493
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:32
+#: invoice_helper/public/js/prefill_dialog.js:519
 msgid "Quantity"
 msgstr "Kiekis"
 
@@ -630,7 +608,7 @@ msgstr "Kiekis"
 msgid "Restore prefilled rates"
 msgstr "Atkurti užpildytas kainas"
 
-#: invoice_helper/public/js/prefill_dialog.js:722
+#: invoice_helper/public/js/prefill_dialog.js:744
 msgid "Restored {0} item price(s) to original extraction value"
 msgstr "Atkurta {0} prekės(-ių) kaina į pradinę išgavimo reikšmę"
 
@@ -653,23 +631,19 @@ msgstr "S3 kibirėlis"
 msgid "S3 Prefix"
 msgstr "S3 prefiksas"
 
-#: invoice_helper/public/js/move_dialog.js:15
-msgid "Sales Invoice"
-msgstr "Pardavimo sąskaita faktūra"
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:49
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:53
 msgid "Search by barcode"
 msgstr "Ieškoti pagal brūkšninį kodą"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:42
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:46
 msgid "Search by name/code"
 msgstr "Ieškoti pagal pavadinimą/kodą"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:272
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:284
 msgid "Search failed. Please try again."
 msgstr "Paieška nepavyko. Prašome pabandyti dar kartą."
 
-#: invoice_helper/public/js/prefill_dialog.js:407
+#: invoice_helper/public/js/prefill_dialog.js:432
 msgid "Select Table"
 msgstr "Pasirinkite lentelę"
 
@@ -677,23 +651,15 @@ msgstr "Pasirinkite lentelę"
 msgid "Select folder where split PDFs will be saved (optional)"
 msgstr "Pasirinkite aplanką, kuriame bus išsaugoti padalinti PDF failai (pasirinktinai)"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:280
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:292
 msgid "Selected: {0}"
 msgstr "Pasirinkta: {0}"
 
-#: invoice_helper/public/js/pending_file_drawer.js:25
-msgid "Show Drawer"
-msgstr "Rodyti stalčių"
-
-#: invoice_helper/public/js/pending_file_drawer.js:85
-msgid "Shrink"
-msgstr "Sutraukti"
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:90
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:98
 msgid "Skip"
 msgstr "Praleisti"
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:14
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:16
 msgid "Source row"
 msgstr "Šaltinio eilutė"
 
@@ -722,7 +688,7 @@ msgstr "Statusas"
 msgid "Subtotal"
 msgstr "Tarpinė suma"
 
-#: invoice_helper/public/js/prefill_dialog.js:209
+#: invoice_helper/public/js/prefill_dialog.js:227
 msgid "Successfully prefilled {0} items, but {1} rows seem to be unmatched. Do you want to review these unmatched rows or create items with a quick entry dialog?"
 msgstr "Sėkmingai užpildyta {0} prekių, tačiau {1} eilutės(-ių) nepavyko susieti. Ar norite peržiūrėti šias eilutes ar sukurti prekes dialogo lange?"
 
@@ -741,11 +707,18 @@ msgstr "Tiekėjo įmonės kodas"
 msgid "Supplier VAT Code"
 msgstr "Tiekėjo PVM mokėtojo kodas"
 
-#: invoice_helper/public/js/prefill_dialog.js:375
+#. Name of a role
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "System Manager"
+msgstr ""
+
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "Table"
 msgstr "Lentelė"
 
-#: invoice_helper/public/js/prefill_dialog.js:455
+#: invoice_helper/public/js/prefill_dialog.js:480
 msgid "Table has insufficient rows"
 msgstr "Lentelėje nepakanka eilučių"
 
@@ -783,7 +756,7 @@ msgstr "Textract nustatymai"
 msgid "Textract integration is not enabled. Please configure it in Textract Settings."
 msgstr "Textract integracija nėra įgalinta. Prašome sukonfigūruoti ją Textract nustatymuose."
 
-#: invoice_helper/public/js/prefill_dialog.js:1000
+#: invoice_helper/public/js/prefill_dialog.js:1028
 msgid "The unmatched item modal could not be loaded. Please reload the page and try again."
 msgstr "Nesujungtų prekių modalas negalėjo būti įkeltas. Prašome perkrauti puslapį ir pabandyti dar kartą."
 
@@ -798,7 +771,7 @@ msgstr "Bendra suma"
 msgid "Unit Price"
 msgstr "Vieneto kaina"
 
-#: invoice_helper/public/js/prefill_dialog.js:672
+#: invoice_helper/public/js/prefill_dialog.js:694
 msgid "Unknown error"
 msgstr "Nežinoma klaida"
 
@@ -835,10 +808,46 @@ msgstr "Naudojamas tiekėjo pasirinkimui"
 msgid "VAT code or business ID to ignore (e.g., 'LT112322334' or '498349874')"
 msgstr "Ignoruojamas PVM kodas arba įmonės ID (pvz., 'LT112322334' arba '498349874')"
 
-#: invoice_helper/public/js/prefill_dialog.js:428
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "ap-northeast-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "ap-southeast-1"
+msgstr ""
+
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "columns"
 msgstr "stulpeliai"
 
-#: invoice_helper/public/js/prefill_dialog.js:375
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "eu-central-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "eu-west-1"
+msgstr ""
+
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "rows"
 msgstr "eilutės"
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-east-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-west-1"
+msgstr ""
+
+#. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+msgid "us-west-2"
+msgstr ""
+

@@ -27,10 +27,8 @@ app_license = "mit"
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "/assets/invoice_helper/css/drawer.css"
 app_include_js = [
 	"/assets/invoice_helper/js/unmatched_items_modal.bundle.js",
-	"/assets/invoice_helper/js/pending_file_drawer.js",
 	"/assets/invoice_helper/js/prefill_dialog.js",
 	"/assets/invoice_helper/js/split_dialog.js",
 	"/assets/invoice_helper/js/move_dialog.js",

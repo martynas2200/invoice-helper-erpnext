@@ -6,7 +6,9 @@
                     {{ __("Unmatched Row {0} of {1}", [currentIndex + 1, rows.length]) }}
                 </h4>
                 <button type="button" class="btn btn-link btn-modal-close" @click="close">
-                    <i class="fa fa-times"></i>
+                    <svg class="icon icon-sm" aria-hidden="true">
+                        <use data-v-cea3ffc8="" class="close-alt" href="#icon-close-alt"></use>
+                    </svg>
                 </button>
             </div>
             <div class="modal-body">
@@ -64,7 +66,13 @@
                 </div>
                 <div v-if="statusMessage" class="text-muted mb-2">{{ statusMessage }}</div>
                 <div v-if="loading" class="text-center text-muted p-3">
-                    <i class="fa fa-spinner fa-spin"></i> {{ __("Loading...") }}
+                    <svg class="icon icon-xl spinner-border" aria-hidden="true">
+                        <use href="#icon-loader-circle" class="loader-circle"></use>
+                    </svg>
+                    <svg data-v-cea3ffc8="" class="icon icon-sm" aria-hidden="true">
+                        <use data-v-cea3ffc8="" href="#icon-close-alt"></use>
+                    </svg>
+                    {{ __("Loading...") }}
                 </div>
                 <div v-else-if="recommendations.length" class="invoice-helper-recommendations">
                     <button

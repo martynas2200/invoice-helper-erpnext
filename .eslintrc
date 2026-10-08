@@ -18,10 +18,21 @@
 		"quotes": ["off"],
 		"semi": "off",
 		"camelcase": "off",
+		"no-restricted-syntax": [
+			"error",
+			{
+				"selector": ":function > Identifier[name=/[A-Z]/]",
+				"message": "Function and parameter names must be snake_case (Frappe convention)."
+			},
+			{
+				"selector": "VariableDeclarator[id.name=/[A-Z]/]",
+				"message": "Variable names must be snake_case (Frappe convention)."
+			}
+		],
 		"no-unused-vars": "off",
 		"no-console": ["warn"],
 		"no-extra-boolean-cast": ["off"],
-		"no-control-regex": ["off"],
+		"no-control-regex": ["off"]
 	},
 	"root": true,
 	"globals": {

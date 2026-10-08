@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Invoice Helper VERSION\n"
 "Report-Msgid-Bugs-To: martin@ekranas.info\n"
-"POT-Creation-Date: 2026-09-28 22:37+0141\n"
-"PO-Revision-Date: 2026-09-28 22:37+0141\n"
+"POT-Creation-Date: 2026-10-08 10:10+0018\n"
+"PO-Revision-Date: 2026-10-08 10:10+0018\n"
 "Last-Translator: martin@ekranas.info\n"
 "Language-Team: martin@ekranas.info\n"
 "MIME-Version: 1.0\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Add File from File List"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:59
+#: invoice_helper/public/js/prefill_dialog.js:77
 msgid "Amazon Textract Tables"
 msgstr ""
 
@@ -68,13 +68,13 @@ msgid "An error occurred"
 msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:34
-#: invoice_helper/public/js/prefill_dialog.js:1035
+#: invoice_helper/public/js/prefill_dialog.js:1065
 msgid "Attach"
 msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:7
-#: invoice_helper/public/js/prefill_dialog.js:1011
-msgid "Attach File to Invoice"
+#: invoice_helper/public/js/prefill_dialog.js:1041
+msgid "Attach File to Document"
 msgstr ""
 
 #. Description of the 'Pending Document Cleanup Days' (Int) field in DocType
@@ -88,8 +88,8 @@ msgstr ""
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:58
-#: invoice_helper/public/js/prefill_dialog.js:492
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:62
+#: invoice_helper/public/js/prefill_dialog.js:518
 msgid "Barcode"
 msgstr ""
 
@@ -98,7 +98,7 @@ msgstr ""
 msgid "Barcodes Found"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:61
+#: invoice_helper/public/js/prefill_dialog.js:79
 msgid "Barcodes Only"
 msgstr ""
 
@@ -128,40 +128,36 @@ msgstr ""
 msgid "Click to expand"
 msgstr ""
 
-#: invoice_helper/public/js/pending_file_drawer.js:95
-msgid "Close"
-msgstr ""
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:21
-#: invoice_helper/public/js/prefill_dialog.js:485
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:23
+#: invoice_helper/public/js/prefill_dialog.js:511
 msgid "Column"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:465
+#: invoice_helper/public/js/prefill_dialog.js:490
 msgid "Column Mapping"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:430
+#: invoice_helper/public/js/prefill_dialog.js:455
 msgid "Confidence"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:104
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:112
 msgid "Continue"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:815
+#: invoice_helper/public/js/prefill_dialog.js:837
 msgid "Could not add item details"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:671
+#: invoice_helper/public/js/prefill_dialog.js:693
 msgid "Could not attach file from Pending Document: {0}"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:818
+#: invoice_helper/public/js/prefill_dialog.js:840
 msgid "Could not fetch item details for {0} row(s). You may need to re-select them."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:999
+#: invoice_helper/public/js/prefill_dialog.js:1027
 msgid "Could not open unmatched items"
 msgstr ""
 
@@ -186,11 +182,11 @@ msgstr ""
 msgid "Create Record"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:97
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
 msgid "Create a new item"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:97
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
 msgid "Creating..."
 msgstr ""
 
@@ -208,19 +204,15 @@ msgstr ""
 
 #. Label of the document_name (Data) field in DocType 'Pending Document'
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:1029
+#: invoice_helper/public/js/prefill_dialog.js:1059
 msgid "Document Name"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:1015
+#: invoice_helper/public/js/prefill_dialog.js:1045
 msgid "Document Type"
 msgstr ""
 
-#: invoice_helper/public/js/pending_file_drawer.js:126
-msgid "Download"
-msgstr ""
-
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:151
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:161
 msgid "Download File"
 msgstr ""
 
@@ -244,15 +236,11 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:254
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:266
 msgid "Exact barcode match found."
 msgstr ""
 
-#: invoice_helper/public/js/pending_file_drawer.js:80
-msgid "Expand"
-msgstr ""
-
-#: invoice_helper/public/js/prefill_dialog.js:504
+#: invoice_helper/public/js/prefill_dialog.js:530
 msgid "Extract"
 msgstr ""
 
@@ -289,20 +277,20 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:644
+#: invoice_helper/public/js/prefill_dialog.js:668
 msgid "File attached"
 msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:45
-#: invoice_helper/public/js/prefill_dialog.js:1046
+#: invoice_helper/public/js/prefill_dialog.js:1076
 msgid "File attached successfully"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:149
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:156
 msgid "File type"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:968
+#: invoice_helper/public/js/prefill_dialog.js:996
 msgid "Finished reviewing unmatched rows"
 msgstr ""
 
@@ -326,7 +314,7 @@ msgstr ""
 msgid "If a table has fewer columns than the defined minimum, the extraction results won’t contain that table."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:71
+#: invoice_helper/public/js/prefill_dialog.js:89
 msgid "If available, Bill No, Posting Date, Due Date, Supplier from Pending Document"
 msgstr ""
 
@@ -341,12 +329,8 @@ msgstr ""
 msgid "Ignored IDs"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:303
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:315
 msgid "Invalid Barcode"
-msgstr ""
-
-#: invoice_helper/public/js/move_dialog.js:28
-msgid "Invoice"
 msgstr ""
 
 #: invoice_helper/public/js/purchase_invoice.js:23
@@ -354,15 +338,11 @@ msgstr ""
 msgid "Invoice Helper"
 msgstr ""
 
-#: invoice_helper/public/js/move_dialog.js:11
-msgid "Invoice Type"
-msgstr ""
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:58
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:62
 msgid "Item name or code"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:944
+#: invoice_helper/public/js/prefill_dialog.js:972
 msgid "Item was created, but barcode row was not added automatically."
 msgstr ""
 
@@ -383,15 +363,15 @@ msgstr ""
 msgid "List of VAT codes and business IDs to exclude from extraction"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:65
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:73
 msgid "Loading..."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:60
+#: invoice_helper/public/js/prefill_dialog.js:78
 msgid "Local table extraction"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:502
+#: invoice_helper/public/js/prefill_dialog.js:528
 msgid "Map Columns"
 msgstr ""
 
@@ -409,7 +389,7 @@ msgstr ""
 msgid "Moved"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:412
+#: invoice_helper/public/js/prefill_dialog.js:437
 msgid "Multiple tables found. Choose the one containing items:"
 msgstr ""
 
@@ -418,11 +398,11 @@ msgstr ""
 msgid "Name of the S3 bucket used for Textract input documents."
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:314
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:326
 msgid "New Item"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:206
+#: invoice_helper/public/js/prefill_dialog.js:224
 msgid "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
 msgstr ""
 
@@ -430,23 +410,23 @@ msgstr ""
 msgid "No file found."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:702
+#: invoice_helper/public/js/prefill_dialog.js:724
 msgid "No items to restore"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:727
+#: invoice_helper/public/js/prefill_dialog.js:749
 msgid "No price changes detected"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:86
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:94
 msgid "No recommendations found."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:395
+#: invoice_helper/public/js/prefill_dialog.js:420
 msgid "No tables found in the document"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:880
+#: invoice_helper/public/js/prefill_dialog.js:908
 msgid "No unmatched rows to review"
 msgstr ""
 
@@ -475,16 +455,12 @@ msgstr ""
 msgid "OCR Settings"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:96
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:100
 msgid "Open"
 msgstr ""
 
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:12
 msgid "Open File"
-msgstr ""
-
-#: invoice_helper/public/js/pending_file_drawer.js:90
-msgid "Open in new tab"
 msgstr ""
 
 #. Description of the 'Extraction JSON' (Code) field in DocType 'Pending
@@ -514,7 +490,7 @@ msgstr ""
 msgid "Output Folder"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:86
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:88
 msgid "PDF - Click to view"
 msgstr ""
 
@@ -533,7 +509,7 @@ msgstr ""
 
 #. Name of a DocType
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:45
+#: invoice_helper/public/js/prefill_dialog.js:63
 msgid "Pending Document"
 msgstr ""
 
@@ -566,33 +542,33 @@ msgstr ""
 msgid "Pixel threshold for grouping OCR elements into rows based on Y coordinates"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:514
+#: invoice_helper/public/js/prefill_dialog.js:540
 msgid "Please ensure each column type is selected only once."
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:304
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:316
 msgid "Please provide a valid barcode before creating a new item."
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:116
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:178
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:198
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:120
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:188
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:208
 msgid "Please select a file first"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:76
+#: invoice_helper/public/js/prefill_dialog.js:94
 msgid "Prefill"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:68
+#: invoice_helper/public/js/prefill_dialog.js:86
 msgid "Prefill Header Fields"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:56
+#: invoice_helper/public/js/prefill_dialog.js:74
 msgid "Prefill Type"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:41
+#: invoice_helper/public/js/prefill_dialog.js:59
 #: invoice_helper/public/js/purchase_invoice.js:21
 msgid "Prefill from Pending Document"
 msgstr ""
@@ -606,12 +582,8 @@ msgstr ""
 msgid "Preview File"
 msgstr ""
 
-#: invoice_helper/public/js/pending_file_drawer.js:125
-msgid "Preview not available"
-msgstr ""
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:33
-#: invoice_helper/public/js/prefill_dialog.js:494
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:36
+#: invoice_helper/public/js/prefill_dialog.js:520
 msgid "Price"
 msgstr ""
 
@@ -620,18 +592,14 @@ msgstr ""
 msgid "Processing"
 msgstr ""
 
-#: invoice_helper/public/js/move_dialog.js:14
-msgid "Purchase Invoice"
-msgstr ""
-
 #. Label of the quantity (Float) field in DocType 'Pending Document Extraction
 #. Item'
 #: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
 msgid "Qty"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:29
-#: invoice_helper/public/js/prefill_dialog.js:493
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:32
+#: invoice_helper/public/js/prefill_dialog.js:519
 msgid "Quantity"
 msgstr ""
 
@@ -639,7 +607,7 @@ msgstr ""
 msgid "Restore prefilled rates"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:722
+#: invoice_helper/public/js/prefill_dialog.js:744
 msgid "Restored {0} item price(s) to original extraction value"
 msgstr ""
 
@@ -662,23 +630,19 @@ msgstr ""
 msgid "S3 Prefix"
 msgstr ""
 
-#: invoice_helper/public/js/move_dialog.js:15
-msgid "Sales Invoice"
-msgstr ""
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:49
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:53
 msgid "Search by barcode"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:42
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:46
 msgid "Search by name/code"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:272
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:284
 msgid "Search failed. Please try again."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:407
+#: invoice_helper/public/js/prefill_dialog.js:432
 msgid "Select Table"
 msgstr ""
 
@@ -686,23 +650,15 @@ msgstr ""
 msgid "Select folder where split PDFs will be saved (optional)"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:280
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:292
 msgid "Selected: {0}"
 msgstr ""
 
-#: invoice_helper/public/js/pending_file_drawer.js:25
-msgid "Show Drawer"
-msgstr ""
-
-#: invoice_helper/public/js/pending_file_drawer.js:85
-msgid "Shrink"
-msgstr ""
-
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:90
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:98
 msgid "Skip"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:14
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:16
 msgid "Source row"
 msgstr ""
 
@@ -731,7 +687,7 @@ msgstr ""
 msgid "Subtotal"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:209
+#: invoice_helper/public/js/prefill_dialog.js:227
 msgid "Successfully prefilled {0} items, but {1} rows seem to be unmatched. Do you want to review these unmatched rows or create items with a quick entry dialog?"
 msgstr ""
 
@@ -757,11 +713,11 @@ msgstr ""
 msgid "System Manager"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:428
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "Table"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:455
+#: invoice_helper/public/js/prefill_dialog.js:480
 msgid "Table has insufficient rows"
 msgstr ""
 
@@ -799,7 +755,7 @@ msgstr ""
 msgid "Textract integration is not enabled. Please configure it in Textract Settings."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:1000
+#: invoice_helper/public/js/prefill_dialog.js:1028
 msgid "The unmatched item modal could not be loaded. Please reload the page and try again."
 msgstr ""
 
@@ -814,7 +770,7 @@ msgstr ""
 msgid "Unit Price"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:672
+#: invoice_helper/public/js/prefill_dialog.js:694
 msgid "Unknown error"
 msgstr ""
 
@@ -861,7 +817,7 @@ msgstr ""
 msgid "ap-southeast-1"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:428
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "columns"
 msgstr ""
 
@@ -875,7 +831,7 @@ msgstr ""
 msgid "eu-west-1"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:428
+#: invoice_helper/public/js/prefill_dialog.js:453
 msgid "rows"
 msgstr ""
 
