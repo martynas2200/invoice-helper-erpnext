@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isOpen" class="invoice-helper-modal-overlay" @click.self="close">
+    <div v-if="isOpen" class="invoice-helper-modal-overlay">
         <div class="invoice-helper-modal modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">
@@ -56,7 +56,7 @@
                 <div class="input-group mb-3">
                     <input
                         v-model="searchQuery"
-                        class="form-control"
+                        class="form-control mr-0"
                         type="text"
                         :placeholder="
                             searchMode === 'barcode' ? __('Barcode') : __('Item name or code')
@@ -412,5 +412,10 @@ export default {
         opacity: 0.75;
         margin-top: 3px;
     }
+}
+/* Overwrite hover effect for selected item */
+button.btn.btn-default.invoice-helper-recommendation.btn-primary {
+    background: var(--btn-primary);
+    color: var(--neutral);
 }
 </style>
