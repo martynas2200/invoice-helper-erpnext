@@ -23,9 +23,13 @@ frappe.ui.form.on("Pending Document", {
             __("File")
         );
         if (!frm.doc.__islocal) {
-            frm.add_custom_button(__("Split PDF"), function () {
-                invoice_helper.show_split_dialog(frm);
-            });
+            frm.add_custom_button(
+                __("Split PDF"),
+                function () {
+                    invoice_helper.show_split_dialog(frm);
+                },
+                __("File")
+            );
 
             if (frm.doc.status == "Extracted") {
                 frm.add_custom_button(__("Create Record"), function () {

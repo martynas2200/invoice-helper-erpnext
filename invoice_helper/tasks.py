@@ -13,6 +13,46 @@ logger.setLevel("DEBUG")
 
 MAX_INVOICE_NUMBER_LENGTH = 140
 
+SAVE_RETRIES = 3
+
+FINAL_STATUSES = ("Used", "Moved", "Split")
+
+
+def save_pending_document(doc_name: str, values: dict, retries: int = SAVE_RETRIES):
+	"""
+	Save `values` on a Pending Document and commit, retrying on stale snapshots.
+
+	:param doc_name: Name of the Pending Document
+	:param values: Field values to apply on every attempt
+	:param retries: Number of attempts before giving up
+	"""
+	last_error = None
+
+	for attempt in range(1, retries + 1):
+		try:
+			pending_doc = frappe.get_doc("Pending Document", doc_name)
+
+			payload = dict(values)
+			# Never resurrect a document the user already moved/used/split
+			if "status" in payload and pending_doc.status in FINAL_STATUSES:
+				payload["status"] = pending_doc.status
+
+			pending_doc.update(payload)
+			pending_doc.save(ignore_permissions=True)
+			frappe.db.commit()
+			return pending_doc
+
+		except (frappe.QueryDeadlockError, frappe.QueryTimeoutError) as error:
+			last_error = error
+			# Drop the stale snapshot and retry
+			frappe.db.rollback()
+			logger.warning(
+				f"Pending Document {doc_name} was changed concurrently "
+				f"(attempt {attempt}/{retries}): {error!s}"
+			)
+
+	raise last_error
+
 
 def cleanup_pending_documents():
 	"""
@@ -119,17 +159,19 @@ def extract_document(doc_name):
 		# Fetch the pending document
 		pending_doc = frappe.get_doc("Pending Document", doc_name)
 
-		pending_doc.update({"status": "Processing"})
-		pending_doc.save(ignore_permissions=True)
-		# Commit early so we don't hold locks while doing long-running extraction
-		frappe.db.commit()
+		if pending_doc.status in FINAL_STATUSES:
+			logger.info(
+				f"Skipping extraction for Pending Document {doc_name} as it was already marked as {pending_doc.status}"
+			)
+			return
+
+		# Mark as Processing and commit early so we don't hold locks
+		pending_doc = save_pending_document(doc_name, {"status": "Processing"})
 
 		# Get file path from the linked file
 		if not pending_doc.file:
 			logger.error(f"No file attached to Pending Document: {doc_name}")
-			pending_doc.status = "Error"
-			pending_doc.error_message = "No file attached"
-			pending_doc.save(ignore_permissions=True)
+			save_pending_document(doc_name, {"status": "Error", "error_message": "No file attached"})
 			return
 
 		# Get the file document and extract path
@@ -208,10 +250,7 @@ def extract_document(doc_name):
 
 		# Update the pending document with extracted data
 		extracted_data["status"] = "Extracted"
-		final = frappe.get_doc("Pending Document", doc_name)
-		final.update(extracted_data)
-		final.save(ignore_permissions=True)
-		frappe.db.commit()
+		save_pending_document(doc_name, extracted_data)
 
 		frappe.msgprint("Document extraction done!", indicator="green")
 
@@ -223,15 +262,14 @@ def extract_document(doc_name):
 
 		error_traceback = traceback.format_exc()
 		logger.error(f"Error extracting Pending Document {doc_name}: {e!s}\n{error_traceback}")
+		frappe.db.rollback()
 		# Update document status to indicate error
 		try:
-			pending_doc = frappe.get_doc("Pending Document", doc_name)
-			pending_doc.status = "Error"
-			pending_doc.save(ignore_permissions=True)
-			frappe.db.commit()
+			pending_doc = save_pending_document(doc_name, {"status": "Error"})
 			# attach a comment with the error message and full stack trace
 			pending_doc.add_comment(
 				"Comment", f"{_('Extraction failed with error:')} {e!s}<br><pre>{error_traceback!s}</pre>"
 			)
+			frappe.db.commit()
 		except Exception as update_error:
 			logger.error(f"Failed to update error status: {update_error!s}")
