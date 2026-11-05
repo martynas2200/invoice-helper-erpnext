@@ -1027,11 +1027,16 @@ invoice_helper.show_unmatched_items_dialog = function (frm) {
         });
     };
 
-    const mount = () => {
-        if (!frappe.ui.mountUnmatchedItemsModal) {
-            throw new Error("Unmatched items modal bundle did not register its Vue component");
+    const mount = async () => {
+        await frappe.require("unmatched_items_modal.bundle.js");
+
+        if (typeof frappe.ui.mount_unmatched_items_modal !== "function") {
+            throw new Error(
+                "unmatched_items_modal.bundle.js did not register frappe.ui.mount_unmatched_items_modal"
+            );
         }
-        vue_app = frappe.ui.mountUnmatchedItemsModal(modal_container, {
+
+        vue_app = frappe.ui.mount_unmatched_items_modal(modal_container, {
             isOpen: true,
             rows: pending_rows,
             resolveRow: resolve_row,
@@ -1040,25 +1045,15 @@ invoice_helper.show_unmatched_items_dialog = function (frm) {
         });
     };
 
-    if (frappe.ui.mountUnmatchedItemsModal) {
-        console.log("Mounting unmatched items modal directly");
-        mount();
-    } else {
-        frappe
-            .require("unmatched_items_modal.bundle.js")
-            .then(() => {
-                mount();
-            })
-            .catch((error) => {
-                console.error("Failed to load unmatched items modal:", error);
-                modal_container.remove();
-                frappe.msgprint({
-                    title: __("Could not open unmatched items"),
-                    message: __(
-                        "The unmatched item modal could not be loaded. Please reload the page and try again."
-                    ),
-                    indicator: "red",
-                });
-            });
-    }
+    mount().catch((error) => {
+        console.error("Failed to load unmatched items modal:", error);
+        modal_container.remove();
+        frappe.msgprint({
+            title: __("Could not open unmatched items"),
+            message: __(
+                "The unmatched item modal could not be loaded. Please reload the page and try again."
+            ),
+            indicator: "red",
+        });
+    });
 };
