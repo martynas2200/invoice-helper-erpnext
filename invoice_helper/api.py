@@ -6,6 +6,10 @@ from difflib import SequenceMatcher
 
 import frappe
 from frappe.core.api.file import create_new_folder
+from frappe.utils import get_link_to_form
+
+logger = frappe.logger("invoice_helper")
+logger.setLevel("INFO")
 
 
 def get_or_create_folder(folder_path: str) -> str:
@@ -709,3 +713,70 @@ def recommend_items_for_partial_barcode(barcode=None, max_results=10):
 
 	recommendations.sort(key=lambda d: d.get("score", 0), reverse=True)
 	return recommendations[:max_results]
+
+
+def _log_version_comment(doctype: str, docname: str, comment: str) -> None:
+	"""Add a Version entry for the form timeline."""
+	frappe.get_doc(
+		{
+			"doctype": "Version",
+			"ref_doctype": doctype,
+			"docname": docname,
+			"data": frappe.as_json({"comment": comment}),
+		}
+	).insert(ignore_permissions=True)
+
+
+def _pending_document_used_in(pending_document: str, purchase_invoice: str) -> bool:
+	"""Return True if the timeline already links this Pending Document to the invoice."""
+	return bool(
+		frappe.db.exists(
+			"Version",
+			{
+				"ref_doctype": "Pending Document",
+				"docname": pending_document,
+				"data": ["like", f"%{purchase_invoice}%"],
+			},
+		)
+	)
+
+
+def _log_pending_document_used(pending_document: str, purchase_invoice: str) -> None:
+	"""Write the Pending Document -> Purchase Invoice pairing to logs/invoice_helper.log."""
+	file = frappe.db.get_value("Pending Document", pending_document, "file")
+	filename = frappe.db.get_value("File", file, "file_name") if file else None
+
+	logger.info(
+		"Pending Document %s used in Purchase Invoice %s, file: %s",
+		pending_document,
+		purchase_invoice,
+		filename or "-",
+	)
+
+
+@frappe.whitelist(methods=["POST"])
+def mark_pending_document_used(pending_document: str, purchase_invoice: str) -> str:
+	"""Mark a Pending Document as Used and log which Purchase Invoice consumed it."""
+	if not pending_document or not purchase_invoice:
+		frappe.throw(frappe._("A Pending Document and a Purchase Invoice are required"))
+
+	if not frappe.has_permission("Pending Document", "write", doc=pending_document):
+		frappe.throw(
+			frappe._("Not permitted to update Pending Document {0}").format(pending_document),
+			frappe.PermissionError,
+		)
+
+	if _pending_document_used_in(pending_document, purchase_invoice):
+		return
+
+	frappe.db.set_value("Pending Document", pending_document, "status", "Used")
+	_log_version_comment(
+		"Pending Document",
+		pending_document,
+		get_link_to_form(
+			"Purchase Invoice",
+			purchase_invoice,
+			frappe._("Document was used in {0}").format(purchase_invoice),
+		),
+	)
+	_log_pending_document_used(pending_document, purchase_invoice)

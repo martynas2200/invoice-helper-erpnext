@@ -13,14 +13,22 @@ invoice_helper.after_save_hook = async function (frm) {
     const pending_file = frm._pending_file;
     frm._pending_file = null;
 
-    try {
-        await invoice_helper.attach_pending_document_file_to_form(frm, pending_file);
+    await invoice_helper.attach_pending_document_file_to_form(frm, pending_file);
 
-        if (frm._pending_document) {
-            await frappe.db.set_value("Pending Document", frm._pending_document, "status", "Used");
-        }
-    } catch (err) {
-        console.error("Error in invoice_helper.after_save_hook:", err);
+    if (frm._pending_document) {
+        await frappe.call({
+            method: "invoice_helper.api.mark_pending_document_used",
+            args: {
+                pending_document: frm._pending_document,
+                purchase_invoice: frm.doc.name,
+            },
+            error: () => {
+                frappe.show_alert({
+                    message: __("Could not mark Pending Document as used"),
+                    indicator: "orange",
+                });
+            },
+        });
     }
 };
 
@@ -684,13 +692,13 @@ invoice_helper.attach_pending_document_file_to_form = async (frm, pending_file) 
     const docname = frm.docname || frm.doc.name;
 
     const r = await invoice_helper.attach_pending_document_file(pending_file, doctype, docname);
-    if (r.message) {
-        frm.attachments.attachment_uploaded(r.message);
-        frappe.show_alert({
-            message: __("File attached"),
-            indicator: "green",
-        });
-    }
+    if (!r?.message) return;
+
+    frm.attachments.attachment_uploaded(r.message);
+    frappe.show_alert({
+        message: __("File attached"),
+        indicator: "green",
+    });
 };
 
 // We could use predefined frappe methods to attach files
@@ -717,7 +725,6 @@ invoice_helper.attach_pending_document_file = async (pending_file, doctype, docn
             ]),
             indicator: "orange",
         });
-        throw err;
     }
 };
 // Render a preview table (header + up to 3 data rows)

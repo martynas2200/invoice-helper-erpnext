@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Invoice Helper VERSION\n"
 "Report-Msgid-Bugs-To: martin@ekranas.info\n"
-"POT-Creation-Date: 2026-10-08 10:10+0018\n"
-"PO-Revision-Date: 2026-10-08 10:10+0018\n"
+"POT-Creation-Date: 2026-11-05 13:01+0018\n"
+"PO-Revision-Date: 2026-11-05 13:01+0018\n"
 "Last-Translator: martin@ekranas.info\n"
 "Language-Team: martin@ekranas.info\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
+#: invoice_helper/api.py:761
+msgid "A Pending Document and a Purchase Invoice are required"
+msgstr ""
+
 #. Label of the aws_access_key (Data) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:29
 msgid "AWS Access Key"
 msgstr ""
 
@@ -26,12 +30,12 @@ msgid "AWS Access Key and Secret Key are required when enabling Textract integra
 msgstr ""
 
 #. Label of the region (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:41
 msgid "AWS Region"
 msgstr ""
 
 #. Label of the aws_secret_key (Password) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:35
 msgid "AWS Secret Key"
 msgstr ""
 
@@ -40,12 +44,12 @@ msgid "AWS credentials are not configured. Please set them in Textract Settings.
 msgstr ""
 
 #. Name of a role
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:249
 msgid "Accounts Manager"
 msgstr ""
 
 #. Name of a role
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:238
 msgid "Accounts User"
 msgstr ""
 
@@ -53,13 +57,13 @@ msgstr ""
 msgid "Add File from File List"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:77
+#: invoice_helper/public/js/prefill_dialog.js:60
 msgid "Amazon Textract Tables"
 msgstr ""
 
 #. Label of the amounts_section (Section Break) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:155
 msgid "Amounts"
 msgstr ""
 
@@ -67,97 +71,95 @@ msgstr ""
 msgid "An error occurred"
 msgstr ""
 
-#: invoice_helper/public/js/move_dialog.js:34
-#: invoice_helper/public/js/prefill_dialog.js:1065
+#: invoice_helper/public/js/move_dialog.js:31
 msgid "Attach"
 msgstr ""
 
 #: invoice_helper/public/js/move_dialog.js:7
-#: invoice_helper/public/js/prefill_dialog.js:1041
 msgid "Attach File to Document"
 msgstr ""
 
 #. Description of the 'Pending Document Cleanup Days' (Int) field in DocType
 #. 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:52
 msgid "Automatically delete Pending Documents with status Used, Moved, Split or Error when last modified is older than this many days"
 msgstr ""
 
 #. Label of the barcode (Data) field in DocType 'Pending Document Barcode'
 #. Label of the barcode (Data) field in DocType 'Pending Document Extraction
 #. Item'
-#: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json
-#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
+#: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json:15
+#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:11
 #: invoice_helper/public/js/UnmatchedItemsModal.vue:62
-#: invoice_helper/public/js/prefill_dialog.js:518
+#: invoice_helper/public/js/prefill_dialog.js:546
 msgid "Barcode"
 msgstr ""
 
 #. Label of the re_barcodes (Table) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:197
 msgid "Barcodes Found"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:79
+#: invoice_helper/public/js/prefill_dialog.js:62
 msgid "Barcodes Only"
 msgstr ""
 
 #. Description of the 'Barcodes Found' (Table) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:193
 msgid "Barcodes found in the document"
 msgstr ""
 
 #. Label of the bill_date (Date) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:121
 msgid "Bill Date"
 msgstr ""
 
 #. Label of the bill_section (Section Break) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:107
 msgid "Bill Information"
 msgstr ""
 
 #. Label of the bill_no (Data) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:116
 msgid "Bill Number"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:79
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:83
 msgid "Click to expand"
 msgstr ""
 
 #: invoice_helper/public/js/UnmatchedItemsModal.vue:23
-#: invoice_helper/public/js/prefill_dialog.js:511
+#: invoice_helper/public/js/prefill_dialog.js:539
 msgid "Column"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:490
+#: invoice_helper/public/js/prefill_dialog.js:518
 msgid "Column Mapping"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:455
+#: invoice_helper/public/js/prefill_dialog.js:483
 msgid "Confidence"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:112
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:114
 msgid "Continue"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:837
+#: invoice_helper/public/js/prefill_dialog.js:866
 msgid "Could not add item details"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:693
+#: invoice_helper/public/js/prefill_dialog.js:722
 msgid "Could not attach file from Pending Document: {0}"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:840
+#: invoice_helper/public/js/prefill_dialog.js:869
 msgid "Could not fetch item details for {0} row(s). You may need to re-select them."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:1027
+#: invoice_helper/public/js/prefill_dialog.js:1056
 msgid "Could not open unmatched items"
 msgstr ""
 
@@ -178,51 +180,58 @@ msgstr ""
 msgid "Create Pending Documents"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:31
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:35
 msgid "Create Record"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:107
 msgid "Create a new item"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:105
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:107
 msgid "Creating..."
 msgstr ""
 
 #. Description of the 'Supplier Business Code' (Data) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:141
 msgid "Custom field in Supplier"
+msgstr ""
+
+#: invoice_helper/public/js/move_dialog.js:25
+msgid "Document"
 msgstr ""
 
 #. Label of the document_info_section (Section Break) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:44
 msgid "Document Information"
 msgstr ""
 
 #. Label of the document_name (Data) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:1059
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:64
 msgid "Document Name"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:1045
+#: invoice_helper/public/js/move_dialog.js:11
 msgid "Document Type"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:161
+#: invoice_helper/api.py:776
+msgid "Document was used in {0}"
+msgstr ""
+
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:165
 msgid "Download File"
 msgstr ""
 
 #. Label of the due_date (Date) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:126
 msgid "Due Date"
 msgstr ""
 
 #. Label of the enabled (Check) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:48
 msgid "Enable Textract Integration"
 msgstr ""
 
@@ -231,40 +240,40 @@ msgid "Enter page ranges separated by commas. Example: 1-2,3,4-5"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 #: invoice_helper/public/js/split_dialog.js:116
 msgid "Error"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:266
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:268
 msgid "Exact barcode match found."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:530
+#: invoice_helper/public/js/prefill_dialog.js:558
 msgid "Extract"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Extracted"
 msgstr ""
 
 #. Label of the items (Table) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:189
 msgid "Extracted Items"
 msgstr ""
 
 #. Label of the extraction_tab (Tab Break) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:102
 msgid "Extraction"
 msgstr ""
 
 #. Label of the extraction_json (Code) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:208
 msgid "Extraction JSON"
 msgstr ""
 
-#: invoice_helper/tasks.py:234
+#: invoice_helper/tasks.py:271
 msgid "Extraction failed with error:"
 msgstr ""
 
@@ -272,30 +281,30 @@ msgstr ""
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:9
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:16
 #: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:23
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:31
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:54
 #: invoice_helper/public/js/split_dialog.js:24
 msgid "File"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:668
+#: invoice_helper/public/js/prefill_dialog.js:697
 msgid "File attached"
 msgstr ""
 
-#: invoice_helper/public/js/move_dialog.js:45
-#: invoice_helper/public/js/prefill_dialog.js:1076
+#: invoice_helper/public/js/move_dialog.js:42
 msgid "File attached successfully"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:156
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:160
 msgid "File type"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:996
+#: invoice_helper/public/js/prefill_dialog.js:1025
 msgid "Finished reviewing unmatched rows"
 msgstr ""
 
 #. Label of the header_rows_limit (Int) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:36
 msgid "Header Rows Limit"
 msgstr ""
 
@@ -304,7 +313,7 @@ msgid "Header Rows Limit must be at least 1"
 msgstr ""
 
 #. Label of the id_value (Data) field in DocType 'OCR Ignored ID'
-#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
+#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json:16
 msgid "ID Value"
 msgstr ""
 
@@ -314,7 +323,7 @@ msgstr ""
 msgid "If a table has fewer columns than the defined minimum, the extraction results won’t contain that table."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:89
+#: invoice_helper/public/js/prefill_dialog.js:72
 msgid "If available, Bill No, Posting Date, Due Date, Supplier from Pending Document"
 msgstr ""
 
@@ -325,11 +334,11 @@ msgstr ""
 #. Label of the section_ignored_ids (Section Break) field in DocType 'OCR
 #. Settings'
 #. Label of the ignored_ids (Table) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:57
 msgid "Ignored IDs"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:315
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:317
 msgid "Invalid Barcode"
 msgstr ""
 
@@ -342,41 +351,41 @@ msgstr ""
 msgid "Item name or code"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:972
+#: invoice_helper/public/js/prefill_dialog.js:1001
 msgid "Item was created, but barcode row was not added automatically."
 msgstr ""
 
 #. Label of the items_section (Section Break) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:183
 msgid "Items & References"
 msgstr ""
 
 #. Label of the total (Currency) field in DocType 'Pending Document Extraction
 #. Item'
-#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
+#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:29
 msgid "Line Total"
 msgstr ""
 
 #. Description of the 'Ignored IDs' (Table) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:64
 msgid "List of VAT codes and business IDs to exclude from extraction"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:73
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:75
 msgid "Loading..."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:78
+#: invoice_helper/public/js/prefill_dialog.js:61
 msgid "Local table extraction"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:528
+#: invoice_helper/public/js/prefill_dialog.js:556
 msgid "Map Columns"
 msgstr ""
 
 #. Label of the min_table_columns (Int) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:71
 msgid "Minimum number of columns for a table"
 msgstr ""
 
@@ -385,24 +394,24 @@ msgid "Move"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Moved"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:437
+#: invoice_helper/public/js/prefill_dialog.js:465
 msgid "Multiple tables found. Choose the one containing items:"
 msgstr ""
 
 #. Description of the 'S3 Bucket' (Data) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:56
 msgid "Name of the S3 bucket used for Textract input documents."
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:326
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:328
 msgid "New Item"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:224
+#: invoice_helper/public/js/prefill_dialog.js:230
 msgid "No exact matches found for extracted items. Do you want to review unmatched rows and try to match them manually with a help of fuzzy matching?<br><br></b> This can be especially useful if the invoice does not contain barcodes."
 msgstr ""
 
@@ -410,52 +419,56 @@ msgstr ""
 msgid "No file found."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:724
+#: invoice_helper/public/js/prefill_dialog.js:753
 msgid "No items to restore"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:749
+#: invoice_helper/public/js/prefill_dialog.js:778
 msgid "No price changes detected"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:94
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:96
 msgid "No recommendations found."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:420
+#: invoice_helper/public/js/prefill_dialog.js:448
 msgid "No tables found in the document"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:908
+#: invoice_helper/public/js/prefill_dialog.js:937
 msgid "No unmatched rows to review"
 msgstr ""
 
+#: invoice_helper/api.py:765
+msgid "Not permitted to update Pending Document {0}"
+msgstr ""
+
 #. Description of the 'Header Rows Limit' (Int) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:38
 msgid "Number of rows from top of document to consider as header region for extraction"
 msgstr ""
 
 #. Label of the ocr_config (Data) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:29
 msgid "OCR Config"
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
+#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json:30
 msgid "OCR Ignored ID"
 msgstr ""
 
 #. Label of the ocr_lang (Data) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:22
 msgid "OCR Language"
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:75
 msgid "OCR Settings"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:100
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:104
 msgid "Open"
 msgstr ""
 
@@ -465,24 +478,24 @@ msgstr ""
 
 #. Description of the 'Extraction JSON' (Code) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:205
 msgid "Optional JSON with extraction results"
 msgstr ""
 
 #. Description of the 'S3 Prefix' (Data) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:63
 msgid "Optional folder/prefix inside the S3 bucket for uploaded documents."
 msgstr ""
 
 #. Label of the other_settings (Section Break) field in DocType 'Textract
 #. Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:68
 msgid "Other Settings"
 msgstr ""
 
 #. Label of the output_section (Section Break) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:202
 msgid "Output"
 msgstr ""
 
@@ -490,7 +503,7 @@ msgstr ""
 msgid "Output Folder"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:88
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:92
 msgid "PDF - Click to view"
 msgstr ""
 
@@ -503,24 +516,24 @@ msgid "Page Ranges"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Pending"
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/public/js/prefill_dialog.js:63
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:217
+#: invoice_helper/public/js/prefill_dialog.js:46
 msgid "Pending Document"
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json
+#: invoice_helper/invoice_helper/doctype/pending_document_barcode/pending_document_barcode.json:23
 msgid "Pending Document Barcode"
 msgstr ""
 
 #. Label of the pending_document_cleanup_days (Int) field in DocType 'OCR
 #. Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:50
 msgid "Pending Document Cleanup Days"
 msgstr ""
 
@@ -529,7 +542,7 @@ msgid "Pending Document Cleanup Days cannot be negative"
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
+#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:3
 msgid "Pending Document Extraction Item"
 msgstr ""
 
@@ -538,43 +551,43 @@ msgid "Pending Document created for {0}"
 msgstr ""
 
 #. Description of the 'Row Threshold' (Int) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:45
 msgid "Pixel threshold for grouping OCR elements into rows based on Y coordinates"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:540
+#: invoice_helper/public/js/prefill_dialog.js:568
 msgid "Please ensure each column type is selected only once."
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:316
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:318
 msgid "Please provide a valid barcode before creating a new item."
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:120
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:188
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:208
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:124
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:192
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:212
 msgid "Please select a file first"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:94
+#: invoice_helper/public/js/prefill_dialog.js:77
 msgid "Prefill"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:86
+#: invoice_helper/public/js/prefill_dialog.js:69
 msgid "Prefill Header Fields"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:74
+#: invoice_helper/public/js/prefill_dialog.js:57
 msgid "Prefill Type"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:59
+#: invoice_helper/public/js/prefill_dialog.js:42
 #: invoice_helper/public/js/purchase_invoice.js:21
 msgid "Prefill from Pending Document"
 msgstr ""
 
 #. Label of the file_preview (HTML) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:73
 msgid "Preview"
 msgstr ""
 
@@ -583,23 +596,23 @@ msgid "Preview File"
 msgstr ""
 
 #: invoice_helper/public/js/UnmatchedItemsModal.vue:36
-#: invoice_helper/public/js/prefill_dialog.js:520
+#: invoice_helper/public/js/prefill_dialog.js:548
 msgid "Price"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Processing"
 msgstr ""
 
 #. Label of the quantity (Float) field in DocType 'Pending Document Extraction
 #. Item'
-#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
+#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:17
 msgid "Qty"
 msgstr ""
 
 #: invoice_helper/public/js/UnmatchedItemsModal.vue:32
-#: invoice_helper/public/js/prefill_dialog.js:519
+#: invoice_helper/public/js/prefill_dialog.js:547
 msgid "Quantity"
 msgstr ""
 
@@ -607,12 +620,12 @@ msgstr ""
 msgid "Restore prefilled rates"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:744
+#: invoice_helper/public/js/prefill_dialog.js:773
 msgid "Restored {0} item price(s) to original extraction value"
 msgstr ""
 
 #. Label of the row_threshold (Int) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:43
 msgid "Row Threshold"
 msgstr ""
 
@@ -621,12 +634,12 @@ msgid "Row Threshold must be at least 1"
 msgstr ""
 
 #. Label of the s3_bucket (Data) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:54
 msgid "S3 Bucket"
 msgstr ""
 
 #. Label of the s3_prefix (Data) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:61
 msgid "S3 Prefix"
 msgstr ""
 
@@ -638,11 +651,11 @@ msgstr ""
 msgid "Search by name/code"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:284
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:286
 msgid "Search failed. Please try again."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:432
+#: invoice_helper/public/js/prefill_dialog.js:460
 msgid "Select Table"
 msgstr ""
 
@@ -650,11 +663,11 @@ msgstr ""
 msgid "Select folder where split PDFs will be saved (optional)"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:292
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:294
 msgid "Selected: {0}"
 msgstr ""
 
-#: invoice_helper/public/js/UnmatchedItemsModal.vue:98
+#: invoice_helper/public/js/UnmatchedItemsModal.vue:100
 msgid "Skip"
 msgstr ""
 
@@ -663,11 +676,11 @@ msgid "Source row"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Split"
 msgstr ""
 
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:26
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.js:27
 #: invoice_helper/public/js/file.js:4
 #: invoice_helper/public/js/split_dialog.js:62
 msgid "Split PDF"
@@ -678,67 +691,67 @@ msgid "Split PDF File"
 msgstr ""
 
 #. Label of the status (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:94
 msgid "Status"
 msgstr ""
 
 #. Label of the subtotal (Currency) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:164
 msgid "Subtotal"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:227
+#: invoice_helper/public/js/prefill_dialog.js:233
 msgid "Successfully prefilled {0} items, but {1} rows seem to be unmatched. Do you want to review these unmatched rows or create items with a quick entry dialog?"
 msgstr ""
 
 #. Label of the party (Link) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:137
 msgid "Supplier"
 msgstr ""
 
 #. Label of the business_id (Data) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:144
 msgid "Supplier Business Code"
 msgstr ""
 
 #. Label of the tax_code (Data) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:150
 msgid "Supplier VAT Code"
 msgstr ""
 
 #. Name of a role
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:86
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:227
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:97
 msgid "System Manager"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:453
+#: invoice_helper/public/js/prefill_dialog.js:481
 msgid "Table"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:480
+#: invoice_helper/public/js/prefill_dialog.js:508
 msgid "Table has insufficient rows"
 msgstr ""
 
 #. Label of the tax_amount (Currency) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:169
 msgid "Tax Amount"
 msgstr ""
 
 #. Description of the 'OCR Config' (Data) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:31
 msgid "Tesseract configuration flags (--oem 3 uses LSTM, --psm 6 assumes uniform text block)"
 msgstr ""
 
 #. Description of the 'OCR Language' (Data) field in DocType 'OCR Settings'
-#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json
+#: invoice_helper/invoice_helper/doctype/ocr_settings/ocr_settings.json:24
 msgid "Tesseract language code (e.g., 'lit' for Lithuanian, 'eng' for English, or multiple separated by '+' like 'lit+eng')"
 msgstr ""
 
 #. Label of the textract_configuration (Section Break) field in DocType
 #. 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:24
 msgid "Textract Configuration"
 msgstr ""
 
@@ -747,7 +760,7 @@ msgid "Textract S3 bucket is not configured. Please set 's3_bucket' in Textract 
 msgstr ""
 
 #. Name of a DocType
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:86
 msgid "Textract Settings"
 msgstr ""
 
@@ -755,22 +768,22 @@ msgstr ""
 msgid "Textract integration is not enabled. Please configure it in Textract Settings."
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:1028
+#: invoice_helper/public/js/prefill_dialog.js:1057
 msgid "The unmatched item modal could not be loaded. Please reload the page and try again."
 msgstr ""
 
 #. Label of the total (Currency) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:178
 msgid "Total"
 msgstr ""
 
 #. Label of the price (Currency) field in DocType 'Pending Document Extraction
 #. Item'
-#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json
+#: invoice_helper/invoice_helper/doctype/pending_document_extraction_item/pending_document_extraction_item.json:23
 msgid "Unit Price"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:694
+#: invoice_helper/public/js/prefill_dialog.js:723
 msgid "Unknown error"
 msgstr ""
 
@@ -787,66 +800,66 @@ msgid "Upload succeeded, but File doc reference missing."
 msgstr ""
 
 #. Label of the uploaded_on (Datetime) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:85
 msgid "Uploaded On"
 msgstr ""
 
 #. Option for the 'Status' (Select) field in DocType 'Pending Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:95
 msgid "Used"
 msgstr ""
 
 #. Description of the 'Supplier VAT Code' (Data) field in DocType 'Pending
 #. Document'
-#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json
+#: invoice_helper/invoice_helper/doctype/pending_document/pending_document.json:147
 msgid "Used to pick supplier"
 msgstr ""
 
 #. Description of the 'ID Value' (Data) field in DocType 'OCR Ignored ID'
-#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json
+#: invoice_helper/invoice_helper/doctype/ocr_ignored_id/ocr_ignored_id.json:19
 msgid "VAT code or business ID to ignore (e.g., 'LT112322334' or '498349874')"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "ap-northeast-1"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "ap-southeast-1"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:453
+#: invoice_helper/public/js/prefill_dialog.js:481
 msgid "columns"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "eu-central-1"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "eu-west-1"
 msgstr ""
 
-#: invoice_helper/public/js/prefill_dialog.js:453
+#: invoice_helper/public/js/prefill_dialog.js:481
 msgid "rows"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "us-east-1"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "us-west-1"
 msgstr ""
 
 #. Option for the 'AWS Region' (Select) field in DocType 'Textract Settings'
-#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json
+#: invoice_helper/invoice_helper/doctype/textract_settings/textract_settings.json:42
 msgid "us-west-2"
 msgstr ""
 
