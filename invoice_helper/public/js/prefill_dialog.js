@@ -1,35 +1,51 @@
 frappe.provide("invoice_helper");
 
 invoice_helper.after_save_hook = async function (frm) {
-    // Only proceed if there is a pending file to attach
-    if (!frm || !frm._pending_file) {
+    const pending_document = frm?._pending_document;
+    if (!pending_document) {
         return;
     }
 
-    // Small delay to ensure the document is fully saved and named
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // `after_save` runs before `me.refresh()`, so `frm.doc` is still the pre-save object here
+    const doc = frm.doc;
+    const purchase_invoice = invoice_helper.get_saved_docname(doc);
 
-    // Capture and clear the flag early to avoid repeated attachments
-    const pending_file = frm._pending_file;
+    frm._pending_document = null;
     frm._pending_file = null;
 
-    await invoice_helper.attach_pending_document_file_to_form(frm, pending_file);
-
-    if (frm._pending_document) {
-        await frappe.call({
-            method: "invoice_helper.api.mark_pending_document_used",
-            args: {
-                pending_document: frm._pending_document,
-                purchase_invoice: frm.doc.name,
-            },
-            error: () => {
-                frappe.show_alert({
-                    message: __("Could not mark Pending Document as used"),
-                    indicator: "orange",
-                });
-            },
+    if (!purchase_invoice) {
+        frappe.show_alert({
+            message: __("Invoice is not saved yet, Pending Document was left as is"),
+            indicator: "orange",
         });
+        return;
     }
+
+    let message;
+    try {
+        message = await frappe.xcall("invoice_helper.api.attach_and_mark_pending_document_used", {
+            pending_document,
+            purchase_invoice,
+        });
+    } catch (err) {
+        frappe.show_alert({
+            message: __("Could not attach file from Pending Document: {0}", [err || ""]),
+            indicator: "orange",
+        });
+        return;
+    }
+
+    if (message?.file && frm.docname === purchase_invoice) {
+        frm.attachments?.attachment_uploaded(message.file);
+    }
+};
+
+// `frm.doc.name` still holds the temporary "new-..." name at `after_save`
+invoice_helper.get_saved_docname = function (doc) {
+    if (!doc?.name) return null;
+    if (!doc.name.startsWith("new-")) return doc.name;
+    const renamed = frappe.model.new_names?.[doc.name];
+    return renamed && !renamed.startsWith("new-") ? renamed : null;
 };
 
 invoice_helper.prefill_from_pending_dialog = function (frm, pending_name = null) {
@@ -685,48 +701,6 @@ function extract_mapped_rows(table, column_mapping) {
     return rows;
 }
 
-invoice_helper.attach_pending_document_file_to_form = async (frm, pending_file) => {
-    if (!frm || !pending_file) return;
-
-    const doctype = frm.doctype || frm.doc.doctype;
-    const docname = frm.docname || frm.doc.name;
-
-    const r = await invoice_helper.attach_pending_document_file(pending_file, doctype, docname);
-    if (!r?.message) return;
-
-    frm.attachments.attachment_uploaded(r.message);
-    frappe.show_alert({
-        message: __("File attached"),
-        indicator: "green",
-    });
-};
-
-// We could use predefined frappe methods to attach files
-// However, it is always "Home/Attachments" folder which is not desired
-invoice_helper.attach_pending_document_file = async (pending_file, doctype, docname) => {
-    if (!pending_file || !doctype || !docname) {
-        throw new Error("A source file and target document are required");
-    }
-
-    try {
-        return await frappe.call({
-            method: "frappe.handler.upload_file",
-            args: {
-                library_file_name: pending_file,
-                doctype: doctype,
-                docname: docname,
-            },
-        });
-    } catch (err) {
-        console.error("Error attaching file:", err);
-        frappe.show_alert({
-            message: __("Could not attach file from Pending Document: {0}", [
-                err.message || __("Unknown error"),
-            ]),
-            indicator: "orange",
-        });
-    }
-};
 // Render a preview table (header + up to 3 data rows)
 function render_table_preview(table) {
     const preview = $(

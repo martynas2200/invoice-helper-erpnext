@@ -727,6 +727,15 @@ def _log_version_comment(doctype: str, docname: str, comment: str) -> None:
 	).insert(ignore_permissions=True)
 
 
+def _pending_document_used_comment(purchase_invoice: str) -> str:
+	"""Timeline HTML linking the Pending Document to the Purchase Invoice."""
+	return get_link_to_form(
+		"Purchase Invoice",
+		purchase_invoice,
+		frappe._("Document was used in {0}").format(purchase_invoice),
+	)
+
+
 def _pending_document_used_in(pending_document: str, purchase_invoice: str) -> bool:
 	"""Return True if the timeline already links this Pending Document to the invoice."""
 	return bool(
@@ -735,7 +744,7 @@ def _pending_document_used_in(pending_document: str, purchase_invoice: str) -> b
 			{
 				"ref_doctype": "Pending Document",
 				"docname": pending_document,
-				"data": ["like", f"%{purchase_invoice}%"],
+				"data": frappe.as_json({"comment": _pending_document_used_comment(purchase_invoice)}),
 			},
 		)
 	)
@@ -754,29 +763,61 @@ def _log_pending_document_used(pending_document: str, purchase_invoice: str) -> 
 	)
 
 
+def _attach_pending_document_file(pending: "frappe.Document", purchase_invoice: str):
+	"""Copy the Pending Document's file onto the Purchase Invoice, if not there yet"""
+	if not pending.get("file"):
+		return None
+
+	file_doc = frappe.get_doc("File", pending.file)
+	if not file_doc.file_url:
+		return None
+
+	existing = frappe.db.exists(
+		"File",
+		{
+			"attached_to_doctype": "Purchase Invoice",
+			"attached_to_name": purchase_invoice,
+			"file_url": file_doc.file_url,
+		},
+	)
+	if existing:
+		return frappe.get_doc("File", existing)
+
+	return file_doc.create_attachment_copy("Purchase Invoice", purchase_invoice)
+
+
 @frappe.whitelist(methods=["POST"])
-def mark_pending_document_used(pending_document: str, purchase_invoice: str) -> str:
-	"""Mark a Pending Document as Used and log which Purchase Invoice consumed it."""
+def attach_and_mark_pending_document_used(pending_document: str, purchase_invoice: str) -> dict:
+	"""Attach the Pending Document's file to the invoice and flag the pairing."""
 	if not pending_document or not purchase_invoice:
 		frappe.throw(frappe._("A Pending Document and a Purchase Invoice are required"))
 
-	if not frappe.has_permission("Pending Document", "write", doc=pending_document):
-		frappe.throw(
-			frappe._("Not permitted to update Pending Document {0}").format(pending_document),
-			frappe.PermissionError,
+	# The client can still hold the temporary "new-purchase-invoice-xxxx" name if it
+	# calls us before the local rename lands
+	if purchase_invoice.startswith("new-"):
+		frappe.throw(frappe._("Purchase Invoice {0} has not been saved yet").format(purchase_invoice))
+
+	if not frappe.db.exists("Purchase Invoice", purchase_invoice):
+		frappe.throw(frappe._("Purchase Invoice {0} does not exist").format(purchase_invoice))
+
+	pending = frappe.get_doc("Pending Document", pending_document)
+	pending.check_permission("write")
+	frappe.has_permission("Purchase Invoice", "read", doc=purchase_invoice, throw=True)
+
+	file_doc = _attach_pending_document_file(pending, purchase_invoice)
+
+	if not _pending_document_used_in(pending_document, purchase_invoice):
+		frappe.db.set_value("Pending Document", pending_document, "status", "Used")
+		_log_version_comment(
+			"Pending Document",
+			pending_document,
+			_pending_document_used_comment(purchase_invoice),
 		)
+		_log_pending_document_used(pending_document, purchase_invoice)
 
-	if _pending_document_used_in(pending_document, purchase_invoice):
-		return
-
-	frappe.db.set_value("Pending Document", pending_document, "status", "Used")
-	_log_version_comment(
-		"Pending Document",
-		pending_document,
-		get_link_to_form(
-			"Purchase Invoice",
-			purchase_invoice,
-			frappe._("Document was used in {0}").format(purchase_invoice),
-		),
-	)
-	_log_pending_document_used(pending_document, purchase_invoice)
+	return {
+		"pending_document": pending_document,
+		"purchase_invoice": purchase_invoice,
+		"status": frappe.db.get_value("Pending Document", pending_document, "status"),
+		"file": file_doc.as_dict() if file_doc else None,
+	}
